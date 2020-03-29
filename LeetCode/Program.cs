@@ -8,8 +8,8 @@
         public static void Main(string[] args)
         {
             Console.WriteLine("LeetCode solutions in Csharp.");
-            var solution = new MinWindowSolution();
-            Console.WriteLine(solution.MinWindow("a", "aa"));
+            var solution = new IsNStraightHandSolution();
+            Console.WriteLine(solution.IsNStraightHand(new []{1,2,3,6,2,3,4,7,8}, 3));
         }
     }
 }
