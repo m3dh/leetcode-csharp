@@ -4,7 +4,6 @@ namespace LeetCode.Csharp.Solutions
     using System.Collections.Generic;
     using System.Linq;
 
-    // 1094 - https://leetcode.com/problems/car-pooling/
     public class CarPoolingSolution
     {
         class CarOper
@@ -13,6 +12,7 @@ namespace LeetCode.Csharp.Solutions
             public int Change { get; set; }
         }
 
+        // 1094 - https://leetcode.com/problems/car-pooling/
         public bool CarPooling(int[][] trips, int capacity)
         {
             List<CarOper> opers = new List<CarOper>();

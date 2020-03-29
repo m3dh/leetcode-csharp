@@ -1,8 +1,8 @@
 namespace LeetCode.Csharp.Solutions
 {
-    // 240 - https://leetcode.com/problems/search-a-2d-matrix-ii/
     public class SearchMatrixSolution
     {
+        // 240 - https://leetcode.com/problems/search-a-2d-matrix-ii/
         public bool SearchMatrix(int[,] matrix, int target)
         {
             int d2Length = matrix.GetLength(1);
