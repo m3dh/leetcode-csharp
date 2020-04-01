@@ -9,8 +9,8 @@ namespace LeetCode.Csharp.Solutions2
         public ListNode DetectCycle(ListNode head)
         {
             // Answer: When slow meets fast, we have:
-            //     s_steps = before_loop + n * loop_size.
-            //     f_steps = before_loop + m * loop_size.
+            //     s_steps = before_loop + n * loop_size + to_meet.
+            //     f_steps = before_loop + m * loop_size + to_meet.
             //     s_steps * 2 = f_steps;
             // so:
             //     f_steps = s_steps + (m - n) * loop_size.
