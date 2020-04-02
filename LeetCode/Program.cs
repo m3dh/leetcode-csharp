@@ -1,41 +1,40 @@
 ﻿namespace LeetCode.Csharp
 {
     using System;
+    using System.Linq;
+    using LeetCode.Csharp.Common;
     using LeetCode.Csharp.Solutions2;
 
     internal class Program
     {
-        public static void Main(string[] args)
+        private class HeapNode : IHeapNode
         {
-            var solution = new FindDuplicatesSolution();
-            var ret = solution.FindDuplicates(new[] {4, 3, 2, 7, 8, 2, 3, 1});
-            Console.WriteLine(string.Join(",", ret));
-        }
+            private int val;
 
-        private static void PrintDuplications(int[] array)
-        {
-            // Scan 1: Swap
-            for (int i = 0; i < array.Length; i++)
+            public HeapNode(int val)
             {
-                // Ensures for any member number x in array, array[x] = x.
-                // So in the second scan, if found any array[y] <> y, array[y] is a duplication.
-                if (array[array[i]] != array[i])
-                {
-                    int tmp = array[i];
-                    array[i] = array[tmp];
-                    array[tmp] = tmp;
-                }
+                this.val = val;
             }
 
-            // Console.WriteLine($"Debug: {string.Join(",", array)}");
+            public int GetValue()
+            {
+                return this.val;
+            }
+        }
 
-            // Scan 2: Find duplications
+        public static void Main(string[] args)
+        {
+            MaxHeap<HeapNode> h = new MaxHeap<HeapNode>(100);
+            int[] array = new[] {-31, 4, 1, 5, 7, 2, 132, 78, 90, 13, 254, 7, 22};
+            foreach (int i in array)
+            {
+                h.Insert(new HeapNode(i));
+            }
+
             for (int i = 0; i < array.Length; i++)
             {
-                if (array[i] != i)
-                {
-                    Console.WriteLine($"Duplication: {array[i]}");
-                }
+                Console.WriteLine(h.GetMax().GetValue());
+                h.RemoveMax();
             }
         }
     }
