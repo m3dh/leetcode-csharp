@@ -1,4 +1,4 @@
-namespace LeetCode.Csharp.Solutions2
+namespace LeetCode.Csharp.Solutions
 {
     using LeetCode.Csharp.Common;
 

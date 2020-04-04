@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
     using LeetCode.Csharp.Common;
     using LeetCode.Csharp.Solutions;
-    using LeetCode.Csharp.Solutions2;
 
     internal class Program
     {
