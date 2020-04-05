@@ -1,4 +1,4 @@
-namespace LeetCode.Csharp.Common
+namespace LeetCode.Csharp.Solutions
 {
     using System;
     using System.Linq;
