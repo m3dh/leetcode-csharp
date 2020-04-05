@@ -9,6 +9,7 @@ namespace LeetCode.Csharp.Solutions2
         // 50 - https://leetcode.com/problems/powx-n/
         public double MyPow(double x, int n)
         {
+            // REVIEW: 二分法
             if (n == 0) return 1;
             if (n == Int32.MinValue) return 1.0 / (x * MyPow(x, - (n+1)));
             if (n < 0) return 1.0 / MyPow(x, -n);

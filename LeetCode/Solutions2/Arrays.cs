@@ -9,6 +9,7 @@ namespace LeetCode.Csharp.Solutions2
         // 560 - https://leetcode.com/problems/subarray-sum-equals-k/
         public int SubarraySum(int[] nums, int k)
         {
+            // REVIEW: 局部性思想
             Dictionary<int, int> sums = new Dictionary<int, int> { { 0, 1 } };
             int sum = 0;
             int retCount = 0;

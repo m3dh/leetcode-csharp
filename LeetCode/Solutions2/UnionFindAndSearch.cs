@@ -48,6 +48,7 @@ namespace LeetCode.Csharp.Solutions2
         // 684 - https://leetcode.com/problems/redundant-connection/
         public int[] FindRedundantConnection(int[][] edges)
         {
+            // REVIEW: 并查集基础
             if (edges.Length > 0)
             {
                 UnionFindSet ufs = new UnionFindSet(edges.Length);
