@@ -4,6 +4,7 @@ namespace LeetCode.Csharp.Solutions2
     using System;
     using System.Linq;
     using System.Collections.Generic;
+    using Newtonsoft.Json;
 
     public class Planning
     {
@@ -82,10 +83,103 @@ namespace LeetCode.Csharp.Solutions2
             return ret;
         }
 
+        // 32 - https://leetcode.com/problems/longest-valid-parentheses/
+        public int LongestValidParentheses(string s)
+        {
+            // REVIEW: 状态转移 -> Another solution in Arrays
+            // DP: Find previous matching parenthese and migrate max values.
+            int[] dp = new int[s.Length];
+            for (int i = 1; i < s.Length; i++)
+            {
+                if (s[i] == ')')
+                {
+                    // EX: (()) -> dp[i-1] = 2 -> from 3 to 0
+                    if (dp[i - 1] > 0 && (i - dp[i - 1] - 1 >= 0) && s[i - dp[i - 1] - 1] == '(')
+                    {
+                        // Connecting previous valid substring, and try connect the prev-prev one with newly included (.
+                        dp[i] = dp[i - 1] + ((i - dp[i - 1] - 2) >= 0 ? dp[i - dp[i - 1] - 2] + 2 : 2);
+                    }
+                    else if (s[i - 1] == '(')
+                    {
+                        // Connecting the prev one valid substring (w/ newly included ().
+                        dp[i] = i - 2 >= 0 ? dp[i - 2] + 2 : 2;
+                    }
+                }
+            }
+
+            return dp.Any() ? dp.Max() : 0;
+        }
+        
+        // 689 - https://leetcode.com/problems/maximum-sum-of-3-non-overlapping-subarrays/
+        public int[] MaxSumOfThreeSubarrays(int[] nums, int k)
+        {
+            int[][] dp = new int[3][]; // Max sum by having i sub-arrays 'till current index.
+            int[][] maxIndex = new int[3][]; // (Ending) index of the ith array that makes the max value.
+            int[] sums = new int[nums.Length]; // Sum of k numbers 'till current index.
+
+            for (int i = 0; i < 3; i++)
+            {
+                dp[i] = new int[nums.Length];
+                maxIndex[i] = new int[nums.Length];
+            }
+
+            int currSum = 0;
+            for (int i = 0; i < nums.Length; i++)
+            {
+                currSum += nums[i];
+                if (i >= k - 1) // k = 2, [0,1].
+                {
+                    sums[i] = currSum;
+                    currSum -= nums[i - (k - 1)];
+                }
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = (i + 1) * k - 1; j < nums.Length; j++)
+                {
+                    int prevIthMax = i == 0 ? 0 : dp[i - 1][j - k];
+
+                    if (j == 0 || prevIthMax + sums[j] > dp[i][j - 1])
+                    {
+                        dp[i][j] = prevIthMax + sums[j];
+                        maxIndex[i][j] = j;
+                    }
+                    else
+                    {
+                        // Moving.
+                        dp[i][j] = dp[i][j - 1];
+                        maxIndex[i][j] = maxIndex[i][j - 1];
+                    }
+                }
+            }
+
+            int thirdIndex = 0;
+            int thirdMax = Int32.MinValue;
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (dp[2][i] > thirdMax)
+                {
+                    thirdMax = dp[2][i];
+                    thirdIndex = i;
+                }
+            }
+
+            int secondIndex = maxIndex[1][thirdIndex - k];
+            int firstIndex = maxIndex[0][secondIndex - k];
+
+            return new[]
+            {
+                firstIndex - k + 1,
+                secondIndex - k + 1,
+                thirdIndex - k + 1
+            };
+        }
+
         public void Run()
         {
-            Console.WriteLine(this.MaxProfit(2, new int[] { 2, 4, 1 })); // 2
-            Console.WriteLine(this.MaxProfit(2, new int[] { 3, 2, 6, 5, 0, 3 })); // 7
+            Console.WriteLine(JsonConvert.SerializeObject(this.MaxSumOfThreeSubarrays(new[] {1, 2, 1, 2, 6, 7, 5, 1}, 2)));
+            Console.WriteLine(JsonConvert.SerializeObject(this.MaxSumOfThreeSubarrays(new[] {4,3,2,1}, 1)));
         }
     }
 }

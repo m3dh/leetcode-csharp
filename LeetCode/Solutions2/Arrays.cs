@@ -23,9 +23,39 @@ namespace LeetCode.Csharp.Solutions2
             return retCount;
         }
 
+        // 32 - https://leetcode.com/problems/longest-valid-parentheses/
+        public int LongestValidParentheses(string s)
+        {
+            int l = 0;
+            int r = 0;
+            int max = 0;
+            foreach (char c in s)
+            {
+                if (c == '(') l++;
+                else if (c == ')') r++;
+
+                if (r > l) { l = 0; r = 0; }
+                else if (r == l) max = Math.Max(max, r * 2);
+            }
+
+            // Handle (()
+            l = 0;
+            r = 0;
+            foreach (char c in s.Reverse())
+            {
+                if (c == '(') l++;
+                else if (c == ')') r++;
+
+                if (l > r) { l = 0; r = 0; }
+                else if (r == l) max = Math.Max(max, r * 2);
+            }
+
+            return max;
+        }
+
         public void Run()
         {
-            Console.WriteLine(this.SubarraySum(new int[] { 1, 2, 3 }, 3));
+            Console.WriteLine(this.LongestValidParentheses("(()())"));
         }
     }
 }
