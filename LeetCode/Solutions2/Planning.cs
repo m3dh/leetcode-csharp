@@ -109,7 +109,7 @@ namespace LeetCode.Csharp.Solutions2
 
             return dp.Any() ? dp.Max() : 0;
         }
-        
+
         // 689 - https://leetcode.com/problems/maximum-sum-of-3-non-overlapping-subarrays/
         public int[] MaxSumOfThreeSubarrays(int[] nums, int k)
         {
@@ -175,13 +175,13 @@ namespace LeetCode.Csharp.Solutions2
                 thirdIndex - k + 1
             };
         }
-        
-                
+
+
         // 1143 - https://leetcode.com/problems/longest-common-subsequence/
         public int LongestCommonSubsequence(string text1, string text2)
         {
             // REVIEW: 想清楚状态转移
-            int [][] dp = new int[text1.Length][];
+            int[][] dp = new int[text1.Length][];
             for (int i = 0; i < text1.Length; i++) dp[i] = new int[text2.Length];
 
             for (int i = 0; i < text1.Length; i++)
@@ -227,13 +227,24 @@ namespace LeetCode.Csharp.Solutions2
 
             return maxLen;
         }
-        
+
+        // >>> Few related problems to LCS
+
         // 516 - https://leetcode.com/problems/longest-palindromic-subsequence/
         public int LongestPalindromeSubseq(string s)
         {
             // Only palindrome sub-sequence could use this way (reversing, not sub-strings).
             return this.LongestCommonSubsequence(s, new string(s.Reverse().ToArray()));
         }
+
+        // 583 - https://leetcode.com/problems/delete-operation-for-two-strings/
+        public int MinDistance(string word1, string word2)
+        {
+            int lcsLen = this.LongestCommonSubsequence(word1, word2);
+            return word1.Length + word2.Length - 2 * lcsLen;
+        }
+
+        // <<< End
 
         public void Run()
         {
