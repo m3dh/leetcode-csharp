@@ -175,11 +175,69 @@ namespace LeetCode.Csharp.Solutions2
                 thirdIndex - k + 1
             };
         }
+        
+                
+        // 1143 - https://leetcode.com/problems/longest-common-subsequence/
+        public int LongestCommonSubsequence(string text1, string text2)
+        {
+            // REVIEW: 想清楚状态转移
+            int [][] dp = new int[text1.Length][];
+            for (int i = 0; i < text1.Length; i++) dp[i] = new int[text2.Length];
+
+            for (int i = 0; i < text1.Length; i++)
+            {
+                for (int j = 0; j < text2.Length; j++)
+                {
+                    int ll = i == 0 ? 0 : dp[i - 1][j];
+                    int lr = i == 0 || j == 0 ? 0 : dp[i - 1][j - 1];
+                    int rr = j == 0 ? 0 : dp[i][j - 1];
+
+                    if (text1[i] == text2[j])
+                    {
+                        // Could only from x-1, y-1; x-1,y or x,y-1 cannot stand for previous status.
+                        dp[i][j] = lr + 1;
+                    }
+                    else
+                    {
+                        dp[i][j] = Math.Max(ll, rr);
+                    }
+                }
+            }
+
+            return dp[text1.Length - 1][text2.Length - 1];
+        }
+
+        public int LongestCommonSubstring(String A, String B)
+        {
+            int[][] dp = new int[A.Length][];
+            for (int i = 0; i < A.Length; i++) dp[i] = new int[B.Length];
+
+            int maxLen = 0;
+            for (int i = 0; i < A.Length; i++)
+            {
+                for (int j = 0; j < B.Length; j++)
+                {
+                    if (A[i] == B[j])
+                    {
+                        dp[i][j] = i == 0 || j == 0 ? 0 : (dp[i - 1][j - 1] + 1);
+                        maxLen = Math.Max(maxLen, dp[i][j]);
+                    }
+                }
+            }
+
+            return maxLen;
+        }
+        
+        // 516 - https://leetcode.com/problems/longest-palindromic-subsequence/
+        public int LongestPalindromeSubseq(string s)
+        {
+            // Only palindrome sub-sequence could use this way (reversing, not sub-strings).
+            return this.LongestCommonSubsequence(s, new string(s.Reverse().ToArray()));
+        }
 
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(this.MaxSumOfThreeSubarrays(new[] {1, 2, 1, 2, 6, 7, 5, 1}, 2)));
-            Console.WriteLine(JsonConvert.SerializeObject(this.MaxSumOfThreeSubarrays(new[] {4,3,2,1}, 1)));
+            Console.WriteLine(this.LongestCommonSubsequence("abacfgcaba", "abacgfcaba")); // 5
         }
     }
 }

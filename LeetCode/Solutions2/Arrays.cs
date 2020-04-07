@@ -52,10 +52,33 @@ namespace LeetCode.Csharp.Solutions2
 
             return max;
         }
-
-        public void Run()
+        
+        // 5 - https://leetcode.com/problems/longest-palindromic-substring/
+        public string LongestPalindrome(string s)
         {
-            Console.WriteLine(this.LongestValidParentheses("(()())"));
+            string longestSub = "";
+            
+            Action<int, int> tryMax = (l, r) =>
+            {
+                while (l >= 0 && r < s.Length && s[l] == s[r])
+                {
+                    l--;
+                    r++;
+                }
+
+                if (r - l + 1 > longestSub.Length)
+                {
+                    longestSub = s.Substring(l, r - l + 1);
+                }
+            };
+            
+            for (int i = 0; i < s.Length; i++)
+            {
+                tryMax(i, i);
+                tryMax(i, i + 1);
+            }
+
+            return longestSub;
         }
     }
 }
