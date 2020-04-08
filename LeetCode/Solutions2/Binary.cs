@@ -20,5 +20,22 @@ namespace LeetCode.Csharp.Solutions2
                 return MyPow(x, n - 1) * x;
             }
         }
+
+        // 338 - https://leetcode.com/problems/counting-bits/
+        public int[] CountBits(int num)
+        {
+            if (num == 0) return new[]{0};
+            
+            int[] result = new int[num+1];
+            result[0] = 0;
+            result[1] = 1;
+            
+            for(int i=2;i<=num;i++) {
+                if (i%2==1) result[i] = result[i-1]+1;
+                else result[i] = result[i/2];
+            }
+        
+            return result;
+        }
     }
 }
