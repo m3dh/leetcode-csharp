@@ -155,9 +155,40 @@ namespace LeetCode.Csharp.Solutions2
             return count;
         }
         
+        // 844 - https://leetcode.com/problems/backspace-string-compare/
+        public bool BackspaceCompare(string S, string T) {
+            // REVIEW: 倒序处理
+            int sIndex = S.Length - 1;
+            int tIndex = T.Length - 1;
+            while(true) {
+                sIndex = MoveIndexBack(S, sIndex);
+                tIndex = MoveIndexBack(T, tIndex);
+                
+                if(sIndex < 0 || tIndex < 0) return sIndex == tIndex;
+                if (S[sIndex] != T[tIndex]) return false;
+
+                sIndex--;
+                tIndex--;
+            }
+        }
+    
+        private int MoveIndexBack(string str, int index) {
+            int moveCount = 0;
+            while(index >= 0 && (str[index] == '#' || moveCount > 0))
+            {
+                if (str[index] == '#') moveCount++;
+                else moveCount--;
+                index--;
+            }
+
+            // MOVE: Until the first char that should be compared, or -1.
+            return index;
+        }
+        
         public void Run()
         {
-            Console.WriteLine(this.Trap(new []{0,1,0,2,1,0,1,3,2,1,2,1}.Reverse().ToArray())); // 5
+            Console.WriteLine(this.BackspaceCompare("bxj##tw","bxo#j##tw")); // TRUE
+            Console.WriteLine(this.BackspaceCompare("nzp#o#g", "b#nzp#o#g")); // TRUE
         }
     }
 }

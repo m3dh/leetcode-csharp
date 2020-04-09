@@ -20,6 +20,33 @@ namespace LeetCode.Csharp.Solutions2
 
             return ret;
         }
+        
+        // BD-2-1
+        public IList<IList<int>> BD21_Traversal(TreeNode root)
+        {
+            List<IList<int>> ret = new List<IList<int>>();
+            bool directFromLeft = false;
+            List<TreeNode> roots = new List<TreeNode> {root};
+            while (roots.Count > 0)
+            {
+                List<int> level = new List<int>();
+                List<TreeNode> newRoots = new List<TreeNode>();
+                for (int i = 0; i < roots.Count; i++)
+                {
+                    level.Add(roots[directFromLeft ? i : roots.Count - 1 - i].val);
+
+                    TreeNode node = roots[i];
+                    if (node.left != null) newRoots.Add(node.left);
+                    if (node.right != null) newRoots.Add(node.right);
+                }
+
+                roots = newRoots;
+                directFromLeft = !directFromLeft;
+                ret.Add(level);
+            }
+
+            return ret;
+        }
 
         private void Lc987Recursion(TreeNode root, int x, int y, Dictionary<int, IList<Tuple<int, int>>> store)
         {
