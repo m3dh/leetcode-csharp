@@ -227,7 +227,7 @@ namespace LeetCode.Csharp.Solutions2
 
             return maxLen;
         }
-        
+
         // 486 - https://leetcode.com/problems/predict-the-winner/
         public bool PredictTheWinnerDfs(int[] nums)
         {
@@ -244,7 +244,7 @@ namespace LeetCode.Csharp.Solutions2
             int pr = nums[r] - this.PickNumbers(nums, l, r - 1);
             return Math.Max(pl, pr);
         }
-        
+
         // -> DP 
         public bool PredictTheWinner(int[] nums)
         {
@@ -261,17 +261,17 @@ namespace LeetCode.Csharp.Solutions2
 
             return dp[0][nums.Length - 1] >= 0;
         }
-        
+
         // 464 - https://leetcode.com/problems/can-i-win/
         public bool CanIWin(int maxChoosableInteger, int desiredTotal)
         {
             // Memorize: can it win with current left numbers & left total.
             // Every min-max DPs has the fact of double reverses ( -(-1) = 1, !(false) = true )
-            
+
             if (maxChoosableInteger >= desiredTotal) return true;
             if ((maxChoosableInteger + 1.0) / 2.0 * maxChoosableInteger < desiredTotal) return false;
-            
-            char[]status = new char[maxChoosableInteger];
+
+            char[] status = new char[maxChoosableInteger];
             for (int i = 0; i < maxChoosableInteger; i++) status[i] = 'X';
             return this.CanIWinInner(status, maxChoosableInteger, desiredTotal, new Dictionary<string, bool>());
         }
@@ -280,7 +280,7 @@ namespace LeetCode.Csharp.Solutions2
         {
             string statusKey = new string(status);
             if (memo.ContainsKey(statusKey)) return memo[statusKey];
-            
+
             // Try all the numbers.
             for (int i = 1; i <= maxInt; i++)
             {
@@ -293,7 +293,7 @@ namespace LeetCode.Csharp.Solutions2
                     {
                         found = true;
                     }
-                    
+
                     status[i - 1] = 'X';
 
                     if (found)
@@ -304,7 +304,7 @@ namespace LeetCode.Csharp.Solutions2
                     }
                 }
             }
-            
+
             // Have tried all possibilities and cannot win.
             memo[statusKey] = false;
             return false;
@@ -328,9 +328,45 @@ namespace LeetCode.Csharp.Solutions2
 
         // <<< End
 
+        // 375 - https://leetcode.com/problems/guess-number-higher-or-lower-ii/
+        public int GetMoneyAmount(int n)
+        {
+            // 简化问题为, get min(max(calc(l,x-1), calc(x+1,r)) + x) for each of x l~r recursively.
+            // Optimize by memorize.
+            Dictionary<string, int> memo = new Dictionary<string, int>();
+            return GetMoneyAmountInner(1, n, memo);
+        }
+
+        private int GetMoneyAmountInner(int l, int r, Dictionary<string, int> memo)
+        {
+            if (l == r)
+            {
+                return 0;
+            }
+
+            if (r - l <= 1)
+            {
+                return l; // When length == 2, price (min) is the left val.
+            }
+            
+            string key = $"{l}-{r}";
+            if (memo.ContainsKey(key)) return memo[key];
+
+            int min = Int32.MaxValue;
+            for (int i = l + 1; i < r; i++)
+            {
+                int subAmounts = Math.Max(GetMoneyAmountInner(l, i - 1, memo), GetMoneyAmountInner(i + 1, r, memo)) + i;
+                min = Math.Min(subAmounts, min);
+            }
+
+            // Console.WriteLine($"L{l},R{r},MIN:{min}");
+            memo[key] = min;
+            return min;
+        }
+
         public void Run()
         {
-            Console.WriteLine(this.LongestCommonSubsequence("abacfgcaba", "abacgfcaba")); // 5
+            Console.WriteLine(this.GetMoneyAmount(10)); // 16
         }
     }
 }
