@@ -185,6 +185,45 @@ namespace LeetCode.Csharp.Solutions2
             return index;
         }
         
+        // 155 - MinStack
+        public class MinStack {
+            // REVIEW: 边界条件，this._currMin >= x 也需要 Push 两次
+            private int _currMin = Int32.MaxValue;
+            private readonly Stack<int> _stack;
+    
+            /** initialize your data structure here. */
+            public MinStack() {
+                this._stack = new Stack<int>();
+            }
+    
+            public void Push(int x) {
+                if (this._currMin >= x) {
+                    // When stack.Pop() == currMin, we pop again for next min value...
+                    // The compare should be >= since the min value could be pushed more than once.
+                    this._stack.Push(this._currMin);
+                    this._currMin = x;
+                }
+        
+                this._stack.Push(x);
+            }
+    
+            public void Pop() {
+                int val = this._stack.Pop();
+                if (val == this._currMin) {
+                    // currMin being poped...
+                    this._currMin = this._stack.Pop();
+                }
+            }
+    
+            public int Top() {
+                return this._stack.Peek();
+            }
+    
+            public int GetMin() {
+                return this._currMin;
+            }
+        }
+        
         public void Run()
         {
             Console.WriteLine(this.BackspaceCompare("bxj##tw","bxo#j##tw")); // TRUE

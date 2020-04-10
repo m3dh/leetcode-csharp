@@ -227,6 +227,88 @@ namespace LeetCode.Csharp.Solutions2
 
             return maxLen;
         }
+        
+        // 486 - https://leetcode.com/problems/predict-the-winner/
+        public bool PredictTheWinnerDfs(int[] nums)
+        {
+            return this.PickNumbers(nums, 0, nums.Length - 1) >= 0;
+        }
+
+        private int PickNumbers(int[] nums, int l, int r)
+        {
+            // REVIEW: nums[i] - this.PickNums(...) => This is the key to convert this into min-max DP.
+            // TURN is not needed since we can do:
+            // pick[0] - (pick[1] - (pick[2] ...) ) -> pick[0] - pick[1] + pick[2]...
+            if (l == r) return nums[l];
+            int pl = nums[l] - this.PickNumbers(nums, l + 1, r);
+            int pr = nums[r] - this.PickNumbers(nums, l, r - 1);
+            return Math.Max(pl, pr);
+        }
+        
+        // -> DP 
+        public bool PredictTheWinner(int[] nums)
+        {
+            int[][] dp = new int[nums.Length][];
+            for (int i = 0; i < nums.Length; i++) dp[i] = new int[nums.Length];
+
+            for (int l = nums.Length - 1; l >= 0; l--)
+            {
+                for (int r = l + 1; r < nums.Length; r++)
+                {
+                    dp[l][r] = Math.Max(nums[l] - dp[l - 1][r], nums[r] - dp[l][r - 1]);
+                }
+            }
+
+            return dp[0][nums.Length - 1] >= 0;
+        }
+        
+        // 464 - https://leetcode.com/problems/can-i-win/
+        public bool CanIWin(int maxChoosableInteger, int desiredTotal)
+        {
+            // Memorize: can it win with current left numbers & left total.
+            // Every min-max DPs has the fact of double reverses ( -(-1) = 1, !(false) = true )
+            
+            if (maxChoosableInteger >= desiredTotal) return true;
+            if ((maxChoosableInteger + 1.0) / 2.0 * maxChoosableInteger < desiredTotal) return false;
+            
+            char[]status = new char[maxChoosableInteger];
+            for (int i = 0; i < maxChoosableInteger; i++) status[i] = 'X';
+            return this.CanIWinInner(status, maxChoosableInteger, desiredTotal, new Dictionary<string, bool>());
+        }
+
+        private bool CanIWinInner(char[] status, int maxInt, int desiredTotal, Dictionary<string, bool> memo)
+        {
+            string statusKey = new string(status);
+            if (memo.ContainsKey(statusKey)) return memo[statusKey];
+            
+            // Try all the numbers.
+            for (int i = 1; i <= maxInt; i++)
+            {
+                bool found = false;
+                if (status[i - 1] != 'S')
+                {
+                    status[i - 1] = 'S';
+
+                    if (i >= desiredTotal || !this.CanIWinInner(status, maxInt, desiredTotal - i, memo))
+                    {
+                        found = true;
+                    }
+                    
+                    status[i - 1] = 'X';
+
+                    if (found)
+                    {
+                        // Found a way to win in this given status.
+                        memo[statusKey] = true;
+                        return true;
+                    }
+                }
+            }
+            
+            // Have tried all possibilities and cannot win.
+            memo[statusKey] = false;
+            return false;
+        }
 
         // >>> Few related problems to LCS
 
