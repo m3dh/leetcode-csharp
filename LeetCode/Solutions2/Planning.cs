@@ -363,10 +363,100 @@ namespace LeetCode.Csharp.Solutions2
             memo[key] = min;
             return min;
         }
+        
+        // 1049 - https://leetcode.com/problems/last-stone-weight-ii/
+        public int LastStoneWeightII(int[] stones) {
+            // REVIEW: Idea: find the closest possible sum to (sum_all / 2).
+            int sum = 0;
+            foreach(int stone in stones) sum += stone;
+        
+            if(sum == 0) return 0;
+            int target = (sum+1)/2;
+            bool[] dp = new bool[target+1];
+            dp[0] = true;
+        
+            int currMax = 0;
+            foreach(int stone in stones) {
+                int iterTarget = Math.Min(target, Math.Max(stone, currMax + stone));
+                for (int i = iterTarget; i >= stone; i--)
+                {
+                    if (dp[i - stone])
+                    {
+                        dp[i] = true;
+                        if (i > currMax) currMax = i;
+                    }
+                }
+
+                // Console.WriteLine($"IT:{iterTarget}, CM:{currMax}, S:{stone}");
+            }
+        
+            return Math.Abs(sum - currMax*2);
+        }
+
+        public int LastStoneWeightII_2(int[] stones)
+        {
+            // REVIEW: A 0-1 knapsack version. Actually worse than my own but it's general.
+            int sum = 0;
+            foreach (int stone in stones) sum += stone;
+
+            if (sum == 0) return 0;
+            int target = sum / 2;
+            int[] dp = new int[target + 1];
+
+            foreach (int stone in stones)
+            {
+                for (int i = target; i >= stone; i--)
+                {
+                    // Gained value = stone
+                    int gained = stone;
+                    int cost = stone;
+                    dp[i] = Math.Max(dp[i], gained + dp[i - cost]);
+                }
+            }
+
+            return Math.Abs(sum - dp[target] - dp[target]);
+        }
+        
+        // 1140 - https://leetcode.com/problems/stone-game-ii/
+        public int StoneGameII(int[] piles)
+        {
+            var memo = new Dictionary<string, int>();
+            int sum = piles.Sum();
+            int delta = this.StoneGame2Inner(piles, 0, 1, memo);
+
+            return (sum + delta) / 2;
+        }
+
+        private int StoneGame2Inner(int[] piles, int idx, int m, Dictionary<string, int> memo)
+        {
+            if (idx == piles.Length - 1) return piles[idx];
+            
+            string key = $"{m}-{idx}";
+            if (memo.ContainsKey(key)) return memo[key];
+
+            int maxRes = Int32.MinValue;
+            int currSum = 0;
+            for (int x = 1; x <= 2 * m; x++)
+            {
+                if (idx + x - 1 > piles.Length - 1) break;
+                currSum += piles[idx + x - 1];
+
+                int res = currSum - ((idx + x - 1 < piles.Length - 1)
+                              ? this.StoneGame2Inner(piles, idx + x, Math.Max(m, x), memo)
+                              : 0);
+                if (res > maxRes)
+                {
+                    maxRes = res;
+                }
+            }
+
+            memo[key] = maxRes;
+            return maxRes;
+        }
 
         public void Run()
         {
-            Console.WriteLine(this.GetMoneyAmount(10)); // 16
+            Console.WriteLine(this.StoneGameII(new []{2,7,9,4,4})); // 10
         }
     }
 }

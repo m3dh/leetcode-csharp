@@ -20,6 +20,8 @@ namespace LeetCode.Csharp.Common
         }
         
         public T[] Nodes => this._nodes.Take(this._size).ToArray();
+        
+        public int Count => this._size;
 
         public T GetMax()
         {
