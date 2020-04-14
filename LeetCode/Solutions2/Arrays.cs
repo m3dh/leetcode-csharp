@@ -224,10 +224,78 @@ namespace LeetCode.Csharp.Solutions2
             }
         }
         
+        // 525 - https://leetcode.com/problems/contiguous-array/
+        public int FindMaxLength(int[] nums) {
+            // REVIEW: The idea is to save the visited (delta) status, and when the same status has been found afterwards, status_new - status_old => equal 0 & 1.
+            int maxLen = 0;
+            int status = 0;
+
+            Dictionary<int, int> visited = new Dictionary<int, int> {{status, -1}};
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (nums[i] == 1) status++;
+                else if (nums[i] == 0) status--;
+
+                if (visited.ContainsKey(status))
+                {
+                    int prevIndex = visited[status];
+                    maxLen = Math.Max(maxLen, i - prevIndex);
+                }
+                else
+                {
+                    visited[status] = i;
+                }
+            }
+
+            return maxLen;
+        }
+        
+        public string StringShift(string s, int[][] shift)
+        {
+            if (shift.Length == 0) return s;
+            
+            // Merge shifts
+            int shiftDirection = shift[0][0];
+            int shiftCount = shift[0][1];
+            for (int i = 1; i < shift.Length; i++)
+            {
+                if (shiftDirection == shift[i][0]) shiftCount += shift[i][1];
+                else
+                {
+                    shiftCount -= shift[i][1];
+                    if (shiftCount < 0)
+                    {
+                        shiftCount = -shiftCount;
+                        shiftDirection = (shiftDirection + 1) % 2;
+                    }
+                }
+                
+               // Console.WriteLine($"Direction:{shiftDirection},Shift:{shiftCount}");
+            }
+            
+            
+            // Now that we should swap.
+            char[] sc = s.ToCharArray();
+
+            int shiftDt = shiftDirection == 0 ? -shiftCount : shiftCount;
+            while (shiftDt < 0) shiftDt += sc.Length;
+            for (int i = 0; i < sc.Length; i++)
+            {
+                int target = (i + shiftDt + sc.Length) % sc.Length;
+               // Console.WriteLine($"{i}->{target}");
+                sc[target] = s[i];
+            }
+            
+            return new string(sc);
+        }
+        
         public void Run()
         {
-            Console.WriteLine(this.BackspaceCompare("bxj##tw","bxo#j##tw")); // TRUE
-            Console.WriteLine(this.BackspaceCompare("nzp#o#g", "b#nzp#o#g")); // TRUE
+
+
+            Console.WriteLine(this.StringShift("xqgwkiqpif",
+                new int[][]{new int[]{1,4},new int[]{0,7},new int[]{0,8},new int[]{0,7},new int[]{0,6},new int[]{1,3},new int[]{0,1},new int[]{1,7},new int[]{0,5},new int[]{0,6}})); // TRUE
         }
     }
 }
