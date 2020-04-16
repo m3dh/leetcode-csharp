@@ -290,6 +290,40 @@ namespace LeetCode.Csharp.Solutions2
             return new string(sc);
         }
         
+        // 678 - https://leetcode.com/problems/valid-parenthesis-string/
+        public bool CheckValidString(string s)
+        {
+            // The brilliant idea here is, like for strings don't have a '*' (and we use a counter of left c's to valid it),
+            // we just maintain the minimal left c's and a maximal, then decide if it's still possible to have it always positive though the iteration.
+
+            int minCnt = 0;
+            int maxCnt = 0;
+
+            foreach (char c in s)
+            {
+                if (c == ')')
+                {
+                    minCnt--;
+                    maxCnt--;
+                }
+                else if (c == '(')
+                {
+                    minCnt++;
+                    maxCnt++;
+                }
+                else // c == '*'
+                {
+                    maxCnt++;
+                    minCnt--;
+                }
+
+                if (minCnt < 0) minCnt = 0;
+                if (maxCnt < 0) return false;
+            }
+
+            return minCnt == 0; // minCnt have to be 0 to make it balanced.
+        }
+
         public void Run()
         {
 
