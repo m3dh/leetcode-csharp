@@ -20,7 +20,7 @@ namespace LeetCode.Csharp.Solutions2
 
             return ret;
         }
-        
+
         // BD-2-1
         public IList<IList<int>> BD21_Traversal(TreeNode root)
         {
@@ -52,7 +52,7 @@ namespace LeetCode.Csharp.Solutions2
         {
             if (root == null) return;
             if (store.TryGetValue(x, out IList<Tuple<int, int>> nodes)) nodes.Add(Tuple.Create(y, root.val));
-            else store[x] = new List<Tuple<int, int>> { Tuple.Create(y, root.val) };
+            else store[x] = new List<Tuple<int, int>> {Tuple.Create(y, root.val)};
             this.Lc987Recursion(root.left, x - 1, y - 1, store);
             this.Lc987Recursion(root.right, x + 1, y - 1, store);
         }

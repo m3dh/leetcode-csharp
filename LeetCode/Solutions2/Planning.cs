@@ -453,6 +453,35 @@ namespace LeetCode.Csharp.Solutions2
             memo[key] = maxRes;
             return maxRes;
         }
+        
+        // 64 - https://leetcode.com/problems/minimum-path-sum/
+        public int MinPathSum(int[][] grid)
+        {
+            int[][] costs = new int[grid.Length][];
+            for (int i = 0; i < grid.Length; i++)
+            {
+                costs[i] = new int[grid[i].Length];
+                for (int j = 0; j < grid[i].Length; j++)
+                {
+                    costs[i][j] = Int32.MaxValue;
+                }
+            }
+
+            costs[0][0] = grid[0][0];
+
+            for (int i = 0; i < grid.Length; i++)
+            {
+                for (int j = 0; j < grid[i].Length; j++)
+                {
+                    if (i == 0 && j == 0) continue;
+                    int upperCost = i > 0 ? costs[i - 1][j] : Int32.MaxValue;
+                    int leftCost = j > 0 ? costs[i][j - 1] : Int32.MaxValue;
+                    costs[i][j] = Math.Min(upperCost, leftCost) + grid[i][j];
+                }
+            }
+
+            return costs[grid.Length - 1][grid[grid.Length - 1].Length - 1];
+        }
 
         public void Run()
         {

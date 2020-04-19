@@ -3,6 +3,7 @@ namespace LeetCode.Csharp.Solutions2
     using System;
     using System.Linq;
     using System.Collections.Generic;
+    using Newtonsoft.Json;
 
     public class Arrays
     {
@@ -323,13 +324,46 @@ namespace LeetCode.Csharp.Solutions2
 
             return minCnt == 0; // minCnt have to be 0 to make it balanced.
         }
+        
+        // 48 - https://leetcode.com/problems/rotate-image/
+        public void Rotate(int[][] matrix)
+        {
+            int halfLen = (matrix.Length+1 ) / 2; // 3 => 2, 2 => 1
+            for (int i = 0; i < halfLen; i++)
+            {
+                for (int j = 0; j < halfLen - (matrix.Length%2==0?0:1); j++)
+                {
+                    int prevVal = matrix[i][j];
+                    int[][] rotatePoints = this.GetRotationPoints(matrix.Length, i, j);
+                    for (int k = 0; k < 4; k++)
+                    {
+                        int nextPrevVal = matrix[rotatePoints[k][0]][rotatePoints[k][1]];
+                        matrix[rotatePoints[k][0]][rotatePoints[k][1]] = prevVal;
+                        prevVal = nextPrevVal;
+                    }
+                }
+            }
+        }
+
+        private int[][] GetRotationPoints(int length, int x, int y)
+        {
+            return new[]
+            {
+                new[] {0 + y, length - 1 - x},
+                new[] {length - 1 - x, length - 1 - y},
+                new[] {length - 1 - y, 0 + x},
+                new[] {0 + x, 0 + y} // self
+            };
+        }
 
         public void Run()
         {
-
-
-            Console.WriteLine(this.StringShift("xqgwkiqpif",
-                new int[][]{new int[]{1,4},new int[]{0,7},new int[]{0,8},new int[]{0,7},new int[]{0,6},new int[]{1,3},new int[]{0,1},new int[]{1,7},new int[]{0,5},new int[]{0,6}})); // TRUE
+            
+//            [[7,8,1],
+//             [6,5,4],
+//             [9,2,3]]
+//            
+            Console.WriteLine(JsonConvert.SerializeObject(this.GetRotationPoints(3, 0, 1)));
         }
     }
 }
