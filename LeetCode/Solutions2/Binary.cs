@@ -3,6 +3,7 @@ namespace LeetCode.Csharp.Solutions2
     using System;
     using System.Linq;
     using System.Collections.Generic;
+    using LeetCode.Csharp.Common;
 
     public class Binary
     {
@@ -36,6 +37,59 @@ namespace LeetCode.Csharp.Solutions2
             }
         
             return result;
+        }
+
+        public int LeftMostColumnWithOne(BinaryMatrix binaryMatrix)
+        {
+            IList<int> dimensions = binaryMatrix.Dimensions();
+
+            int leftMostCol = dimensions[1]; // A invalid column.
+            for (int i = 0; i < dimensions[0]; i++)
+            {
+                if (binaryMatrix.Get(i, leftMostCol - 1) == 1)
+                {
+                    int l = 0;
+                    int r = leftMostCol - 1;
+                    int mid = leftMostCol;
+                    while (l <= r)
+                    {
+                        mid = (l + r) / 2;
+                        if (binaryMatrix.Get(i, mid) == 1)
+                        {
+                            if (mid == 0 || binaryMatrix.Get(i, mid - 1) == 0)
+                            {
+                                // return mid;
+                                break;
+                            }
+                            else
+                            {
+                                r = mid - 1; // arr[mid - 1] -> 1
+                            }
+                        }
+                        else
+                        {
+                            l = mid + 1;
+                        }
+                    }
+
+                    if (mid < leftMostCol)
+                    {
+                        leftMostCol = mid;
+                    }
+
+                    // Cannot find any better results.
+                    if (leftMostCol == 0) break;
+                }
+            }
+
+            return leftMostCol < dimensions[1] ? leftMostCol : -1;
+        }
+
+        public void Run()
+        {
+            var mtxJson = "[[1,1,1,1,1],[0,0,0,1,1],[0,0,1,1,1],[0,0,0,0,1],[0,0,0,0,0]]";
+            BinaryMatrix bm = new BinaryMatrix(mtxJson);
+            Console.WriteLine(LeftMostColumnWithOne(bm));
         }
     }
 }
