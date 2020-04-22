@@ -356,6 +356,44 @@ namespace LeetCode.Csharp.Solutions2
             };
         }
 
+        // 41 - https://leetcode.com/problems/first-missing-positive/
+        public int FirstMissingPositive(int[] nums)
+        {
+            // REVIEW: 结果只能是 1-n+1，因为nums里的数字最多吃掉1-n那么多数字
+            
+            // 1. remove neg numbers
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (nums[i] <= 0)
+                {
+                    nums[i] = nums.Length + 1; // nums.Length + 1 won't affect the final result.
+                }
+            }
+            
+            // Console.WriteLine(string.Join(",", nums));
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                int numVal = Math.Abs(nums[i]);
+                if (numVal > 0 && numVal <= nums.Length && nums[numVal-1] > 0)
+                {
+                    nums[numVal - 1] = -nums[numVal - 1];
+                }
+            }
+            
+            // Console.WriteLine(string.Join(",", nums));
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (nums[i] > 0)
+                {
+                    return i + 1;
+                }
+            }
+
+            return nums.Length + 1;
+        }
+
         public void Run()
         {
             
@@ -363,7 +401,7 @@ namespace LeetCode.Csharp.Solutions2
 //             [6,5,4],
 //             [9,2,3]]
 //            
-            Console.WriteLine(JsonConvert.SerializeObject(this.GetRotationPoints(3, 0, 1)));
+            Console.WriteLine(JsonConvert.SerializeObject(this.FirstMissingPositive(new []{3,4,-1,1})));
         }
     }
 }
