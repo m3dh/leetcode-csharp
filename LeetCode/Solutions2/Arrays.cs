@@ -393,6 +393,37 @@ namespace LeetCode.Csharp.Solutions2
 
             return nums.Length + 1;
         }
+        
+        // 239 - https://leetcode.com/problems/sliding-window-maximum/
+        public int[] MaxSlidingWindow(int[] nums, int k)
+        {
+            // REVIEW: 维护一个有序队列，当新元素加入的时候，删除所有比他小的元素；窗口移动时，删除对应的元素（如果那个元素
+            // 恰好是最大值的话...因为这个队列是双有序的 - 大小有序，前后有序
+            LinkedList<int> maxQ = new LinkedList<int>();
+            List<int>result = new List<int>();
+            for (int i = 0; i < nums.Length; i++)
+            {
+                // 队列是先后进入有序的
+                if (maxQ.Count > 0 && maxQ.First() == i - k) maxQ.RemoveFirst();
+
+                while (maxQ.Count > 0 && nums[maxQ.Last()] <= nums[i])
+                {
+                    // 只需要保留最后一个最大值即可，因为这个最大值此时已经在窗口里
+                    maxQ.RemoveLast();
+                }
+
+                // 每个元素都会入队一次
+                maxQ.AddLast(i);
+
+                if (i >= k - 1)
+                {
+                    // 队首：值最大且最早入队（其他更早但还在窗口里的元素已经在入队过程中被淘汰了）
+                    result.Add(nums[maxQ.First()]);
+                }
+            }
+
+            return result.ToArray();
+        }
 
         public void Run()
         {
