@@ -110,11 +110,12 @@ namespace LeetCode.Csharp.Solutions2
 
             return max;
         }
-        
+
         // 42 - https://leetcode.com/problems/trapping-rain-water/
-        public int Trap(int[] height) {
+        public int Trap(int[] height)
+        {
             int count = 0;
-        
+
             // Think about cornor cases.
 
             for (int i = 0; i < height.Length - 1;)
@@ -147,35 +148,38 @@ namespace LeetCode.Csharp.Solutions2
                 {
                     count += (level - height[j]);
                 }
-                
-               // Console.WriteLine($"FROM: {height[i]} MAX:{maxVal} IDX:{i}-{maxIdx}, C:{count}");
+
+                // Console.WriteLine($"FROM: {height[i]} MAX:{maxVal} IDX:{i}-{maxIdx}, C:{count}");
 
                 i = maxIdx;
             }
 
             return count;
         }
-        
+
         // 844 - https://leetcode.com/problems/backspace-string-compare/
-        public bool BackspaceCompare(string S, string T) {
+        public bool BackspaceCompare(string S, string T)
+        {
             // REVIEW: 倒序处理
             int sIndex = S.Length - 1;
             int tIndex = T.Length - 1;
-            while(true) {
+            while (true)
+            {
                 sIndex = MoveIndexBack(S, sIndex);
                 tIndex = MoveIndexBack(T, tIndex);
-                
-                if(sIndex < 0 || tIndex < 0) return sIndex == tIndex;
+
+                if (sIndex < 0 || tIndex < 0) return sIndex == tIndex;
                 if (S[sIndex] != T[tIndex]) return false;
 
                 sIndex--;
                 tIndex--;
             }
         }
-    
-        private int MoveIndexBack(string str, int index) {
+
+        private int MoveIndexBack(string str, int index)
+        {
             int moveCount = 0;
-            while(index >= 0 && (str[index] == '#' || moveCount > 0))
+            while (index >= 0 && (str[index] == '#' || moveCount > 0))
             {
                 if (str[index] == '#') moveCount++;
                 else moveCount--;
@@ -185,48 +189,57 @@ namespace LeetCode.Csharp.Solutions2
             // MOVE: Until the first char that should be compared, or -1.
             return index;
         }
-        
+
         // 155 - MinStack
-        public class MinStack {
+        public class MinStack
+        {
             // REVIEW: 边界条件，this._currMin >= x 也需要 Push 两次
             private int _currMin = Int32.MaxValue;
             private readonly Stack<int> _stack;
-    
+
             /** initialize your data structure here. */
-            public MinStack() {
+            public MinStack()
+            {
                 this._stack = new Stack<int>();
             }
-    
-            public void Push(int x) {
-                if (this._currMin >= x) {
+
+            public void Push(int x)
+            {
+                if (this._currMin >= x)
+                {
                     // When stack.Pop() == currMin, we pop again for next min value...
                     // The compare should be >= since the min value could be pushed more than once.
                     this._stack.Push(this._currMin);
                     this._currMin = x;
                 }
-        
+
                 this._stack.Push(x);
             }
-    
-            public void Pop() {
+
+            public void Pop()
+            {
                 int val = this._stack.Pop();
-                if (val == this._currMin) {
+                if (val == this._currMin)
+                {
                     // currMin being poped...
                     this._currMin = this._stack.Pop();
                 }
             }
-    
-            public int Top() {
+
+            public int Top()
+            {
                 return this._stack.Peek();
             }
-    
-            public int GetMin() {
+
+            public int GetMin()
+            {
                 return this._currMin;
             }
         }
-        
+
         // 525 - https://leetcode.com/problems/contiguous-array/
-        public int FindMaxLength(int[] nums) {
+        public int FindMaxLength(int[] nums)
+        {
             // REVIEW: The idea is to save the visited (delta) status, and when the same status has been found afterwards, status_new - status_old => equal 0 & 1.
             int maxLen = 0;
             int status = 0;
@@ -251,11 +264,11 @@ namespace LeetCode.Csharp.Solutions2
 
             return maxLen;
         }
-        
+
         public string StringShift(string s, int[][] shift)
         {
             if (shift.Length == 0) return s;
-            
+
             // Merge shifts
             int shiftDirection = shift[0][0];
             int shiftCount = shift[0][1];
@@ -271,11 +284,11 @@ namespace LeetCode.Csharp.Solutions2
                         shiftDirection = (shiftDirection + 1) % 2;
                     }
                 }
-                
-               // Console.WriteLine($"Direction:{shiftDirection},Shift:{shiftCount}");
+
+                // Console.WriteLine($"Direction:{shiftDirection},Shift:{shiftCount}");
             }
-            
-            
+
+
             // Now that we should swap.
             char[] sc = s.ToCharArray();
 
@@ -284,13 +297,13 @@ namespace LeetCode.Csharp.Solutions2
             for (int i = 0; i < sc.Length; i++)
             {
                 int target = (i + shiftDt + sc.Length) % sc.Length;
-               // Console.WriteLine($"{i}->{target}");
+                // Console.WriteLine($"{i}->{target}");
                 sc[target] = s[i];
             }
-            
+
             return new string(sc);
         }
-        
+
         // 678 - https://leetcode.com/problems/valid-parenthesis-string/
         public bool CheckValidString(string s)
         {
@@ -324,14 +337,14 @@ namespace LeetCode.Csharp.Solutions2
 
             return minCnt == 0; // minCnt have to be 0 to make it balanced.
         }
-        
+
         // 48 - https://leetcode.com/problems/rotate-image/
         public void Rotate(int[][] matrix)
         {
-            int halfLen = (matrix.Length+1 ) / 2; // 3 => 2, 2 => 1
+            int halfLen = (matrix.Length + 1) / 2; // 3 => 2, 2 => 1
             for (int i = 0; i < halfLen; i++)
             {
-                for (int j = 0; j < halfLen - (matrix.Length%2==0?0:1); j++)
+                for (int j = 0; j < halfLen - (matrix.Length % 2 == 0 ? 0 : 1); j++)
                 {
                     int prevVal = matrix[i][j];
                     int[][] rotatePoints = this.GetRotationPoints(matrix.Length, i, j);
@@ -360,7 +373,7 @@ namespace LeetCode.Csharp.Solutions2
         public int FirstMissingPositive(int[] nums)
         {
             // REVIEW: 结果只能是 1-n+1，因为nums里的数字最多吃掉1-n那么多数字
-            
+
             // 1. remove neg numbers
             for (int i = 0; i < nums.Length; i++)
             {
@@ -369,18 +382,18 @@ namespace LeetCode.Csharp.Solutions2
                     nums[i] = nums.Length + 1; // nums.Length + 1 won't affect the final result.
                 }
             }
-            
+
             // Console.WriteLine(string.Join(",", nums));
 
             for (int i = 0; i < nums.Length; i++)
             {
                 int numVal = Math.Abs(nums[i]);
-                if (numVal > 0 && numVal <= nums.Length && nums[numVal-1] > 0)
+                if (numVal > 0 && numVal <= nums.Length && nums[numVal - 1] > 0)
                 {
                     nums[numVal - 1] = -nums[numVal - 1];
                 }
             }
-            
+
             // Console.WriteLine(string.Join(",", nums));
 
             for (int i = 0; i < nums.Length; i++)
@@ -393,14 +406,14 @@ namespace LeetCode.Csharp.Solutions2
 
             return nums.Length + 1;
         }
-        
+
         // 239 - https://leetcode.com/problems/sliding-window-maximum/
         public int[] MaxSlidingWindow(int[] nums, int k)
         {
             // REVIEW: 维护一个有序队列，当新元素加入的时候，删除所有比他小的元素；窗口移动时，删除对应的元素（如果那个元素
             // 恰好是最大值的话...因为这个队列是双有序的 - 大小有序，前后有序
             LinkedList<int> maxQ = new LinkedList<int>();
-            List<int>result = new List<int>();
+            List<int> result = new List<int>();
             for (int i = 0; i < nums.Length; i++)
             {
                 // 队列是先后进入有序的
@@ -425,14 +438,118 @@ namespace LeetCode.Csharp.Solutions2
             return result.ToArray();
         }
 
+        // 45 - https://leetcode.com/problems/jump-game-ii/
+        public int Jump2(int[] nums)
+        {
+            // REVIEW: 每次下一步是来自于上一步拓展的范围内的...
+            int steps = 0;
+            int currPos = 0;
+            int lastPos = 0;
+            while (currPos < nums.Length - 1)
+            {
+                // Get the next max pos.
+                int nextPos = currPos;
+                while (lastPos <= currPos)
+                {
+                    nextPos = Math.Max(nextPos, lastPos + nums[lastPos]);
+                    lastPos++;
+                }
+                
+                // lastPos = currPos;
+                currPos = nextPos;
+                steps++;
+            }
+
+            return steps;
+        }
+        
+        // https://leetcode.com/problems/jump-game-iii/
+        public bool CanReach(int[] arr, int start)
+        {
+            bool[] visited = new bool[arr.Length];
+            Queue<int> q = new Queue<int>();
+            q.Enqueue(start);
+            visited[start] = true;
+
+            while (q.Count > 0)
+            {
+                int idx = q.Dequeue();
+
+                if (arr[idx] == 0) return true;
+                
+                int l = idx - arr[idx];
+                int r = idx + arr[idx];
+                if (l >= 0 && !visited[l])
+                {
+                    visited[l] = true;
+                    q.Enqueue(l);
+                }
+
+                if (r < arr.Length && !visited[r])
+                {
+                    visited[r] = true;
+                    q.Enqueue(r);
+                }
+            }
+
+            return false;
+        }
+        
+        // https://leetcode.com/problems/jump-game-iv/
+        public int MinJumps(int[] arr)
+        {
+            Dictionary<int, List<int>> valMap = arr
+                .Select((v, i) => new {v = v, i = i})
+                .GroupBy(t => t.v)
+                .ToDictionary(t => t.Key, t => t.Select(ti => ti.i).ToList());
+
+            int count = 0;
+            int start = 0; 
+            bool[] visited = new bool[arr.Length];
+            List<int> step = new List<int> ();
+            step.Add(start);
+            visited[start] = true;
+            while (step.Count > 0)
+            {
+                List<int> nextStep = new List<int>();
+                foreach (int idx in step)
+                {
+                    if (idx == arr.Length - 1) return count;
+
+                    if (idx - 1 >= 0 && !visited[idx - 1])
+                    {
+                        visited[idx - 1] = true;
+                        nextStep.Add(idx - 1);
+                    }
+
+                    if (idx + 1 < arr.Length && !visited[idx + 1])
+                    {
+                        visited[idx + 1] = true;
+                        nextStep.Add(idx + 1);
+                    }
+                    
+                    foreach (int ni in valMap[arr[idx]])
+                    {
+                        if (!visited[ni])
+                        {
+                            visited[ni] = true;
+                            nextStep.Add(ni);
+                        }
+                    }
+                    
+                    valMap[arr[idx]] = new List<int>();
+                }
+                
+                count++;
+                step = nextStep;
+            }
+
+            return -1;
+        }
+
         public void Run()
         {
-            
-//            [[7,8,1],
-//             [6,5,4],
-//             [9,2,3]]
-//            
-            Console.WriteLine(JsonConvert.SerializeObject(this.FirstMissingPositive(new []{3,4,-1,1})));
+            Console.WriteLine(JsonConvert.SerializeObject(this.MinJumps(new[] {100,-23,-23,404,100,23,23,23,3,404})));
         }
     }
 }

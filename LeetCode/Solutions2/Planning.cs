@@ -482,10 +482,50 @@ namespace LeetCode.Csharp.Solutions2
 
             return costs[grid.Length - 1][grid[grid.Length - 1].Length - 1];
         }
+        
+        // 1340 - https://leetcode.com/problems/jump-game-v/
+        public int MaxJumps(int[] arr, int d)
+                 {
+                     int max = 0;
+                     int[] memo = new int[arr.Length];
+                     for (int i = 0; i < arr.Length; i++)
+                     {
+                         max = Math.Max(this.FindMaxJumps(arr, d, i, memo), max);
+                     }
+         
+                     return max;
+                 }
+         
+                 private int FindMaxJumps(int[] arr, int d, int idx, int[] memo)
+                 {
+                     if (memo[idx] > 0) return memo[idx];
+         
+                     int max = 1;
+                     for (int i = idx + 1; i <= Math.Min(arr.Length - 1, idx + d); i++)
+                     {
+                         if (arr[i] >= arr[idx]) break;
+                         else
+                         {
+                             max = Math.Max(max, this.FindMaxJumps(arr, d, i, memo) + 1);
+                         }
+                     }
+                     
+                     for (int i = idx - 1; i >= Math.Max(0, idx - d); i--)
+                     {
+                         if (arr[i] >= arr[idx]) break;
+                         else
+                         {
+                             max = Math.Max(max, this.FindMaxJumps(arr, d, i, memo) + 1);
+                         }
+                     }
+         
+                     memo[idx] = max;
+                     return max;
+                 }
 
         public void Run()
         {
-            Console.WriteLine(this.StoneGameII(new []{2,7,9,4,4})); // 10
+            Console.WriteLine(this.MaxJumps(new[] {7, 1, 7, 1, 7, 1}, 2)); // 10
         }
     }
 }

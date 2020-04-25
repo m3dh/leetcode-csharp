@@ -13,7 +13,7 @@
     {
         public static void Main()
         {
-            var obj = new Arrays();
+            var obj = new Planning();
             obj.Run();
         }
     }
