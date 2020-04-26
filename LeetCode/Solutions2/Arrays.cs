@@ -547,6 +547,74 @@ namespace LeetCode.Csharp.Solutions2
             return -1;
         }
 
+        public int[] TwoSum(int[] nums, int target)
+        {
+            var tuples = nums.Select((n, i) => Tuple.Create(n, i)).OrderBy(t => t.Item1).ToArray();
+            int l = 0;
+            int r = nums.Length - 1;
+            while (l < r)
+            {
+                int sum = tuples[l].Item1 + tuples[r].Item1;
+                if (sum == target)
+                {
+                    return new[] {tuples[l].Item2, tuples[r].Item2};
+                }
+                else if (sum > target)
+                {
+                    r--;
+                }
+                else
+                {
+                    l++;
+                }
+            }
+
+            return null;
+        }
+
+        // 15 - https://leetcode.com/problems/3sum/
+        public IList<IList<int>> ThreeSum(int[] nums)
+        {
+            List<IList<int>> ret = new List<IList<int>>();
+            nums = nums.OrderBy(n => n).ToArray();
+            for (int i = 0; i < nums.Length - 2; i++)
+            {
+                if (i > 0 && nums[i - 1] == nums[i]) continue;
+                
+                int l = i + 1;
+                int r = nums.Length - 1;
+                while (l < r)
+                {
+                    int sum = nums[l] + nums[r];
+                    if (nums[i] + sum == 0)
+                    {
+                        ret.Add(new[] {nums[i], nums[l], nums[r]});
+                        l++;
+                        while (r > l && nums[l - 1] == nums[l])
+                        {
+                            l++;
+                        }
+
+                        r--;
+                        while (r > l && nums[r + 1] == nums[r])
+                        {
+                            r--;
+                        }
+                    }
+                    else if (nums[i] + sum > 0)
+                    {
+                        r--;
+                    }
+                    else
+                    {
+                        l++;
+                    }
+                }
+            }
+
+            return ret;
+        }
+
         public void Run()
         {
             Console.WriteLine(JsonConvert.SerializeObject(this.MinJumps(new[] {100,-23,-23,404,100,23,23,23,3,404})));

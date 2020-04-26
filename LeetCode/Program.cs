@@ -13,7 +13,7 @@
     {
         public static void Main()
         {
-            var obj = new Planning();
+            var obj = new Search();
             obj.Run();
         }
     }
