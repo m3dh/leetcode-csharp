@@ -348,7 +348,7 @@ namespace LeetCode.Csharp.Solutions2
             {
                 return l; // When length == 2, price (min) is the left val.
             }
-            
+
             string key = $"{l}-{r}";
             if (memo.ContainsKey(key)) return memo[key];
 
@@ -363,20 +363,22 @@ namespace LeetCode.Csharp.Solutions2
             memo[key] = min;
             return min;
         }
-        
+
         // 1049 - https://leetcode.com/problems/last-stone-weight-ii/
-        public int LastStoneWeightII(int[] stones) {
+        public int LastStoneWeightII(int[] stones)
+        {
             // REVIEW: Idea: find the closest possible sum to (sum_all / 2).
             int sum = 0;
-            foreach(int stone in stones) sum += stone;
-        
-            if(sum == 0) return 0;
-            int target = (sum+1)/2;
-            bool[] dp = new bool[target+1];
+            foreach (int stone in stones) sum += stone;
+
+            if (sum == 0) return 0;
+            int target = (sum + 1) / 2;
+            bool[] dp = new bool[target + 1];
             dp[0] = true;
-        
+
             int currMax = 0;
-            foreach(int stone in stones) {
+            foreach (int stone in stones)
+            {
                 int iterTarget = Math.Min(target, Math.Max(stone, currMax + stone));
                 for (int i = iterTarget; i >= stone; i--)
                 {
@@ -389,8 +391,8 @@ namespace LeetCode.Csharp.Solutions2
 
                 // Console.WriteLine($"IT:{iterTarget}, CM:{currMax}, S:{stone}");
             }
-        
-            return Math.Abs(sum - currMax*2);
+
+            return Math.Abs(sum - currMax * 2);
         }
 
         public int LastStoneWeightII_2(int[] stones)
@@ -416,7 +418,7 @@ namespace LeetCode.Csharp.Solutions2
 
             return Math.Abs(sum - dp[target] - dp[target]);
         }
-        
+
         // 1140 - https://leetcode.com/problems/stone-game-ii/
         public int StoneGameII(int[] piles)
         {
@@ -430,7 +432,7 @@ namespace LeetCode.Csharp.Solutions2
         private int StoneGame2Inner(int[] piles, int idx, int m, Dictionary<string, int> memo)
         {
             if (idx == piles.Length - 1) return piles[idx];
-            
+
             string key = $"{m}-{idx}";
             if (memo.ContainsKey(key)) return memo[key];
 
@@ -453,7 +455,7 @@ namespace LeetCode.Csharp.Solutions2
             memo[key] = maxRes;
             return maxRes;
         }
-        
+
         // 64 - https://leetcode.com/problems/minimum-path-sum/
         public int MinPathSum(int[][] grid)
         {
@@ -482,50 +484,150 @@ namespace LeetCode.Csharp.Solutions2
 
             return costs[grid.Length - 1][grid[grid.Length - 1].Length - 1];
         }
-        
+
         // 1340 - https://leetcode.com/problems/jump-game-v/
         public int MaxJumps(int[] arr, int d)
-                 {
-                     int max = 0;
-                     int[] memo = new int[arr.Length];
-                     for (int i = 0; i < arr.Length; i++)
-                     {
-                         max = Math.Max(this.FindMaxJumps(arr, d, i, memo), max);
-                     }
-         
-                     return max;
-                 }
-         
-                 private int FindMaxJumps(int[] arr, int d, int idx, int[] memo)
-                 {
-                     if (memo[idx] > 0) return memo[idx];
-         
-                     int max = 1;
-                     for (int i = idx + 1; i <= Math.Min(arr.Length - 1, idx + d); i++)
-                     {
-                         if (arr[i] >= arr[idx]) break;
-                         else
-                         {
-                             max = Math.Max(max, this.FindMaxJumps(arr, d, i, memo) + 1);
-                         }
-                     }
-                     
-                     for (int i = idx - 1; i >= Math.Max(0, idx - d); i--)
-                     {
-                         if (arr[i] >= arr[idx]) break;
-                         else
-                         {
-                             max = Math.Max(max, this.FindMaxJumps(arr, d, i, memo) + 1);
-                         }
-                     }
-         
-                     memo[idx] = max;
-                     return max;
-                 }
+        {
+            int max = 0;
+            int[] memo = new int[arr.Length];
+            for (int i = 0; i < arr.Length; i++)
+            {
+                max = Math.Max(this.FindMaxJumps(arr, d, i, memo), max);
+            }
+
+            return max;
+        }
+
+        private int FindMaxJumps(int[] arr, int d, int idx, int[] memo)
+        {
+            if (memo[idx] > 0) return memo[idx];
+
+            int max = 1;
+            for (int i = idx + 1; i <= Math.Min(arr.Length - 1, idx + d); i++)
+            {
+                if (arr[i] >= arr[idx]) break;
+                else
+                {
+                    max = Math.Max(max, this.FindMaxJumps(arr, d, i, memo) + 1);
+                }
+            }
+
+            for (int i = idx - 1; i >= Math.Max(0, idx - d); i--)
+            {
+                if (arr[i] >= arr[idx]) break;
+                else
+                {
+                    max = Math.Max(max, this.FindMaxJumps(arr, d, i, memo) + 1);
+                }
+            }
+
+            memo[idx] = max;
+            return max;
+        }
+        
+        // 221 - https://leetcode.com/problems/maximal-square/
+        public int MaximalSquare(char[][] matrix)
+        {
+            int max = 0;
+            int [][] dp = new int[matrix.Length][];
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                dp[i] = new int[matrix[i].Length];
+                for (int j = 0; j < matrix[i].Length; j++)
+                {
+                    dp[i][j] = matrix[i][j] == '0'
+                        ? 0
+                        : (
+                            i == 0 || j == 0
+                                ? 1
+                                : Math.Min(dp[i - 1][j], Math.Min(dp[i - 1][j - 1], dp[i][j - 1])) + 1
+                        );
+
+                    max = Math.Max(max, dp[i][j]);
+                }
+            }
+
+            return max * max;
+        }
+        
+        // 84 - https://leetcode.com/problems/largest-rectangle-in-histogram/
+        public int LargestRectangleArea(int[] heights)
+        {
+            // REVIEW: 从每个下降区前开始往前回溯；因为之前的面积都包含在更长的柱子的面积里了
+            int max = 0;
+            for (int i = 1; i <= heights.Length; i++)
+            {
+                if (i == heights.Length || heights[i] < heights[i - 1])
+                {
+                    int currHeight = heights[i - 1];
+                    for (int j = i - 1; j >= 0; j--)
+                    {
+                        currHeight = Math.Min(currHeight, heights[j]);
+                        int currArea = currHeight * (i - j);
+
+                        // Console.WriteLine($"F:{j},T:{i-1},A:{currArea}");
+
+                        max = Math.Max(currArea, max);
+                    }
+                }
+            }
+
+            return max;
+        }
+
+        // 85 - https://leetcode.com/problems/maximal-rectangle/
+        public int MaximalRectangle(char[][] matrix)
+        {
+            // DP: 最长的竖线 ("1")
+            int [][] dp = new int[matrix.Length][];
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                dp[i] = new int[matrix[i].Length];
+                for (int j = 0; j < matrix[i].Length; j++)
+                {
+                    dp[i][j] = matrix[i][j] == '0'
+                        ? 0
+                        : (
+                            i == 0
+                                ? 1
+                                : dp[i - 1][j] + 1
+                        );
+                    
+                   // Console.Write($"{dp[i][j]} ");
+                }
+                
+               // Console.WriteLine("\n");
+            }
+
+            int maxRec = 0;
+            for (int i = 0; i < dp.Length; i++)
+            {
+                for (int j = 1; j <= dp[i].Length; j++)
+                {
+                    if (j == dp[i].Length || dp[i][j] < dp[i][j - 1])
+                    {
+                        int currHeight = dp[i][j - 1];
+                        for (int k = j - 1; k >= 0; k--)
+                        {
+                            currHeight = Math.Min(currHeight, dp[i][k]);
+                            int currArea = currHeight * (j - k);
+                            
+                           // Console.WriteLine($"I: {i}, F:{k},T:{j-1},A:{currArea}, CH:{currHeight}, CL:{j - k}");
+                            
+                            maxRec = Math.Max(currArea, maxRec);
+                        }
+                    }
+                }
+            }
+            
+            return maxRec;
+        }
 
         public void Run()
         {
-            Console.WriteLine(this.MaxJumps(new[] {7, 1, 7, 1, 7, 1}, 2)); // 10
+            char[][] input = JsonConvert.DeserializeObject<char[][]>(
+                "[[\"1\",\"0\",\"1\",\"0\",\"0\"],[\"1\",\"0\",\"1\",\"1\",\"1\"],[\"1\",\"1\",\"1\",\"1\",\"1\"],[\"1\",\"0\",\"0\",\"1\",\"0\"]]");
+            Console.WriteLine(this.MaximalRectangle(input));
         }
     }
 }

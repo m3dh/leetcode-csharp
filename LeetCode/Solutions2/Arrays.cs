@@ -615,6 +615,42 @@ namespace LeetCode.Csharp.Solutions2
             return ret;
         }
 
+        public int ThreeSumClosest(int[] nums, int target)
+        {
+            int closets = nums[0] + nums[1] + nums[2];
+            nums = nums.OrderBy(n => n).ToArray();
+
+            for (int i = 0; i < nums.Length - 2; i++)
+            {
+                int l = i + 1;
+                int r = nums.Length - 1;
+                while (l < r)
+                {
+                    int sum = nums[l] + nums[r] + nums[i];
+
+                    if (Math.Abs(target - sum) < Math.Abs(target - closets))
+                    {
+                        closets = sum;
+                    }
+                    
+                    if (sum == target)
+                    {
+                        return 0;
+                    }
+                    else if (sum > target)
+                    {
+                        r--;
+                    }
+                    else
+                    {
+                        l++;
+                    }
+                }
+            }
+
+            return closets;
+        }
+        
         public void Run()
         {
             Console.WriteLine(JsonConvert.SerializeObject(this.MinJumps(new[] {100,-23,-23,404,100,23,23,23,3,404})));

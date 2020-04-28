@@ -96,4 +96,157 @@ namespace LeetCode.Csharp.Common
             this._cache[key] = Tuple.Create<int, LinkedListNode<int>>(value, node);
         }
     }
+
+    public class MyQueue
+    {
+
+        // reverse
+        private Stack<int> _stack1 = new Stack<int>();
+
+        // normal
+        private Stack<int> _stack2 = new Stack<int>();
+
+        /** Initialize your data structure here. */
+        public MyQueue()
+        {
+
+        }
+
+        /** Push element x to the back of queue. */
+        public void Push(int x)
+        {
+            this._stack1.Push(x);
+        }
+
+        /** Removes the element from in front of queue and returns that element. */
+        public int Pop()
+        {
+            if (this._stack2.Count == 0)
+            {
+                // dump all items in stack1 in a reverse order.
+                // before we hit an empty stack2, don't dump again (otherwise it'll break the order)
+                while (this._stack1.Count > 0)
+                {
+                    this._stack2.Push(this._stack1.Pop());
+                }
+            }
+
+            return this._stack2.Pop();
+        }
+
+        /** Get the front element. */
+        public int Peek()
+        {
+            if (this._stack2.Count == 0)
+            {
+                // dump all items in stack1 in a reverse order.
+                // before we hit an empty stack2, don't dump again (otherwise it'll break the order)
+                while (this._stack1.Count > 0)
+                {
+                    this._stack2.Push(this._stack1.Pop());
+                }
+            }
+
+            return this._stack2.Peek();
+        }
+
+        /** Returns whether the queue is empty. */
+        public bool Empty()
+        {
+            return this._stack1.Count + this._stack2.Count == 0;
+        }
+    }
+
+    public class MyStack {
+
+        // reverse
+        private Queue<int> q = new Queue<int>();
+
+        
+        /** Initialize your data structure here. */
+        public MyStack() {
+        
+        }
+    
+        /** Push element x onto stack. */
+        public void Push(int x)
+        {
+            int len = this.q.Count;
+            this.q.Enqueue(x);
+            for (int i = 0; i < len; i++) this.q.Enqueue(this.q.Dequeue());
+        }
+
+        /** Removes the element on top of the stack and returns that element. */
+        public int Pop()
+        {
+            return this.q.Dequeue();
+        }
+    
+        /** Get the top element. */
+        public int Top()
+        {
+            return this.q.Peek();
+        }
+    
+        /** Returns whether the stack is empty. */
+        public bool Empty() {
+            return this.q.Count == 0;
+        }
+    }
+    
+    // https://leetcode.com/problems/maximum-frequency-stack/
+    public class FreqStack
+    {
+        // x -> freq
+        Dictionary<int, int> freqMap = new Dictionary<int, int>();
+        
+        // freq -> x's in that freq
+        Dictionary<int, Stack<int>> stacks = new Dictionary<int, Stack<int>>();
+
+        private int maxFreq = 0;
+        
+        public FreqStack()
+        {
+
+        }
+
+        public void Push(int x)
+        {
+            if (this.freqMap.TryGetValue(x, out int freq))
+            {
+                freq++;
+                this.freqMap[x] = freq;
+            }
+            else
+            {
+                freq = 1;
+                this.freqMap[x] = freq;
+            }
+
+            if (freq > this.maxFreq) this.maxFreq = freq;
+
+            if (this.stacks.TryGetValue(freq, out Stack<int> s))
+            {
+                s.Push(x);
+            }
+            else
+            {
+                s = new Stack<int>();
+                s.Push(x);
+                this.stacks[freq] = s;
+            }
+        }
+
+        public int Pop()
+        {
+            while (this.stacks[this.maxFreq].Count == 0)
+            {
+                this.maxFreq--;
+            }
+
+            int ret = this.stacks[this.maxFreq].Pop();
+            this.freqMap[ret]--;
+            return ret;
+        }
+    }
 }

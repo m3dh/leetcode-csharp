@@ -13,7 +13,7 @@
     {
         public static void Main()
         {
-            var obj = new Search();
+            var obj = new WordBreakSolution();
             obj.Run();
         }
     }
