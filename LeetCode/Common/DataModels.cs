@@ -249,4 +249,63 @@ namespace LeetCode.Csharp.Common
             return ret;
         }
     }
+
+    public class FirstUnique
+    {
+        Dictionary<int, Item> allItems = new Dictionary<int, Item>();
+        LinkedList<int> uniqueItems = new LinkedList<int>();
+
+        public FirstUnique(int[] nums)
+        {
+            foreach (int num in nums)
+            {
+                Add(num);
+            }
+        }
+
+        public int ShowFirstUnique()
+        {
+            if (uniqueItems.Count > 0)
+            {
+                return uniqueItems.First.Value;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        public void Add(int value)
+        {
+            if (allItems.TryGetValue(value, out Item item))
+            {
+                if (item.Count == 1)
+                {
+                    uniqueItems.Remove(item.Node);
+                    item.Node = null;
+                }
+                
+                item.Count++;
+            }
+            else
+            {
+                item = new Item
+                {
+                    Value = value,
+                    Count = 1,
+                    Node = new LinkedListNode<int>(value),
+                };
+
+                uniqueItems.AddLast(item.Node);
+                this.allItems.Add(value, item);
+            }
+        }
+
+        class Item
+        {
+            public int Value { get; set; }
+            public int Count { get; set; }
+            public LinkedListNode<int> Node { get; set; }
+        }
+    }
 }
