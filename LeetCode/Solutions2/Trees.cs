@@ -56,5 +56,31 @@ namespace LeetCode.Csharp.Solutions2
             this.Lc987Recursion(root.left, x - 1, y - 1, store);
             this.Lc987Recursion(root.right, x + 1, y - 1, store);
         }
+
+        public bool IsValidSequence(TreeNode root, int[] arr)
+        {
+            return IsValidSequenceSearch(root, arr, 0);
+        }
+
+        private bool IsValidSequenceSearch(TreeNode root, int[] arr, int idx)
+        {
+            if (root == null || root.val != arr[idx])
+            {
+                return false;
+            }
+            else
+            {
+                // root.val == arr[idx]
+                if (arr.Length - 1 == idx)
+                {
+                    return root.left == null && root.right == null;
+                }
+                else
+                {
+                    return IsValidSequenceSearch(root.left, arr, idx + 1) ||
+                           IsValidSequenceSearch(root.right, arr, idx + 1);
+                }
+            }
+        }
     }
 }

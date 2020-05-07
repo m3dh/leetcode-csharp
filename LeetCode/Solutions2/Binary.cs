@@ -84,12 +84,46 @@ namespace LeetCode.Csharp.Solutions2
 
             return leftMostCol < dimensions[1] ? leftMostCol : -1;
         }
+        
+        // https://leetcode.com/problems/first-bad-version/
+        public class VersionControl
+        {
+            public int FirstBadVer { get; set; }
+            
+            public bool IsBadVersion(int v)
+            {
+                return v >= FirstBadVer;
+            }
+        }
+
+        public class Solution : VersionControl
+        {
+            public int FirstBadVersion(int n)
+            {
+                int l = 1;
+                int r = n;
+                while (l < r)
+                {
+                    int mid = (l + r) / 2;
+                    if (IsBadVersion(mid))
+                    {
+                        r = mid;
+                    }
+                    else
+                    {
+                        l = mid + 1;
+                    }
+                }
+
+                return IsBadVersion(l) ? l : r;
+            }
+        }
 
         public void Run()
         {
-            var mtxJson = "[[1,1,1,1,1],[0,0,0,1,1],[0,0,1,1,1],[0,0,0,0,1],[0,0,0,0,0]]";
-            BinaryMatrix bm = new BinaryMatrix(mtxJson);
-            Console.WriteLine(LeftMostColumnWithOne(bm));
+            Solution s = new Solution();
+            s.FirstBadVer = 2;
+            Console.WriteLine(s.FirstBadVersion(3));
         }
     }
 }

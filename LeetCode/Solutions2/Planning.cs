@@ -524,12 +524,12 @@ namespace LeetCode.Csharp.Solutions2
             memo[idx] = max;
             return max;
         }
-        
+
         // 221 - https://leetcode.com/problems/maximal-square/
         public int MaximalSquare(char[][] matrix)
         {
             int max = 0;
-            int [][] dp = new int[matrix.Length][];
+            int[][] dp = new int[matrix.Length][];
             for (int i = 0; i < matrix.Length; i++)
             {
                 dp[i] = new int[matrix[i].Length];
@@ -549,7 +549,7 @@ namespace LeetCode.Csharp.Solutions2
 
             return max * max;
         }
-        
+
         // 84 - https://leetcode.com/problems/largest-rectangle-in-histogram/
         public int LargestRectangleArea(int[] heights)
         {
@@ -579,7 +579,7 @@ namespace LeetCode.Csharp.Solutions2
         public int MaximalRectangle(char[][] matrix)
         {
             // DP: 最长的竖线 ("1")
-            int [][] dp = new int[matrix.Length][];
+            int[][] dp = new int[matrix.Length][];
             for (int i = 0; i < matrix.Length; i++)
             {
                 dp[i] = new int[matrix[i].Length];
@@ -592,11 +592,11 @@ namespace LeetCode.Csharp.Solutions2
                                 ? 1
                                 : dp[i - 1][j] + 1
                         );
-                    
-                   // Console.Write($"{dp[i][j]} ");
+
+                    // Console.Write($"{dp[i][j]} ");
                 }
-                
-               // Console.WriteLine("\n");
+
+                // Console.WriteLine("\n");
             }
 
             int maxRec = 0;
@@ -611,16 +611,43 @@ namespace LeetCode.Csharp.Solutions2
                         {
                             currHeight = Math.Min(currHeight, dp[i][k]);
                             int currArea = currHeight * (j - k);
-                            
-                           // Console.WriteLine($"I: {i}, F:{k},T:{j-1},A:{currArea}, CH:{currHeight}, CL:{j - k}");
-                            
+
+                            // Console.WriteLine($"I: {i}, F:{k},T:{j-1},A:{currArea}, CH:{currHeight}, CL:{j - k}");
+
                             maxRec = Math.Max(currArea, maxRec);
                         }
                     }
                 }
             }
-            
+
             return maxRec;
+        }
+
+        // 312 - https://leetcode.com/problems/burst-balloons/
+        public int MaxCoins(int[] nums)
+        {
+            // REVIEW: Brilliant solution!
+            // 1. Remove 0 nums 'cuz they won't contribute to the result!
+            int[] filteredNumbers = new[] {1}.Concat(nums.Where(n => n != 0)).Concat(new[] {1}).ToArray();
+            Dictionary<string, int> cachedSums = new Dictionary<string, int>();
+            return this.SubMaxCoins(filteredNumbers, 0, filteredNumbers.Length - 1, cachedSums);
+        }
+
+        public int SubMaxCoins(int[] nums, int l, int r, Dictionary<string, int> cachedSums)
+        {
+            if (r - l < 2) return 0; // 如果子串已经少于三个元素，计算结果已经在上一层得出了。
+            if (cachedSums.TryGetValue($"{l}_{r}", out int val)) return val;
+
+            int maxSum = 0;
+            for (int mid = l + 1; mid < r; mid++)
+            {
+                maxSum = Math.Max(maxSum, nums[l] * nums[r] * nums[mid]
+                                          + this.SubMaxCoins(nums, l, mid, cachedSums)
+                                          + this.SubMaxCoins(nums, mid, r, cachedSums));
+            }
+
+            cachedSums.Add($"{l}_{r}", maxSum);
+            return maxSum;
         }
 
         public void Run()

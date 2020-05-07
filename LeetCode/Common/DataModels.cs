@@ -308,4 +308,75 @@ namespace LeetCode.Csharp.Common
             public LinkedListNode<int> Node { get; set; }
         }
     }
+
+    public class Trie
+    {
+        private readonly TrieNode _root = new TrieNode();
+
+        /** Initialize your data structure here. */
+        public Trie()
+        {
+        }
+
+        /** Inserts a word into the trie. */
+        public void Insert(string word)
+        {
+            TrieNode node = this._root;
+            foreach (var ch in word)
+            {
+                if (node.Children == null)
+                {
+                    node.Children = new TrieNode[26];
+                }
+                
+                if (node.Children[ch - 'a'] == null)
+                {
+                    node.Children[ch - 'a'] = new TrieNode{Ch = ch};
+                }
+                
+                node = node.Children[ch - 'a'];
+            }
+
+            node.EndsWith = true;
+        }
+
+        /** Returns if the word is in the trie. */
+        public bool Search(string word)
+        {
+            var node = this.InnerSearch(word);
+            return node != null && node.EndsWith;
+        }
+
+        /** Returns if there is any word in the trie that starts with the given prefix. */
+        public bool StartsWith(string prefix)
+        {
+            var node = this.InnerSearch(prefix);
+            return node != null;
+        }
+
+        private TrieNode InnerSearch(string word)
+        {
+            TrieNode node = this._root;
+            foreach (var ch in word)
+            {
+                if (node.Children == null || node.Children[ch - 'a'] == null)
+                {
+                    return null;
+                }
+
+                node = node.Children[ch - 'a'];
+            }
+
+            return node;
+        }
+
+        private class TrieNode
+        {
+            public TrieNode[] Children { get; set; }
+            
+            public bool EndsWith { get; set; }
+            
+            public char Ch { get; set; }
+        }
+    }
 }
