@@ -102,11 +102,11 @@ namespace LeetCode.Csharp.Solutions2
                         break;
                     }
                 }
-                
+
                 memo[cIdx] = 0;
             }
         }
-        
+
         // 40 - https://leetcode.com/problems/combination-sum-ii/
         public IList<IList<int>> CombinationSum2(int[] candidates, int target)
         {
@@ -115,7 +115,8 @@ namespace LeetCode.Csharp.Solutions2
             return ret;
         }
 
-        private void RecCombine2(int cIdx, int[] candidates, int target, List<IList<int>> result, Stack<int> curr, HashSet<string> hs)
+        private void RecCombine2(int cIdx, int[] candidates, int target, List<IList<int>> result, Stack<int> curr,
+            HashSet<string> hs)
         {
             if (target == 0)
             {
@@ -140,6 +141,38 @@ namespace LeetCode.Csharp.Solutions2
                     this.RecCombine2(cIdx + 1, candidates, target, result, curr, hs);
                 }
             }
+        }
+
+        // https://leetcode.com/problems/valid-palindrome-ii/submissions/
+        public bool ValidPalindrome(string s)
+        {
+            return ValidPalindrome(s, 0, s.Length - 1, true);
+        }
+
+        public bool ValidPalindrome(string s, int l, int r, bool canSkip)
+        {
+            while (l < r)
+            {
+                if (s[l] == s[r])
+                {
+                    l++;
+                    r--;
+                }
+                else
+                {
+                    // REVIEW: Only try different approaches when != happens.
+                    if (canSkip)
+                    {
+                        return ValidPalindrome(s, l + 1, r, false) || ValidPalindrome(s, l, r - 1, false);
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         public void Run()

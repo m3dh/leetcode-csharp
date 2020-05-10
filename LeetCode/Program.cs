@@ -18,27 +18,32 @@ namespace LeetCode.Csharp
     {
         public static void Main()
         {
-            JObject j = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(@"C:\Users\liamy\Desktop\Worklog\Json.txt"));
-            JToken[] ja = j["DeviceProblem"].ToArray();
-            foreach (var token in ja.OrderBy(t=>t["@Name"]))
+            for (int i = 0; i <= 100; i++)
             {
-                StringBuilder ssb = new StringBuilder();
+                Console.WriteLine($"i-{i}, {BinaryFindMaxLessVal(i)}");
+            }
+        }
+        
+        private static int BinaryFindMaxLessVal(int num) {
+            int l = 0;
+            int r = num;
+            while (l <= r)
+            {
+                int m = (l + r) / 2;
 
-                string svv;
-                var actions = token["Actions"];
-                if (actions.Type == JTokenType.Array)
+               // Console.WriteLine($"l{l},r{r},m{m}");
+                if (m * m <= num && (m + 1) * (m + 1) > num) return m;
+                if (m * m > num)
                 {
-                    svv = $"{string.Join(", ", actions.ToArray().Select(a => $"\"{a["@Name"]}\""))}";
+                    r = m ;
                 }
                 else
                 {
-                    svv = $"\"{actions["Action"]["@Name"]}\"";
+                    l = m + 1;
                 }
-
-                ssb.Append($"{{ \"{token["@Name"]}\", new List<string>{{ {svv} }} }},");
-
-                Console.WriteLine(ssb);
             }
+
+            return -1;
         }
     }
 }
