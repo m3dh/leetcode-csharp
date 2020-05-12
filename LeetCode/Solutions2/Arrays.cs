@@ -650,7 +650,31 @@ namespace LeetCode.Csharp.Solutions2
 
             return closets;
         }
-        
+
+        // https://leetcode.com/problems/single-element-in-a-sorted-array/
+        public int SingleNonDuplicate(int[] nums)
+        {
+            int l = 0;
+            int r = nums.Length - 1; // r % 2 == 0
+            while (l < r)
+            {
+                int mid = (l + r) / 2; // This cannot be r, since in that case l >= r.
+                if (mid % 2 == 1) mid = mid - 1; // => mid % 2 == 0
+                
+                // Result only appears in i % 2 == 0
+                if (nums[mid] != nums[mid + 1])
+                {
+                    r = mid;
+                }
+                else
+                {
+                    l = mid + 2;
+                }
+            }
+
+            return nums[r];
+        }
+
         public void Run()
         {
             Console.WriteLine(JsonConvert.SerializeObject(this.MinJumps(new[] {100,-23,-23,404,100,23,23,23,3,404})));

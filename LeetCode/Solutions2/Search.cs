@@ -175,9 +175,43 @@ namespace LeetCode.Csharp.Solutions2
             return true;
         }
 
+        // https://leetcode.com/problems/permutations-ii/
+        public IList<IList<int>> PermuteUnique(int[] nums)
+        {
+            List<IList<int>> result = new List<IList<int>>();
+            SearchPermute1(nums, new bool[nums.Length], 0, new int[nums.Length], result);
+            return result;
+        }
+
+        public void SearchPermute1(int[] nums, bool[] visited, int idx, int[] curr, List<IList<int>> result)
+        {
+            if (idx == curr.Length)
+            {
+                result.Add(new List<int>(curr));
+                return;
+            }
+
+            HashSet<int> everApp = new HashSet<int>();
+            
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (!visited[i] && everApp.Add(nums[i]))
+                {
+                    visited[i] = true;
+                    curr[idx] = nums[i];
+                    SearchPermute1(nums, visited, idx + 1, curr, result);
+                    
+                    visited[i] = false;
+                }
+            }
+        }
+
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(this.CombinationSum2(new[] {8, 7, 4, 3}, 11)));
+            Console.WriteLine(
+                JsonConvert.SerializeObject(
+                    this.PermuteUnique(new[] {1,1,2})
+                    ));
         }
     }
 }

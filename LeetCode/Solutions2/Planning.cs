@@ -649,6 +649,22 @@ namespace LeetCode.Csharp.Solutions2
             cachedSums.Add($"{l}_{r}", maxSum);
             return maxSum;
         }
+        
+        // 338 - https://leetcode.com/problems/counting-bits/
+        public int[] CountBits(int num)
+        {
+            int[] result = new int[num + 1];
+            result[0] = 0;
+            result[1] = 1;
+
+            for (int i = 2; i <= num; i++)
+            {
+                if (i % 2 == 1) result[i] = result[i - 1] + 1;
+                else result[i] = result[i / 2]; // i % 2 == 0
+            }
+
+            return result;
+        }
 
         public void Run()
         {
