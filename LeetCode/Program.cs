@@ -1,9 +1,4 @@
-﻿using System.IO;
-using System.Text;
-using System.Threading;
-using Newtonsoft.Json.Linq;
-
-namespace LeetCode.Csharp
+﻿namespace LeetCode.Csharp
 {
     using System;
     using System.Collections.Generic;
@@ -18,7 +13,7 @@ namespace LeetCode.Csharp
     {
         public static void Main()
         {
-            (new Search()).Run();
+            new Arrays().Run();
         }
     }
 }

@@ -675,9 +675,143 @@ namespace LeetCode.Csharp.Solutions2
             return nums[r];
         }
 
+        // 493 - https://leetcode.com/problems/reverse-pairs/
+        public int ReversePairs(int[] nums)
+        {
+            return Divide(nums, 0, nums.Length - 1);
+        }
+
+        private int Divide(int[] nums, int l, int r)
+        {            
+            if (l >= r) return 0;
+
+            int mid = (l + r) / 2;
+            
+            // 注意mid+1的必须有，否则会爆栈
+            int ret = Divide(nums, l, mid) + Divide(nums, mid + 1, r);
+
+            // REVIEW: 分治法，用有序的两个子数组，通过游标就能确定逆序对的数量
+            int li = l;
+            int ji = mid + 1;
+            while (li < mid + 1)
+            {
+                while (ji <= r && nums[li] > (long)nums[ji] * 2) ji++;
+                ret += (ji - mid - 1);
+                li++;
+            }
+
+            List<int> vals = nums.Skip(l).Take(r - l + 1).OrderBy(v => v).ToList();
+            for (int i = 0; i < vals.Count; i++)
+            {
+                nums[i + l] = vals[i];
+            }
+
+           // Console.WriteLine($"FROM:{l}, TO:{r}, RET: {ret}");
+
+            return ret;
+        }
+        
+        // https://leetcode.com/problems/remove-k-digits/
+        public string RemoveKdigits(string num, int k)
+        {
+            // REVIEW: Idea: Remove the first digit that is the last of a increasing sequence.
+            // It is in higher digit pos than digits after but could make it smaller than digits before.
+            // (Remove the first peak digit)
+            Stack<char> s = new Stack<char>();
+            s.Push('0');
+
+            foreach (char c in num)
+            {
+                // Console.WriteLine(new string(s.Reverse().ToArray()));
+                
+                if (c >= s.Peek())
+                {
+                    s.Push(c);
+                }
+                else
+                {
+                    while (s.Peek() > c && k > 0)
+                    {
+                        s.Pop();
+                        k--;
+                    }
+
+                    s.Push(c);
+                }
+            }
+
+            while (k > 0)
+            {
+                s.Pop();
+                k--;
+            }
+
+            var ret = (new string(s.Reverse().ToArray())).TrimStart('0');
+            return string.IsNullOrEmpty(ret) ? "0" : ret;
+        }
+        
+        // https://leetcode.com/problems/create-maximum-number/
+        public int[] MaxNumber(int[] nums1, int[] nums2, int k)
+        {
+            // REVIEW: 分解成3个问题：1.枚举从两个数组分别取几个（用单调栈），2.拼接最大数字，3.计算最大值
+            
+            // TODO: Finish this before 5/18
+
+            return null;
+        }
+
+        public int[] FindMaxSubseqFrom(int size, int[] nums)
+        {
+            Stack<int> s = new Stack<int>();
+            for (int i = 0; i < nums.Length; i++)
+            {
+                while (s.Count > 0 && nums.Length - i > size - s.Count && s.Peek() < nums[i])
+                {
+                    // 这里是特殊的，因为只要前面的位尽可能大整个数字就更大，所以即使后面的数字会小也没关系，只要能填满就行。
+                    s.Pop();
+                }
+
+                if (s.Count < size)
+                {
+                    s.Push(nums[i]);
+                }
+            }
+
+            return s.Reverse().ToArray();
+        }
+        
+        // https://leetcode.com/problems/maximum-sum-circular-subarray/
+        public int MaxSubarraySumCircular(int[] A)
+        {
+            // REVIEW: 思路：寻找大的子数组和最小的子数组
+            int sum = 0;
+            int min = int.MaxValue;
+            int max = int.MinValue;
+            int curMin = 0;
+            int curMax = 0;
+            foreach (int num in A)
+            {
+                // Find the max of cont. values.
+                curMax = Math.Max(curMax + num, num);
+                max = Math.Max(max, curMax);
+
+                // Find the min of cont. values.
+                curMin = Math.Min(curMin + num, num);
+                min = Math.Min(min, curMin);
+
+                sum += num;
+            }
+
+            return A.All(a => a <= 0) ? max : Math.Max(max, sum - min);
+        }
+
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(this.MinJumps(new[] {100,-23,-23,404,100,23,23,23,3,404})));
+            Console.WriteLine(JsonConvert.SerializeObject(this.MaxSubarraySumCircular(new[] {-2, -3, -1}))); // -1
+            Console.WriteLine(JsonConvert.SerializeObject(this.MaxSubarraySumCircular(new[] {-5, -2, 5, 6, -2, -7, 0, 2, 8}))); // 14
+            Console.WriteLine(JsonConvert.SerializeObject(this.MaxSubarraySumCircular(new[] {5, 5, 0, -5, 3, -3, 2}))); // 12
+            Console.WriteLine(JsonConvert.SerializeObject(this.MaxSubarraySumCircular(new[] {5, -3, 5}))); // 10
+            Console.WriteLine(JsonConvert.SerializeObject(this.MaxSubarraySumCircular(new[] {2, -2, 2, 7, 8, 0}))); // 19
         }
     }
 }
