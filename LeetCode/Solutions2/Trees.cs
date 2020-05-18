@@ -82,5 +82,40 @@ namespace LeetCode.Csharp.Solutions2
                 }
             }
         }
+
+        // REVIEW: Morris traversal
+        // https://leetcode.com/problems/binary-tree-inorder-traversal/
+        public IList<int> InorderTraversal(TreeNode root)
+        {
+            List<int> ret = new List<int>();
+            while (root != null)
+            {
+                if (root.left == null)
+                {
+                    // either left is really null or we have already visited left side.
+                    ret.Add(root.val);
+                    root = root.right;
+                }
+                else
+                {
+                    // find the predecessor of root node.
+                    TreeNode node = root.left;
+                    while (node.right != null)
+                    {
+                        node = node.right;
+                    }
+
+                    // link predecessor & curr-node.
+                    node.right = root;
+
+                    // remove link to left to avoid duplications.
+                    TreeNode next = root.left;
+                    root.left = null;
+                    root = next;
+                }
+            }
+
+            return ret;
+        }
     }
 }

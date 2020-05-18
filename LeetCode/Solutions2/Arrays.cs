@@ -854,9 +854,52 @@ namespace LeetCode.Csharp.Solutions2
             return max;
         }
 
+        public bool CheckInclusion(string s1, string s2)
+        {
+            int[] cnts = new int[26];
+            foreach (char c in s1)
+            {
+                cnts[c - 'a']++;
+            }
+
+            int[] cnta = new int[26];
+            int r = -1;
+            for (int l = 0; l <= s2.Length - s1.Length; l++)
+            {
+                while (r - l + 1 < s1.Length && r < s2.Length)
+                {
+                    r++;
+                    cnta[s2[r] - 'a']++;
+                }
+
+                if (r >= s2.Length) break;
+
+                bool f = true;
+                for (int i = 0; i < 26; i++)
+                {
+                    if (cnta[i] != cnts[i])
+                    {
+                        f = false;
+                        break;
+                    }
+                }
+
+                if (f)
+                {
+                    return true;
+                }
+                else
+                {
+                    cnta[s2[l] - 'a']--;
+                }
+            }
+
+            return false;
+        }
+
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(this.CharacterReplacement("AABABBA", 1))); // 4
+            Console.WriteLine(JsonConvert.SerializeObject(this.CheckInclusion("adc", "dcda"))); // 4
         }
     }
 }
