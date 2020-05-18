@@ -804,14 +804,59 @@ namespace LeetCode.Csharp.Solutions2
 
             return A.All(a => a <= 0) ? max : Math.Max(max, sum - min);
         }
+        
+        // https://leetcode.com/problems/longest-repeating-character-replacement/
+        public int CharacterReplacement(string s, int k)
+        {
+            if (k + 1 >= s.Length) return s.Length;
+            
+            // REVIEW: 扩大滑动窗口
+            int[] cnts = new int[26];
+            int r = -1;
+            int max = 1 + k;
+            for (int l = 0; l < s.Length && r < s.Length; l++)
+            {
+                Console.WriteLine($"MOVE L: {l}");
+                while (r < s.Length)
+                {
+                    int len = r - l + 1;
+                    bool f = false;
+                    for (int i = 0; i < 26; i++)
+                    {
+                        if (cnts[i] >= len - k)
+                        {
+                            f = true;
+                            break;
+                        }
+                    }
+                    
+                    Console.WriteLine($"MOVE R: {r}, LEN: {len}, F: {f}");
+
+                    if (f)
+                    {
+                        max = Math.Max(max, len);
+                        r++;
+
+                        if (r < s.Length)
+                        {
+                            cnts[s[r] - 'A']++;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                cnts[s[l] - 'A']--;
+            }
+
+            return max;
+        }
 
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(this.MaxSubarraySumCircular(new[] {-2, -3, -1}))); // -1
-            Console.WriteLine(JsonConvert.SerializeObject(this.MaxSubarraySumCircular(new[] {-5, -2, 5, 6, -2, -7, 0, 2, 8}))); // 14
-            Console.WriteLine(JsonConvert.SerializeObject(this.MaxSubarraySumCircular(new[] {5, 5, 0, -5, 3, -3, 2}))); // 12
-            Console.WriteLine(JsonConvert.SerializeObject(this.MaxSubarraySumCircular(new[] {5, -3, 5}))); // 10
-            Console.WriteLine(JsonConvert.SerializeObject(this.MaxSubarraySumCircular(new[] {2, -2, 2, 7, 8, 0}))); // 19
+            Console.WriteLine(JsonConvert.SerializeObject(this.CharacterReplacement("AABABBA", 1))); // 4
         }
     }
 }
