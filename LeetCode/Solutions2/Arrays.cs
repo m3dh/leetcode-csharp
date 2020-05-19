@@ -897,9 +897,98 @@ namespace LeetCode.Csharp.Solutions2
             return false;
         }
 
+        public int[][] Insert(int[][] intervals, int[] newInterval)
+        {
+            if (intervals.Length == 0) return new[]{newInterval};
+            if (newInterval[1] < intervals[0][0]) return new List<int[]> {newInterval}.Concat(intervals).ToArray();
+            if (newInterval[0] > intervals.Last()[1]) return intervals.Concat(new List<int[]> {newInterval}).ToArray();
+            
+            List<int[]> ret = new List<int[]>();
+            bool inserted = false;
+            bool foundRight = false;
+            int insertIdx = -1;
+            for(int i=0;i<intervals.Length;i++)
+            {
+                if (!inserted)
+                {
+                    // case 1 : merge with left overlap.
+                    if (intervals[i][0] <= newInterval[0] && intervals[i][1] >= newInterval[0])
+                    {
+                        inserted = true;
+                        if (intervals[i][1] >= newInterval[1])
+                        {
+                            // done.
+                            foundRight = true;
+                        }
+                        else
+                        {
+                            // start finding right boundary.
+                            insertIdx = i;
+                            intervals[i][1] = newInterval[1]; // in case this is the last element.
+                        }
+                    }
+                    // case 2 : no overlap.
+                    else if (intervals[i][0] > newInterval[1])
+                    {
+                        inserted = true;
+                        foundRight = true;
+                        ret.Add(newInterval);
+                    }
+                    // case 3 : right overlap.
+                    else if(intervals[i][0] <= newInterval[1] && intervals[i][1] >= newInterval[1])
+                    {
+                        // since this is not covered by case 1, there's no left overlaps.
+                        intervals[i][0] = Math.Min(newInterval[0], intervals[i][0]);
+                        inserted = true;
+                        foundRight = true;
+                    }
+                    // case 4 : cover
+                    else if(intervals[i][0] >= newInterval[0] && intervals[i][1] <= newInterval[1])
+                    {
+                        inserted = true;
+                        foundRight = intervals[i][1] == newInterval[1];
+                        intervals[i][0] = newInterval[0];
+                        intervals[i][1] = newInterval[1];
+                        if (!foundRight) insertIdx = i;
+                    }
+                    // case 5 : smaller
+                    else if(intervals[i][0] <= newInterval[0] && intervals[i][1] >= newInterval[1])
+                    {
+                        inserted = true;
+                        foundRight = true;
+                    }
+                }
+                else if (!foundRight && inserted)
+                {
+                    if (intervals[i][1] >= newInterval[1])
+                    {
+                        foundRight = true;
+                        if (intervals[i][0] > newInterval[1])
+                        {
+                            intervals[insertIdx][1] = newInterval[1];
+                        }
+                        else
+                        {
+                            intervals[insertIdx][1] = intervals[i][1];
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
+                ret.Add(intervals[i]);
+            }
+
+            return ret.ToArray();
+        }
+
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(this.CheckInclusion("adc", "dcda"))); // 4
+            Console.WriteLine(JsonConvert.SerializeObject(
+                this.Insert(new []{new []{1,2},new []{3,5},new[]{6,7},new []{8,10},new []{12,16}}, new[]{4,8,}))); 
         }
     }
 }
