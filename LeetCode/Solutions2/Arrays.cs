@@ -984,11 +984,69 @@ namespace LeetCode.Csharp.Solutions2
 
             return ret.ToArray();
         }
+        
+        // 901 - https://leetcode.com/problems/online-stock-span/
+        public class StockSpanner
+        {
+            // REVIEW: 吃掉前面所有比我大的数的Span，因为我是最大的以后的人不需要再check我。
+            private readonly Stack<Span> _spans = new Stack<Span>();
+            
+            public StockSpanner()
+            {
+            }
+
+            public int Next(int price)
+            {
+                int sp = 1;
+                while (this._spans.Count > 0 && this._spans.Peek().Price <= price)
+                {
+                    // This span will never be visited since the current price is higher and later.
+                    sp += this._spans.Pop().SpanVal;
+                }
+
+                this._spans.Push(new Span {Price = price, SpanVal = sp});
+                return sp;
+            }
+
+            private class Span
+            {
+                public int Price { get; set; }
+                public int SpanVal { get; set; }
+            }
+        }
+
+        // https://leetcode.com/problems/132-pattern/
+        public bool Find132pattern(int[] nums)
+        {
+            // REVIEW: IDEA: Convert the problem to finding the '1's.
+            // We use a stack to keep the biggest number we've found.
+            int third = int.MinValue;
+            Stack<int> maxFinder = new Stack<int>();
+            for (int i = nums.Length - 1; i >= 0; i--)
+            {
+                if (nums[i] < third && maxFinder.Count > 0)
+                {
+                    // Numbers in maxFinder are bigger than third.
+                    return true;
+                }
+
+                while (maxFinder.Count > 0 && nums[i] > maxFinder.Peek())
+                {
+                    // Find the biggest number after i.
+                    third = Math.Max(third, maxFinder.Pop());
+                }
+
+                // we keep all smaller numbers.
+                maxFinder.Push(nums[i]);
+            }
+
+            return false;
+        }
 
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(
-                this.Insert(new []{new []{1,2},new []{3,5},new[]{6,7},new []{8,10},new []{12,16}}, new[]{4,8,}))); 
+            Console.WriteLine(JsonConvert.SerializeObject(this.Find132pattern(new[] {-2, 1, 2, -2, 1, 2})));
+            Console.WriteLine(JsonConvert.SerializeObject(this.Find132pattern(new[] {4, 1, 3, 2})));
         }
     }
 }
