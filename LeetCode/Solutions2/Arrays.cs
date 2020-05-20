@@ -1042,11 +1042,100 @@ namespace LeetCode.Csharp.Solutions2
 
             return false;
         }
+        
+        // https://leetcode.com/problems/next-greater-element-i/
+        public int[] NextGreaterElement1(int[] nums1, int[] nums2)
+        {
+            Dictionary<int, int> lookup = new Dictionary<int, int>();
+            Stack<int> rbs = new Stack<int>();
+            for (int i = nums2.Length - 1; i >= 0; i--)
+            {
+                while (rbs.Count > 0 && rbs.Peek() < nums2[i])
+                {
+                    rbs.Pop();
+                }
+                
+                lookup.Add(nums2[i], rbs.Count == 0 ? -1 : rbs.Peek());
+                rbs.Push(nums2[i]);
+            }
+
+            return nums1.Select(n => lookup[n]).ToArray();
+        }
+
+        public int[] NextGreaterElements(int[] nums)
+        {
+            Stack<int> rbs = new Stack<int>();
+            int[] res = new int[nums.Length];
+            for (int i = nums.Length * 2 - 1; i >= 0; i--)
+            {
+                int ri = i % nums.Length;
+                while (rbs.Count > 0 && rbs.Peek() <= nums[ri])
+                {
+                    rbs.Pop();
+                }
+
+                res[ri] = rbs.Count == 0 ? -1 : rbs.Peek();
+                rbs.Push(nums[ri]);
+            }
+
+            return res;
+        }
+
+        public int NextGreaterElement(int n)
+        {
+            int input = n;
+            
+            List<int> nums = new List<int>();
+            while (n > 0)
+            {
+                if (nums.Count > 0 && n % 10 < nums.Last())
+                {
+                    int minGreater = nums.Where(nu => nu > n % 10).Min();
+                    nums.Remove(minGreater);
+                    nums.Add(n % 10);
+                    
+                    n -= n % 10;
+                    n += minGreater;
+                    nums = nums.OrderBy(nu => nu).ToList();
+                    for (int i = 0; i < nums.Count; i++)
+                    {
+                        n *= 10;
+                        n += nums[i];
+                    }
+
+                    return n > input ? n : -1; // In corner cases n might be smaller due to overflow.
+                }
+
+                nums.Add(n % 10);
+                n /= 10;
+            }
+
+            return -1;
+        }
+        
+        // https://leetcode.com/problems/daily-temperatures/
+        public int[] DailyTemperatures(int[] T)
+        {
+            // stack of <temp, index>
+            Stack<Tuple<int, int>> s = new Stack<Tuple<int, int>>();
+            int[] ret = new int[T.Length];
+            for (int i = ret.Length - 1; i >= 0; i--)
+            {
+                while (s.Count > 0 && s.Peek().Item1 <= T[i])
+                {
+                    s.Pop();
+                }
+
+                ret[i] = s.Count > 0 ? s.Peek().Item2 - i : 0;
+                s.Push(Tuple.Create<int, int>(T[i], i));
+            }
+
+            return ret;
+        }
 
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(this.Find132pattern(new[] {-2, 1, 2, -2, 1, 2})));
-            Console.WriteLine(JsonConvert.SerializeObject(this.Find132pattern(new[] {4, 1, 3, 2})));
+            Console.WriteLine(JsonConvert.SerializeObject(this.NextGreaterElement(1999999999)));
         }
     }
 }
