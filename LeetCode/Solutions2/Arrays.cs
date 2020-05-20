@@ -3,6 +3,7 @@ namespace LeetCode.Csharp.Solutions2
     using System;
     using System.Linq;
     using System.Collections.Generic;
+    using LeetCode.Csharp.Common;
     using Newtonsoft.Json;
 
     public class Arrays
@@ -436,6 +437,44 @@ namespace LeetCode.Csharp.Solutions2
             }
 
             return result.ToArray();
+        }
+        
+        // 480 - https://leetcode.com/problems/sliding-window-median/
+        public double[] MedianSlidingWindow(int[] nums, int k)
+        {
+            List<int> window = nums.Take(k).OrderBy(n => n).ToList();
+            List<double> ret = new List<double> {k % 2 == 0 ? ((double) (window[k / 2 - 1] + window[k / 2]) / 2) : (double) window[k / 2]};
+            for (int i = k; i < nums.Length; i++)
+            {
+               // Console.WriteLine("BEGIN: {0}, R:{1}, A:{2}", string.Join(", ", window), nums[i-k], nums[i]);
+                
+                window.Remove(nums[i - k]);
+                
+                int idx = -1;
+                for (int j = 0; j < window.Count; j++)
+                {
+                    if (window[j] > nums[i])
+                    {
+                        idx = j;
+                        break;
+                    }
+                }
+
+                if (idx >= 0)
+                {
+                    window.Insert(idx, nums[i]);
+                }
+                else
+                {
+                    window.Add(nums[i]);
+                }
+                
+               // Console.WriteLine("END: {0}", string.Join(", ", window));
+
+                ret.Add(k % 2 == 0 ? ((double) (window[k / 2 - 1] + window[k / 2]) / 2) : (double) window[k / 2]);
+            }
+
+            return ret.ToArray();
         }
 
         // 45 - https://leetcode.com/problems/jump-game-ii/
@@ -1132,10 +1171,114 @@ namespace LeetCode.Csharp.Solutions2
 
             return ret;
         }
+        
+        // https://leetcode.com/problems/find-median-from-data-stream/
+        public class MedianFinder
+        {
+            // Min heap for bigger numbers.
+            private MaxHeap<MinHeapNode> _minHeap = new MaxHeap<MinHeapNode>(1000);
+
+            // Max heap for smaller numbers.
+            private MaxHeap<MaxHeapNode> _maxHeap = new MaxHeap<MaxHeapNode>(1000);
+
+            /** initialize your data structure here. */
+            public MedianFinder()
+            {
+            }
+
+            public void AddNum(int num)
+            {
+                // always ensure maxHeap.Count == minHeap.Count or maxHeap.Count == minHeap.Count + 1
+
+                if (this._maxHeap.Count == this._minHeap.Count)
+                {
+                    if (this._maxHeap.Count == 0 || num <= this._minHeap.GetMax().Val)
+                    {
+                        this._maxHeap.Insert(new MaxHeapNode(num));
+                    }
+                    else
+                    {
+                        // num > minHeap.min: pop one node from min to max heap.
+                        MinHeapNode minTopNode = this._minHeap.GetMax();
+                        this._maxHeap.Insert(new MaxHeapNode(minTopNode.Val));
+                        this._minHeap.RemoveMax();
+                        this._minHeap.Insert(new MinHeapNode(num));
+                    }
+                }
+                else if (this._maxHeap.Count == this._minHeap.Count + 1)
+                {
+                    if (num >= this._maxHeap.GetMax().Val)
+                    {
+                        this._minHeap.Insert(new MinHeapNode(num));
+                    }
+                    else
+                    {
+                        MaxHeapNode maxTopNode = this._maxHeap.GetMax();
+                        this._minHeap.Insert(new MinHeapNode(maxTopNode.Val));
+                        this._maxHeap.RemoveMax();
+                        this._maxHeap.Insert(new MaxHeapNode(num));
+                    }
+                }
+                else
+                {
+                    throw new Exception("DATA ISSUE!");
+                }
+            }
+
+            public double FindMedian()
+            {
+                if (this._maxHeap.Count == 0)
+                {
+                    return 0;
+                }
+                else if (this._maxHeap.Count == this._minHeap.Count)
+                {
+                    return (double) (this._maxHeap.GetMax().Val + this._minHeap.GetMax().Val) / 2;
+                }
+                else if (this._maxHeap.Count == this._minHeap.Count + 1)
+                {
+                    return this._maxHeap.GetMax().Val;
+                }
+                else
+                {
+                    throw new Exception("DATA ISSUE!");
+                }
+            }
+
+            private class MaxHeapNode : IHeapNode
+            {
+                public int Val { get; }
+
+                public MaxHeapNode(int val)
+                {
+                    this.Val = val;
+                }
+
+                public int GetValue()
+                {
+                    return this.Val;
+                }
+            }
+
+            private class MinHeapNode : IHeapNode
+            {
+                public int Val { get; }
+
+                public MinHeapNode(int val)
+                {
+                    this.Val = val;
+                }
+
+                public int GetValue()
+                {
+                    return -this.Val;
+                }
+            }
+        }
 
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(this.NextGreaterElement(1999999999)));
+            Console.WriteLine(JsonConvert.SerializeObject(this.MedianSlidingWindow(new[] {1, 3, -1, -3, 5, 3, 6, 7}, 3)));
         }
     }
 }
