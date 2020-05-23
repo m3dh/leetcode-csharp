@@ -4,6 +4,7 @@ namespace LeetCode.Csharp.Solutions2
     using System;
     using System.Linq;
     using System.Collections.Generic;
+    using LeetCode.Csharp.Common;
     using Newtonsoft.Json;
 
     public class Planning
@@ -665,12 +666,86 @@ namespace LeetCode.Csharp.Solutions2
 
             return result;
         }
+        
+        // https://leetcode.com/problems/count-square-submatrices-with-all-ones/
+        public int CountSquares(int[][] matrix)
+        {
+            int[][] dp = new int[matrix.Length][];
+            for (int i = 0; i < matrix.Length; i++) dp[i] = new int[matrix[i].Length];
+
+            int cnt = 0;
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                for (int j = 0; j < matrix[i].Length; j++)
+                {
+                    if (matrix[i][j] == 0)
+                    {
+                        dp[i][j] = 0;
+                    }
+                    else if (i > 0 && j > 0)
+                    {
+                        dp[i][j] = 1 + Math.Min(dp[i - 1][j], Math.Min(dp[i][j - 1], dp[i - 1][j - 1]));
+                        cnt += dp[i][j];
+                    }
+                    else
+                    {
+                        dp[i][j] = 1;
+                        cnt++;
+                    }
+                }
+            }
+
+            return cnt;
+        }
+
+        public int[] TopKFrequent(int[] nums, int k)
+        {
+            var grps = nums.GroupBy(n => n).ToList();
+            MaxHeap<MinHeapNode> minHeap = new MaxHeap<MinHeapNode>(k + 1);
+            foreach (IGrouping<int, int> grp in grps)
+            {
+                Console.WriteLine(string.Join(", ", minHeap.Nodes.Select(n => $"{n.Num}-{n.Cnt}")));
+                
+                if (minHeap.Count < k)
+                {
+                    minHeap.Insert(new MinHeapNode(grp.Key, grp.Count()));
+                }
+                else
+                {
+                    int cnt = grp.Count();
+                    if (cnt > minHeap.GetMax().Cnt)
+                    {
+                        minHeap.RemoveMax();
+                        minHeap.Insert(new MinHeapNode(grp.Key, cnt));
+                    }
+                }
+                
+                Console.WriteLine(string.Join(", ", minHeap.Nodes.Select(n => $"{n.Num}-{n.Cnt}")));
+            }
+
+            return minHeap.Nodes.Select(n => n.Num).ToArray();
+        }
+
+        class MinHeapNode : IHeapNode
+        {
+            public int Num { get; }
+            public int Cnt { get; }
+
+            public MinHeapNode(int num,int cnt)
+            {
+                this.Num = num;
+                this.Cnt = cnt;
+            }
+            
+            public int GetValue()
+            {
+                return -this.Cnt;
+            }
+        }
 
         public void Run()
         {
-            char[][] input = JsonConvert.DeserializeObject<char[][]>(
-                "[[\"1\",\"0\",\"1\",\"0\",\"0\"],[\"1\",\"0\",\"1\",\"1\",\"1\"],[\"1\",\"1\",\"1\",\"1\",\"1\"],[\"1\",\"0\",\"0\",\"1\",\"0\"]]");
-            Console.WriteLine(this.MaximalRectangle(input));
+            Console.WriteLine(JsonConvert.SerializeObject(this.TopKFrequent(new[] {1, 1, 1, 2, 2, 3}, 2)));
         }
     }
 }

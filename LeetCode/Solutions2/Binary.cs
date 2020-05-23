@@ -118,12 +118,70 @@ namespace LeetCode.Csharp.Solutions2
                 return IsBadVersion(l) ? l : r;
             }
         }
+        
+        // https://leetcode.com/problems/sum-of-two-integers/
+        public int GetSum(int a, int b)
+        {
+            // REVIEW: INT数真神奇！相加的时候不需要考虑符号；额外处理成uint
+            int mask = 1;
+            int carry = 0;
+            int ret = 0;
+            uint au = (uint)a;
+            uint bu = (uint)b;
+            while ((au | bu) != 0 || carry > 0)
+            {
+                if (mask == 0) break;
+                
+                uint ba = au & 1;
+                uint bb = bu & 1;
+                if ((ba & bb) == 1)
+                {
+                    if (carry == 1)
+                    {
+                        ret |= mask;
+                    }
+
+                    carry = 1;
+                }
+                else if ((ba ^ bb) == 1)
+                {
+                    if (carry == 0)
+                    {
+                        ret |= mask;
+                    }
+                }
+                else
+                {
+                    if (carry == 1)
+                    {
+                        ret |= mask;
+                    }
+
+                    carry = 0;
+                }
+
+                mask <<= 1;
+                au >>= 1;
+                bu >>= 1;
+                
+               // Console.WriteLine($"a:{au:x8}, b:{bu:x8}, r:{ret:x8}, c:{carry}");
+            }
+            
+            return ret;
+        }
+
+        public string FrequencySort(string s)
+        {
+            var ss = s
+                .GroupBy(c => c)
+                .OrderByDescending(g => g.Count())
+                .Select(g => string.Join("", Enumerable.Repeat(g.Key.ToString(), g.Count())));
+            return string.Join("", ss);
+        }
 
         public void Run()
         {
-            Solution s = new Solution();
-            s.FirstBadVer = 2;
-            Console.WriteLine(s.FirstBadVersion(3));
+            Console.WriteLine(GetSum(2, 3));
         }
     }
 }

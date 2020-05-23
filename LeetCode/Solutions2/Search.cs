@@ -205,6 +205,43 @@ namespace LeetCode.Csharp.Solutions2
                 }
             }
         }
+        
+        // https://leetcode.com/problems/spiral-matrix/
+        public IList<int> SpiralOrder(int[][] matrix)
+        {
+            if(matrix.Length == 0 || matrix[0].Length    == 0) return new List<int>();
+            
+            List<int> ret = new List<int>();
+            bool[][] visited = new bool[matrix.Length][];
+            int[][] dirs = new[] {new[] {0, 1,}, new[] {1, 0}, new[] {0, -1}, new[] {-1, 0}};
+            for (int i = 0; i < matrix.Length; i++) visited[i] = new bool[matrix[i].Length];
+            int x = 0;
+            int y = 0;
+            int d = 0;
+            int c = matrix.Length * matrix[0].Length;
+            while (ret.Count < c)
+            {
+                if (!visited[x][y])
+                {
+                    ret.Add(matrix[x][y]);
+                    visited[x][y] = true;
+                }
+
+                int nx = x + dirs[d][0];
+                int ny = y + dirs[d][1];
+                if (nx >= 0 && ny >= 0 && nx < matrix.Length && ny < matrix[nx].Length && !visited[nx][ny])
+                {
+                    x = nx;
+                    y = ny;
+                }
+                else
+                {
+                    d = (d + 1) % 4;
+                }
+            }
+
+            return ret;
+        }
 
         public void Run()
         {
