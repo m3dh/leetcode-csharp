@@ -13,7 +13,7 @@
     {
         public static void Main()
         {
-            new Binary().Run();
+            new Search().Run();
         }
     }
 }

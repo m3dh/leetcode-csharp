@@ -742,6 +742,36 @@ namespace LeetCode.Csharp.Solutions2
                 return -this.Cnt;
             }
         }
+        
+        // https://leetcode.com/problems/uncrossed-lines/
+        public int MaxUncrossedLines(int[] A, int[] B)
+        {
+            // REVIEW: 这TM就是求最长公共子序列 (Longest common subseq), 因为公共子序列就不会有题中说到的几种相交的case...
+            // REVIEW: 想清楚状态转移
+            int[][] dp = new int[A.Length][];
+            for (int i = 0; i < A.Length; i++) dp[i] = new int[B.Length];
+
+            for (int i = 0; i < A.Length; i++)
+            {
+                for (int j = 0; j < B.Length; j++)
+                {
+                    int ll = i == 0 ? 0 : dp[i - 1][j];
+                    int lr = i == 0 || j == 0 ? 0 : dp[i - 1][j - 1];
+                    int rr = j == 0 ? 0 : dp[i][j - 1];
+
+                    if (A[i] == B[j])
+                    {
+                        dp[i][j] = lr + 1;
+                    }
+                    else
+                    {
+                        dp[i][j] = Math.Max(ll, Math.Max(lr, rr));
+                    }
+                }
+            }
+
+            return dp[A.Length - 1][B.Length - 1];
+        }
 
         public void Run()
         {

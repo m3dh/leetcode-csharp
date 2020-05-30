@@ -69,32 +69,33 @@ namespace LeetCode.Csharp.Solutions
         public TreeNode BstFromPreorder(int[] preorder)
         {
             if (preorder.Length == 0) return null;
-            TreeNode root = new TreeNode(preorder[0]);
-            Stack<TreeNode> stack = new Stack<TreeNode>();
-            stack.Push(root);
+            return this.MakeNewRoot(new Queue<int>(preorder), new Stack<TreeNode>());
+        }
 
-            for (int i = 1; i < preorder.Length; i++)
+        private TreeNode MakeNewRoot(Queue<int> pre, Stack<TreeNode> ancestors)
+        {
+            int curr = pre.Dequeue();
+            TreeNode root = new TreeNode(curr);
+            if (pre.Count > 0)
             {
-                int node = preorder[i];
-                TreeNode currNode = stack.Peek();
-                while (stack.Count > 0 && stack.Peek().val < node) // This makes the sub-tree
+                int next = pre.Peek();
+                if (next < curr)
                 {
-                    // So currNode is a node bigger than nodeVal, or node whose parent is bigger than nodeVal.
-                    currNode = stack.Pop();
-                }
-
-                if (currNode.val > node)
-                {
-                    currNode.left = new TreeNode(node);
-                    stack.Push(currNode.left);
+                    ancestors.Push(root);
+                    root.left = this.MakeNewRoot(pre, ancestors);
                 }
                 else
                 {
-                    currNode.right = new TreeNode(node);
-                    stack.Push(currNode.right);
+                    TreeNode curRoot = root;
+                    while (ancestors.Count > 0 && ancestors.Peek().val < next)
+                    {
+                        curRoot = ancestors.Pop();
+                    }
+
+                    curRoot.right = this.MakeNewRoot(pre, ancestors);
                 }
             }
-
+            
             return root;
         }
     }

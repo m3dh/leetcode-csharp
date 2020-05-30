@@ -1275,6 +1275,79 @@ namespace LeetCode.Csharp.Solutions2
                 }
             }
         }
+        
+        // https://leetcode.com/problems/interval-list-intersections/
+        public int[][] IntervalIntersection(int[][] A, int[][] B)
+        {
+            List<int[]> result = new List<int[]>();
+            
+            int ai = 0;
+            int bi = 0;
+            while (ai < A.Length && bi < B.Length)
+            {
+                if (A[ai][1] < B[bi][0])
+                {
+                    ai++;
+                }
+                else if (A[ai][0] > B[bi][1])
+                {
+                    bi++;
+                }
+                else
+                {
+                    int[] overlap = new[] {Math.Max(A[ai][0], B[bi][0]), Math.Min(A[ai][1], B[bi][1])};
+                    result.Add(overlap);
+                    if (A[ai][1] < B[bi][1])
+                    {
+                        ai++;
+                    }
+                    else
+                    {
+                        bi++;
+                    }
+                }
+            }
+
+            return result.ToArray();
+        }
+        
+        // https://leetcode.com/problems/course-schedule-iii/solution/
+        public int ScheduleCourse(int[][] courses)
+        {
+            // 贪心法：尽可能使得当前耗时小
+            List<int> costList = new List<int>();
+            int currTime = 0;
+            
+            // Pick the courses with early due date first.
+            foreach (int[] course in courses.OrderBy(c => c[1]))
+            {
+                if (currTime + course[0] <= course[1])
+                {
+                    currTime += course[0];
+                    costList.Add(course[0]);
+                }
+                else
+                {
+                    // 尝试替换掉当前耗时最长的课程以降低总开销...
+                    int maxIdx = 0;
+                    for (int i = 1; i < costList.Count; i++)
+                    {
+                        if (costList[i] > costList[maxIdx])
+                        {
+                            maxIdx = i;
+                        }
+                    }
+
+                    if (costList[maxIdx] > course[0])
+                    {
+                        currTime -= (costList[maxIdx] - course[0]);
+                        costList[maxIdx] = course[0];
+                    }
+                }
+            }
+            
+            return costList.Count;
+        }
 
         public void Run()
         {
