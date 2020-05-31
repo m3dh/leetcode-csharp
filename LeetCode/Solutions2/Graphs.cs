@@ -12,13 +12,13 @@ namespace LeetCode.Csharp.Solutions2
         public bool CanFinish(int numCourses, int[][] prerequisites)
         {
             HashSet<int> finished = new HashSet<int>();
-            
+
             // A map of being depends on.
             List<int>[] deps = new List<int>[numCourses];
-            
+
             // A map of depending counts.
-            int [] depDgs = new int[numCourses];
-            
+            int[] depDgs = new int[numCourses];
+
             for (int i = 0; i < numCourses; i++)
             {
                 deps[i] = new List<int>();
@@ -55,6 +55,53 @@ namespace LeetCode.Csharp.Solutions2
             }
 
             return finished.Count == numCourses;
+        }
+
+        public class Node
+        {
+            public int val;
+            public IList<Node> neighbors;
+
+            public Node()
+            {
+                val = 0;
+                neighbors = new List<Node>();
+            }
+
+            public Node(int _val)
+            {
+                val = _val;
+                neighbors = new List<Node>();
+            }
+
+            public Node(int _val, List<Node> _neighbors)
+            {
+                val = _val;
+                neighbors = _neighbors;
+            }
+        }
+
+        // https://leetcode.com/problems/clone-graph/
+        public Node CloneGraph(Node node)
+        {
+            return CloneNode(node, new Dictionary<int, Node>());
+        }
+
+        private Node CloneNode(Node node, Dictionary<int, Node> nodes)
+        {
+            Node newNode = new Node(node.val);
+            nodes.Add(node.val, newNode);
+            foreach (Node neighbor in node.neighbors)
+            {
+                if (!nodes.TryGetValue(neighbor.val, out Node nNode))
+                {
+                    nNode = CloneNode(neighbor, nodes);
+                }
+                
+                newNode.neighbors.Add(nNode);
+            }
+
+            return newNode;
         }
     }
 }

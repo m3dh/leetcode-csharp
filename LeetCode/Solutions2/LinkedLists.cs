@@ -70,6 +70,49 @@ namespace LeetCode.Csharp.Solutions2
 
             return head;
         }
+        
+        public class Node {
+            public int val;
+            public Node next;
+            public Node random;
+    
+            public Node(int _val) {
+                val = _val;
+                next = null;
+                random = null;
+            }
+        }
+        
+        // https://leetcode.com/problems/copy-list-with-random-pointer/
+        public Node CopyRandomList(Node head) {
+            // REVIEW: 超级巧妙的方法！
+            Node node = head;
+            while (node != null)
+            {
+                Node oldNext = node.next;
+                node.next = new Node(node.val);
+                node.next.next = oldNext;
+                node = oldNext;
+            }
+
+            node = head;
+            while (node != null)
+            {
+                node.next.random = node.random?.next;
+                node = node.next.next;
+            }
+
+            node = head;
+            head = node.next;
+            while (node != null)
+            {
+                Node oldNext = node.next.next;
+                node.next.next = node.next.next == null ? null : node.next.next.next;
+                node = oldNext;
+            }
+            
+            return head;
+        }
 
         private ListNode Reverse(ListNode head) {
             ListNode prev = null;
