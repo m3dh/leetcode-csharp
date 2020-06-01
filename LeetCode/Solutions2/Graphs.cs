@@ -103,5 +103,55 @@ namespace LeetCode.Csharp.Solutions2
 
             return newNode;
         }
+
+        // https://leetcode.com/problems/network-delay-time/
+        public int NetworkDelayTime(int[][] times, int N, int K)
+        {
+            // REVIEW: SPFA
+            Dictionary<int, List<int[]>> edges = times.GroupBy(t => t[0]).ToDictionary(g => g.Key, g => g.ToList());
+
+            Queue<int> q = new Queue<int>();
+            HashSet<int> qm = new HashSet<int>();
+
+            int[] costs = new int[N + 1];
+            for (int i = 1; i <= N; i++)
+            {
+                if (i != K)
+                {
+                    costs[i] = -1;
+                }
+            }
+            
+            q.Enqueue(K);
+            qm.Add(K);
+            while (q.Count > 0)
+            {
+                int f = q.Dequeue();
+                qm.Remove(f);
+                if (edges.ContainsKey(f))
+                {
+                    foreach (int[] edge in edges[f])
+                    {
+                        if (costs[edge[1]] > costs[f] + edge[2] || costs[edge[1]] < 0)
+                        {
+                            costs[edge[1]] = costs[f] + edge[2];
+                            if (qm.Add(edge[1]))
+                            {
+                                q.Enqueue(edge[1]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            int max = 0;
+            foreach (int cost in costs)
+            {
+                if (cost < 0) return -1;
+                else max = Math.Max(max, cost);
+            }
+
+            return max;
+        }
     }
 }

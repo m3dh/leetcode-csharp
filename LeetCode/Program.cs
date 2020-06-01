@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
     using LeetCode.Csharp.Common;
     using LeetCode.Csharp.Solutions;
@@ -13,7 +14,7 @@
     {
         public static void Main()
         {
-            new Search().Run();
+            new Planning().Run();
         }
     }
 }

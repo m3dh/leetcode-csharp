@@ -321,7 +321,7 @@ namespace LeetCode.Csharp.Solutions2
         }
 
         // 583 - https://leetcode.com/problems/delete-operation-for-two-strings/
-        public int MinDistance(string word1, string word2)
+        public int MinDistance1(string word1, string word2)
         {
             int lcsLen = this.LongestCommonSubsequence(word1, word2);
             return word1.Length + word2.Length - 2 * lcsLen;
@@ -772,10 +772,165 @@ namespace LeetCode.Csharp.Solutions2
 
             return dp[A.Length - 1][B.Length - 1];
         }
+        
+        // https://leetcode.com/problems/house-robber-ii/
+        public int Rob(int[] nums)
+        {
+            List<int> nums1 = new List<int>(nums);
+            List<int> nums2 = new List<int>(nums);
+            nums1[0] = 0;
+            nums2[nums2.Count - 1] = 0;
+            return Math.Max(RobInner(nums1), RobInner(nums2));
+        }
 
+        // https://leetcode.com/problems/house-robber-iii/
+        public int Rob(TreeNode root)
+        {
+            return RobTreeInner(root, "Z", new Dictionary<string, int>());
+        }
+
+        private int RobTreeInner(TreeNode root, string locator, Dictionary<string, int> memo)
+        {
+            if (root == null) return 0;
+            if (memo.TryGetValue(locator, out int res)) return res;
+            
+            // Skip me and skip my next level.
+            int skipMe = RobTreeInner(root.left, locator + "L", memo) + RobTreeInner(root.right, locator + "R", memo);
+            int countMe = root.val;
+            if (root.left != null)
+            {
+                countMe += (RobTreeInner(root.left.left, locator + "LL", memo) + RobTreeInner(root.left.right, locator + "LR", memo));
+            }
+            
+            if (root.right != null)
+            {
+                countMe += (RobTreeInner(root.right.left, locator + "RL", memo) + RobTreeInner(root.right.right, locator + "RR", memo));
+            }
+
+            res = Math.Max(skipMe, countMe);
+            memo[locator] = res;
+            return res;
+        }
+
+        public int RobInner(List<int> nums) {
+            int[] dp = new int[nums.Count];
+        
+            int max = 0;
+            for(int i=0;i<nums.Count;i++) {
+                int p = nums[i];
+                if (i == 2) {
+                    p += dp[i-2];
+                } else if (i > 2) {
+                    p += Math.Max(dp[i-2], dp[i-3]);
+                }
+            
+                dp[i] = p;
+                max = Math.Max(max, p);
+            }
+        
+            return max;
+        }
+        
+        // https://leetcode.com/problems/edit-distance/
+        public int MinDistance(string word1, string word2)
+        {
+            return MinDistanceInner(word1, word2, new Dictionary<int, Dictionary<int, int>>());
+        }
+
+        private int MinDistanceInner(string word1, string word2, Dictionary<int, Dictionary<int, int>> memo)
+        {
+            // REVIEW: IDEA: 从 word1 构造 word2
+            if (word1.Length == 0) return word2.Length;
+            if (word2.Length == 0) return word1.Length;
+            if (memo.TryGetValue(word1.Length, out Dictionary<int, int> minDist) && minDist.TryGetValue(word2.Length, out int dist))
+            {
+                return dist;
+            }
+
+            if (word1[0] == word2[0])
+            {
+                dist = MinDistanceInner(word1.Substring(1), word2.Substring(1), memo);
+            }
+            else
+            {
+                // 认为当前char需要从W1 remove，所以忽略本char
+                int removeFromW1 = 1 + MinDistanceInner(word1.Substring(1), word2, memo);
+                
+                // 认为是直接替换（修改）W1
+                int changeFromWn = 1 + MinDistanceInner(word1.Substring(1), word2.Substring(1), memo);
+                
+                // 认为是直接添加一个 （W2中的）char, 所以忽略W2的char
+                int insertIntoW1 = 1 + MinDistanceInner(word1, word2.Substring(1), memo);
+
+                dist = Math.Min(removeFromW1, Math.Min(changeFromWn, insertIntoW1));
+            }
+
+            if (!memo.ContainsKey(word1.Length))
+            {
+                memo.Add(word1.Length, new Dictionary<int, int>());
+            }
+
+            memo[word1.Length][word2.Length] = dist;
+            return dist;
+        }
+        
+        // https://leetcode.com/problems/wildcard-matching/
+        public bool IsMatch(string s, string p)
+        {
+            // DP than DFA.
+            while (p.Contains("**"))
+            {
+                p = p.Replace("**", "*");
+            }
+
+            if (p.Length - p.Count(c => c == '*') > s.Length) return false;
+
+            int[][] memo = new int[s.Length + 1][];
+            for (int i = 0; i <= s.Length; i++) memo[i] = new int[p.Length + 1];
+
+            return this.IsMatch(s, 0, p, 0, memo);
+        }
+
+        public bool IsMatch(string s, int si, string p, int pi, int[][] memo)
+        {
+            if (si == s.Length && pi == p.Length)
+            {
+                return true;
+            }
+            else if (pi == p.Length)
+            {
+                return false;
+            }
+            
+            if (memo[si][pi] != 0) return memo[si][pi] > 0;
+
+            bool ret = false;
+            if (p[pi] == '?')
+            {
+                ret = s.Length > si && this.IsMatch(s, si + 1, p, pi + 1, memo);
+            }
+            else if (p[pi] == '*')
+            {
+                for (int i = si; i <= s.Length; i++)
+                {
+                    ret = this.IsMatch(s, i, p, pi + 1, memo);
+                    if (ret) break;
+                }
+            }
+            else
+            {
+                if (si < s.Length && s[si] == p[pi])
+                {
+                    ret = this.IsMatch(s, si + 1, p, pi + 1, memo);
+                }
+            }
+
+            memo[si][pi] = ret ? 1 : -1;
+            return ret;
+        }
+        
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(this.TopKFrequent(new[] {1, 1, 1, 2, 2, 3}, 2)));
         }
     }
 }

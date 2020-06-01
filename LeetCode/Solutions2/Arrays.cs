@@ -1348,10 +1348,38 @@ namespace LeetCode.Csharp.Solutions2
             
             return costList.Count;
         }
+        
+        // https://leetcode.com/problems/rotate-array/
+        public void Rotate(int[] nums, int k)
+        {
+            // REVIEW: It could be proved that if n % k != 0, the nested loop will cover all the numbers once...
+
+            int count = 0;
+            k = k % nums.Length;
+            for (int i = 0; count < nums.Length; i++)
+            {
+                int idx = (i + k) % nums.Length;
+                int prev = nums[i];
+                while (idx != i)
+                {
+                    Console.WriteLine(JsonConvert.SerializeObject(nums));
+
+                    
+                    int tmp = nums[idx];
+                    nums[idx] = prev;
+                    prev = tmp;
+
+                    count++;
+                    idx = (idx + k) % nums.Length;
+                }
+
+                nums[idx] = prev;
+                count++;
+            }
+        }
 
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(this.MedianSlidingWindow(new[] {1, 3, -1, -3, 5, 3, 6, 7}, 3)));
         }
     }
-}
+} 
