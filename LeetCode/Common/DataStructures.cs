@@ -18,9 +18,9 @@ namespace LeetCode.Csharp.Common
             this._size = 0;
             this._nodes = new T[maxSize];
         }
-        
+
         public T[] Nodes => this._nodes.Take(this._size).ToArray();
-        
+
         public int Count => this._size;
 
         public T GetMax()
@@ -53,7 +53,7 @@ namespace LeetCode.Csharp.Common
                     this._nodes[index] = this._nodes[GetLeftChild(index)];
                     index = GetLeftChild(index);
                 }
-                else if(this._nodes[GetRightChild(index)].GetValue() > this._nodes[GetLeftChild(index)].GetValue())
+                else if (this._nodes[GetRightChild(index)].GetValue() > this._nodes[GetLeftChild(index)].GetValue())
                 {
                     this._nodes[index] = this._nodes[GetRightChild(index)];
                     index = GetRightChild(index);
@@ -98,6 +98,64 @@ namespace LeetCode.Csharp.Common
         private static int GetRightChild(int index)
         {
             return index * 2 + 2;
+        }
+    }
+
+    public class BoundBinaryTree
+    {
+        public class TreeNode
+        {
+            public int Val { get; set; }
+            public int Smaller { get; set; }
+
+            public TreeNode Left;
+            public TreeNode Right;
+        }
+
+        private TreeNode _root = null;
+        public int Count { get; set; } = 0;
+
+        public void Add(int val)
+        {
+            this.Count++;
+            this.Add(ref this._root, val);
+        }
+
+        private void Add(ref TreeNode root, int val)
+        {
+            if (root == null)
+            {
+                root = new TreeNode {Val = val};
+                return;
+            }
+
+            if (val < root.Val)
+            {
+                root.Smaller++;
+                this.Add(ref root.Left, val);
+            }
+            else
+            {
+                this.Add(ref root.Right, val);
+            }
+        }
+
+        public int CountSmallerThan(int val)
+        {
+            if (this._root == null) return 0;
+            return this.CountSmallerThan(this._root, val);
+        }
+
+        private int CountSmallerThan(TreeNode root, int val)
+        {
+            if (root.Val < val)
+            {
+                return 1 + root.Smaller + (root.Right == null ? 0 : this.CountSmallerThan(root.Right, val));
+            }
+            else
+            {
+                return root.Left == null ? 0 : this.CountSmallerThan(root.Left, val);
+            }
         }
     }
 }

@@ -14,7 +14,7 @@
     {
         public static void Main()
         {
-            new Planning().Run();
+            new Binary().Run();
         }
     }
 }

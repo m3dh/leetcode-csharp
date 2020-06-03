@@ -117,5 +117,20 @@ namespace LeetCode.Csharp.Solutions2
 
             return ret;
         }
+        
+        
+        // https://leetcode.com/problems/count-of-smaller-numbers-after-self/
+        public IList<int> CountSmaller(int[] nums)
+        {
+            BoundBinaryTree bbt = new BoundBinaryTree();
+            int[] ret = new int[nums.Length];
+            for (int i = nums.Length - 1; i >= 0; i--)
+            {
+                bbt.Add(nums[i]);
+                ret[i] = bbt.CountSmallerThan(nums[i]);
+            }
+
+            return ret;
+        }
     }
 }

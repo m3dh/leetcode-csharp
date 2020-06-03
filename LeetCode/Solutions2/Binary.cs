@@ -179,9 +179,62 @@ namespace LeetCode.Csharp.Solutions2
             return string.Join("", ss);
         }
 
+        // https://leetcode.com/problems/range-sum-query-mutable/
+        public class NumArray
+        {
+            private readonly int[] _segs;
+            private readonly int _sz;
+            private readonly int[] _nums;
+            
+            public NumArray(int[] nums)
+            {
+                this._nums = nums;
+                this._sz = (int) Math.Floor(Math.Sqrt(nums.Length));
+                this._segs = new int[nums.Length / this._sz + 1];
+                for (int i = 0; i < nums.Length; i++)
+                {
+                   this. _segs[i / this._sz] += nums[i];
+                }
+            }
+
+            public void Update(int i, int val)
+            {
+                this._segs[i / this._sz] -= (this._nums[i] - val);
+                this._nums[i] = val;
+            }
+
+            public int SumRange(int i, int j)
+            {
+                int res = 0;
+                int beginSeg = i / this._sz;
+                int endSeg = j / this._sz;
+                for (int s = beginSeg; s <= endSeg; s++)
+                {
+                    res += this._segs[s];
+                }
+
+                for (int k = beginSeg * this._sz; k < i; k++)
+                {
+                    res -= this._nums[k];
+                }
+
+                for (int k = j + 1; k < (1+ endSeg) * (this._sz) && k < this._nums.Length; k++)
+                {
+                    res -= this._nums[k];
+                }
+
+                return res;
+            }
+        }
+
         public void Run()
         {
-            Console.WriteLine(GetSum(2, 3));
+            var na = new NumArray(new[] {0, 9, 5, 7, 3});
+            na.Update(4, 5);
+            na.Update(1, 7);
+            na.Update(0, 8);
+
+            Console.WriteLine(na.SumRange(1, 2));
         }
     }
 }
