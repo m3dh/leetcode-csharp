@@ -1377,9 +1377,94 @@ namespace LeetCode.Csharp.Solutions2
                 count++;
             }
         }
+        
+        // https://leetcode.com/problems/palindrome-partitioning/
+        public IList<IList<string>> Partition(string s)
+        {
+            List<string>[] memo = new List<string>[s.Length];
+            return this.PalindromePartitioning(s, 0, memo)
+                .Select(ms => (IList<string>) ms.Split('|', StringSplitOptions.RemoveEmptyEntries))
+                .ToList();
+        }
+
+        public List<string> PalindromePartitioning(string s, int idx, List<string>[] memo)
+        {
+            if (memo[idx] != null)
+            {
+                return memo[idx];
+            }
+
+            List<string> result = new List<string>();
+            for (int len = 1; len <= s.Length - idx; len++)
+            {
+                if (this.IsPalindrome(s, idx, len))
+                {
+                    int nextBegin = idx + len;
+                    if (nextBegin == s.Length)
+                    {
+                        result.Add(s.Substring(idx));
+                    }
+                    else
+                    {
+                        string curPs = s.Substring(idx, len);
+                        List<string> subPs = this.PalindromePartitioning(s, idx + len, memo);
+                        foreach (string p in subPs)
+                        {
+                            result.Add($"{curPs}|{p}");
+                        }
+                    }
+                }
+            }
+
+            memo[idx] = result;
+            return result;
+        }
+
+        private bool IsPalindrome(string s, int idx, int len)
+        {
+            if (len == 1)
+            {
+                return true;
+            }
+            
+            for (int i = 0; i < len / 2; i++)
+            {
+                if (s[idx + i] != s[idx + len - i - 1])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        
+        // https://leetcode.com/problems/palindrome-partitioning-ii/
+        public int MinCut(string s)
+        {
+            bool[,] p = new bool [s.Length, s.Length];
+            int[] dp = new int[s.Length];
+            for (int i = 0; i < s.Length; i++)
+            {
+                dp[i] = i;
+                for (int j = 0; j <= i; j++)
+                {
+                    if (s[i] == s[j] && (i - j < 2 || p[i - 1, j + 1]))
+                    {
+                        Console.WriteLine($"{j},{i} > true");
+
+                        p[i, j] = true;
+                        dp[i] = j == 0 ? 0 : Math.Min(dp[i], dp[j - 1] + 1);
+                    }
+                }
+            }
+
+            Console.WriteLine(string.Join(",", dp));
+            return dp[s.Length - 1];
+        }
 
         public void Run()
         {
+            Console.WriteLine(JsonConvert.SerializeObject(MinCut("cdd"), Formatting.Indented));
         }
     }
 } 

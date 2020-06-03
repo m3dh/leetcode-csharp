@@ -14,7 +14,7 @@
     {
         public static void Main()
         {
-            new Binary().Run();
+            new Arrays().Run();
         }
     }
 }
