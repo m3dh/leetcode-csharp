@@ -1057,26 +1057,21 @@ namespace LeetCode.Csharp.Solutions2
         // https://leetcode.com/problems/132-pattern/
         public bool Find132pattern(int[] nums)
         {
-            // REVIEW: IDEA: Convert the problem to finding the '1's.
-            // We use a stack to keep the biggest number we've found.
-            int third = int.MinValue;
-            Stack<int> maxFinder = new Stack<int>();
-            for (int i = nums.Length - 1; i >= 0; i--)
+            int thirdNum = int.MinValue; // the number '2'
+            Stack<int> secNums = new Stack<int>();
+            foreach (int num in nums.Reverse())
             {
-                if (nums[i] < third && maxFinder.Count > 0)
+                if (num < thirdNum && secNums.Any())
                 {
-                    // Numbers in maxFinder are bigger than third.
                     return true;
                 }
-
-                while (maxFinder.Count > 0 && nums[i] > maxFinder.Peek())
+                
+                while(secNums.Any() && secNums.Peek() < num)
                 {
-                    // Find the biggest number after i.
-                    third = Math.Max(third, maxFinder.Pop());
+                    thirdNum = Math.Max(thirdNum, secNums.Pop());
                 }
-
-                // we keep all smaller numbers.
-                maxFinder.Push(nums[i]);
+                
+                secNums.Push(num);
             }
 
             return false;
@@ -1461,10 +1456,31 @@ namespace LeetCode.Csharp.Solutions2
             Console.WriteLine(string.Join(",", dp));
             return dp[s.Length - 1];
         }
+        
+        
+        // https://leetcode.com/problems/palindromic-substrings/
+        public int CountSubstrings(string s)
+        {
+            int cnt = 0;
+            bool[,] p = new bool [s.Length, s.Length];
+            for (int i = 0; i < s.Length; i++)
+            {
+                for (int j = 0; j <= i; j++)
+                {
+                    if (s[i] == s[j] && (i - j < 2 || p[i - 1, j + 1]))
+                    {
+                        p[i, j] = true;
+                        cnt++;
+                    }
+                }
+            }
+
+            return cnt;
+        }
 
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(MinCut("cdd"), Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(Find132pattern(new[] {-2, 1, 2, -2, 1, 2}), Formatting.Indented));
         }
     }
 } 

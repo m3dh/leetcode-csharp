@@ -132,5 +132,46 @@ namespace LeetCode.Csharp.Solutions2
 
             return ret;
         }
+
+        public int CountRangeSum(int[] nums, int lower, int upper)
+        {
+            long sum = 0;
+            int cnt = 0;
+            
+            // Find greater or equal than.
+            BoundBinaryTree lowerBounder = new BoundBinaryTree();
+            lowerBounder.Add(0);
+            
+            // Find smaller or equal than.
+            BoundBinaryTree upperBounder = new BoundBinaryTree();
+            upperBounder.Add(0);
+            
+            foreach (int num in nums)
+            {
+                sum += num;
+                
+                // sum - ? >= lower  ->  -? >= lower - sum
+                // sum - ? <= upper  ->  -? <= upper - sum   ->    ?  >=  sum - upper
+                
+                // Find how many sums have been found between 
+                int greaterOrEqualThanLowerCnt = lowerBounder.Count - lowerBounder.CountSmallerThan(lower - sum);
+                int lessOrEqualThanUpperCnt = upperBounder.Count - upperBounder.CountSmallerThan(sum - upper);
+
+                if (greaterOrEqualThanLowerCnt + lessOrEqualThanUpperCnt > lowerBounder.Count)
+                {
+                    cnt += greaterOrEqualThanLowerCnt + lessOrEqualThanUpperCnt - lowerBounder.Count;
+                }
+                
+                lowerBounder.Add(-sum);
+                upperBounder.Add(sum);
+            }
+
+            return cnt;
+        }
+
+        public void Run()
+        {
+            Console.WriteLine(CountRangeSum(new []{-2147483647,0,-2147483647,2147483647}, -5, 64));
+        }
     }
 }

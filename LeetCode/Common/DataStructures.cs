@@ -105,7 +105,7 @@ namespace LeetCode.Csharp.Common
     {
         public class TreeNode
         {
-            public int Val { get; set; }
+            public long Val { get; set; }
             public int Smaller { get; set; }
 
             public TreeNode Left;
@@ -115,13 +115,13 @@ namespace LeetCode.Csharp.Common
         private TreeNode _root = null;
         public int Count { get; set; } = 0;
 
-        public void Add(int val)
+        public void Add(long val)
         {
             this.Count++;
             this.Add(ref this._root, val);
         }
 
-        private void Add(ref TreeNode root, int val)
+        private void Add(ref TreeNode root, long val)
         {
             if (root == null)
             {
@@ -140,13 +140,13 @@ namespace LeetCode.Csharp.Common
             }
         }
 
-        public int CountSmallerThan(int val)
+        public int CountSmallerThan(long val)
         {
             if (this._root == null) return 0;
             return this.CountSmallerThan(this._root, val);
         }
 
-        private int CountSmallerThan(TreeNode root, int val)
+        private int CountSmallerThan(TreeNode root, long val)
         {
             if (root.Val < val)
             {
