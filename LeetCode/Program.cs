@@ -14,7 +14,7 @@
     {
         public static void Main()
         {
-            new Trees().Run();
+            new Arrays().Run();
         }
     }
 }

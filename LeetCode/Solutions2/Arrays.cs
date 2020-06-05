@@ -1478,9 +1478,96 @@ namespace LeetCode.Csharp.Solutions2
             return cnt;
         }
 
+        // https://leetcode.com/problems/substring-with-concatenation-of-all-words/
+        public IList<int> FindSubstring(string s, string[] words)
+        {
+            List<int> ret = new List<int>();
+            if (s.Length == 0 || words.Length == 0) return ret;
+
+            Dictionary<string, int> cnts = new Dictionary<string, int>();
+            foreach (string word in words)
+            {
+                if (cnts.ContainsKey(word)) cnts[word]++;
+                else cnts[word] = 1;
+            }
+
+            // readonly
+            int wLen = words[0].Length;
+            int tCnt = cnts.Count; // Unique word count.
+
+            for (int offset = 0; offset < wLen; offset++)
+            {
+                int zCnt = 0; // Zero count
+                int nextIdx = offset;
+
+                Dictionary<string, int> curCnts = new Dictionary<string, int>(cnts);
+                Queue<string> q = new Queue<string>();
+                while (nextIdx <= s.Length - wLen)
+                {
+                    string curWord = s.Substring(nextIdx, wLen);
+
+                    if (!curCnts.ContainsKey(curWord))
+                    {
+                        // REVIEW: 为了维护zCnt，跳过不存在的词组
+                        // Skip 'til next word.
+                        q.Clear();
+                        zCnt = 0;
+                        curCnts = new Dictionary<string, int>(cnts);
+                    }
+                    else
+                    {
+                        if (q.Count == words.Length)
+                        {
+                            string dequeueWord = q.Dequeue();
+                            int dequeueWordCnt = curCnts[dequeueWord];
+                            curCnts[dequeueWord] = dequeueWordCnt + 1;
+
+                            if (dequeueWordCnt + 1 == 0)
+                            {
+                                // dequeue-ed unnecessary word.
+                                zCnt++;
+                            }
+                            else if (dequeueWordCnt == 0)
+                            {
+                                zCnt--;
+                            }
+
+                            // Console.WriteLine($"DEQUEUE: {dequeueWord}, ZCNT: {zCnt}");
+                        }
+
+                        q.Enqueue(curWord);
+                        int wCnt = curCnts[curWord];
+                        curCnts[curWord] = wCnt - 1;
+                        if (wCnt - 1 == 0)
+                        {
+                            // me to zero.
+                            zCnt++;
+
+                            if (zCnt == tCnt) // all words found.
+                            {
+                                ret.Add(nextIdx - (words.Length - 1) * wLen);
+                            }
+                        }
+                        else if (wCnt == 0)
+                        {
+                            zCnt--;
+                        }
+
+                        // Console.WriteLine($"ENQUEUE: {curWord}, ZCNT: {zCnt}");
+                    }
+
+                    nextIdx += wLen;
+                }
+            }
+
+            return ret;
+        }
+
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(Find132pattern(new[] {-2, 1, 2, -2, 1, 2}), Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(
+                FindSubstring("wordgoodgoodgoodbestword",new []{"word", "good", "best", "good"}),
+                    Formatting.Indented));
         }
     }
-} 
+}
