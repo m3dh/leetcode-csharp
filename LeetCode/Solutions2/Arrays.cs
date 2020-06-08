@@ -1562,12 +1562,28 @@ namespace LeetCode.Csharp.Solutions2
 
             return ret;
         }
+        
+        // https://leetcode.com/problems/queue-reconstruction-by-height/
+        public int[][] ReconstructQueue(int[][] people)
+        {
+            List<int[]> result = new List<int[]>();
+            List<int[]> pSorted = people
+                .OrderByDescending(p => p[0])
+                .ThenBy(p => p[1]) // 确保前面有多人的情况能插在更前面（后插的能够更前）
+                .ToList();
+            foreach (int[] p in pSorted)
+            {
+                result.Insert(p[1], p);
+            }
+
+            return result.ToArray();
+        }
 
         public void Run()
         {
+            string arr = "[[9,0],[7,0],[1,9],[3,0],[2,7],[5,3],[6,0],[3,4],[6,2],[5,2]]";
             Console.WriteLine(JsonConvert.SerializeObject(
-                FindSubstring("wordgoodgoodgoodbestword",new []{"word", "good", "best", "good"}),
-                    Formatting.Indented));
+                ReconstructQueue(JsonConvert.DeserializeObject<int[][]>(arr))));
         }
     }
 }

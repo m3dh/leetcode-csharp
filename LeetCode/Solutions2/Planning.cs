@@ -929,6 +929,77 @@ namespace LeetCode.Csharp.Solutions2
             return ret;
         }
         
+        // https://leetcode.com/problems/longest-chunked-palindrome-decomposition/
+        public int LongestDecomposition(string text) {
+            // I cannot prove this problem could be solved by greedy algo, so still use memo-search but technically the
+            // time complexity is still O(n).
+            int[] memo = new int[text.Length / 2 + 1];
+            return this.LongestDecompositionSearch(text, 0, memo);
+        }
+
+        private int LongestDecompositionSearch(string text, int idx, int[] memo)
+        {
+            if (memo[idx] > 0)
+            {
+                return memo[idx];
+            }
+
+            if (idx == text.Length / 2)
+            {
+                return text.Length % 2 == 1 ? 1 : 0;
+            }
+
+            memo[idx] = 1;
+
+            for (int len = 1; len <= (text.Length - 2 * idx) / 2; len++)
+            {
+                int li = idx;
+                int ri = (text.Length - idx) - len;
+                if (this.QStringEqual(text, li, ri, len))
+                {
+                    memo[idx] = Math.Max(memo[idx], 2 + this.LongestDecompositionSearch(text, idx + len, memo));
+                }
+            }
+
+            return memo[idx];
+        }
+
+        private bool QStringEqual(string text, int li, int ri, int len)
+        {
+            for (int l = 0; l < len; l++)
+            {
+                if (text[li + l] != text[ri + l]) return false;
+            }
+
+            return true;
+        }
+        
+        // https://leetcode.com/problems/partition-equal-subset-sum/
+        public bool CanPartition(int[] nums)
+        {
+            int total = nums.Sum();
+            if (total % 2 == 1) return false;
+
+            int half = total / 2;
+            bool[] dp = new bool[half + 1];
+            dp[0] = true;
+
+            int lastKnownTrue = 0;
+            foreach (int num in nums)
+            {
+                for (int i = Math.Min(half, num + lastKnownTrue); i >= num; i--)
+                {
+                    if (dp[i - num])
+                    {
+                        dp[i] = true;
+                        lastKnownTrue = Math.Max(lastKnownTrue, i);
+                    }
+                }
+            }
+
+            return dp[half];
+        }
+
         public void Run()
         {
         }

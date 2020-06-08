@@ -96,7 +96,7 @@ namespace LeetCode.Csharp.Solutions2
             }
         }
 
-        public class Solution : VersionControl
+        public class Solution1 : VersionControl
         {
             public int FirstBadVersion(int n)
             {
@@ -226,15 +226,94 @@ namespace LeetCode.Csharp.Solutions2
                 return res;
             }
         }
+        
+        // https://leetcode.com/problems/random-pick-with-weight/
+        public class Solution {
+            
+            private readonly int[] _w;
+            private readonly int _totalSum;
+
+            public Solution(int[] w)
+            {
+                this._w = new int[w.Length];
+                int sum = 0;
+                for (int i = 0; i < w.Length; i++)
+                {
+                    sum += w[i];
+                    this._w[i] = sum;
+                }
+
+                this._totalSum = sum;
+            }
+
+            public int PickIndex()
+            {
+                int randNum = this._rand.Next(this._totalSum); // 0 - (ts-1)
+                int l = 0;
+                int r = this._w.Length - 1;
+
+                // i when randNum < _w[i] but randNum >= _w[i-1]
+                while (l < r)
+                {
+                    int mid = (l + r) / 2;
+                    if (randNum >= this._w[mid])
+                    {
+                        l = mid + 1; // +1 to break the loop!
+                    }
+                    else if (mid == 0 || randNum >= this._w[mid - 1])
+                    {
+                        return mid;
+                    }
+                    else
+                    {
+                        r = mid;
+                    }
+                }
+
+                return r;
+            }
+
+            // https://leetcode.com/problems/random-pick-with-blacklist/
+            private readonly Dictionary<int, int> _mapping;
+            private readonly Random _rand = new Random(DateTimeOffset.Now.Millisecond);
+            private readonly int _finalCount;
+
+            public Solution(int N, int[] blacklist)
+            {
+                int finalCount = N - blacklist.Length;
+                Dictionary<int, int> mapping = new Dictionary<int, int>();
+
+                if (blacklist.Length > 0)
+                {
+                    HashSet<int> blHash = new HashSet<int>(blacklist);
+                    List<int> blToMap = blacklist.Where(b => b < finalCount).ToList();
+                    for (int i = finalCount; i < N; i++)
+                    {
+                        if (!blHash.Contains(i))
+                        {
+                            mapping.Add(blToMap[0], i);
+                            blToMap.RemoveAt(0);
+                        }
+                    }
+                }
+
+                this._mapping = mapping;
+                this._finalCount = finalCount;
+            }
+    
+            public int Pick()
+            {
+                int randNum = this._rand.Next(this._finalCount);
+                if (this._mapping.TryGetValue(randNum, out int mapped)) return mapped;
+                return randNum;
+            }
+        }
 
         public void Run()
         {
-            var na = new NumArray(new[] {0, 9, 5, 7, 3});
-            na.Update(4, 5);
-            na.Update(1, 7);
-            na.Update(0, 8);
-
-            Console.WriteLine(na.SumRange(1, 2));
+            Solution s = new Solution(2, new int[]{1});
+            for(int i=0;i<10;i++)
+            Console.WriteLine(s.Pick());
         }
     }
 }
