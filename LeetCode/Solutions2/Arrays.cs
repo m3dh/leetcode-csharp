@@ -1579,11 +1579,71 @@ namespace LeetCode.Csharp.Solutions2
             return result.ToArray();
         }
 
+        public int UniqueLetterString(string s)
+        {
+            // REVIEW: 计算每个字符单独能出现的字串数量 (前一个同样字符 - 后一个同样字符)，因为每个不同的字母都相当于是单独计数的！
+            Dictionary<char, List<int>> indices = new Dictionary<char, List<int>>();
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (indices.TryGetValue(s[i], out List<int> ind)) ind.Add(i);
+                else indices.Add(s[i], new List<int> {i});
+            }
+
+            // REVIEW: 计算数量的方式
+            long count = 0;
+            foreach (List<int> idx in indices.Values)
+            {
+                for (int i = 0; i < idx.Count; i++)
+                {
+                    int l = (i == 0 ? 0 : idx[i - 1] + 1);
+                    int r = (i == idx.Count - 1 ? s.Length - 1 : idx[i + 1] - 1);
+                    count += (idx[i] - l + 1) * (r - idx[i] + 1); // 0 - 2, 1
+                }
+            }
+
+            return (int) (count % 1000000007);
+        }
+
+        public void SortColors(int[] nums)
+        {
+            int zp = 0;
+            int tp = nums.Length - 1;
+            int i = 0;
+            
+            while (i < nums.Length)
+            {
+                if (nums[i] == 0 && zp < i)
+                {
+                    while (zp < i && nums[zp] == 0) zp++;
+                    if (zp < i)
+                    {
+                        int tmp = nums[zp];
+                        nums[zp] = nums[i];
+                        nums[i] = tmp;
+                    }
+                }
+                else if (nums[i] == 2 && tp > i)
+                {
+                    while (tp > i && nums[tp] == 2) tp--;
+                    if (tp > i)
+                    {
+                        int tmp = nums[tp];
+                        nums[tp] = nums[i];
+                        nums[i] = tmp;
+                    }
+                }
+                else
+                {
+                    i++;
+                }
+            }
+        }
+
         public void Run()
         {
-            string arr = "[[9,0],[7,0],[1,9],[3,0],[2,7],[5,3],[6,0],[3,4],[6,2],[5,2]]";
-            Console.WriteLine(JsonConvert.SerializeObject(
-                ReconstructQueue(JsonConvert.DeserializeObject<int[][]>(arr))));
+            int[] arr = new[] {2, 0, 2, 1, 1, 0};
+            SortColors(arr);
+            Console.WriteLine(JsonConvert.SerializeObject(arr));
         }
     }
 }
