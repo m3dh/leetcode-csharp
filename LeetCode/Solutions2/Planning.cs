@@ -999,6 +999,65 @@ namespace LeetCode.Csharp.Solutions2
 
             return dp[half];
         }
+        
+        // https://leetcode.com/problems/largest-divisible-subset/
+        public IList<int> LargestDivisibleSubset(int[] nums)
+        {
+            // REVIEW: DP 思想， FW 的维护
+            nums = nums.OrderBy(n => n).ToArray();
+            int[] dp = new int[nums.Length];
+            int[] fw = new int[nums.Length];
+
+            int maxIdx = -1;
+            for (int i = 0; i < nums.Length; i++)
+            {
+                fw[i] = -1;
+                for (int j = 0; j < i; j++)
+                {
+                    if (nums[i] % nums[j] == 0 && dp[j] + 1 > dp[i])
+                    {
+                        dp[i] = dp[j] + 1;
+                        fw[i] = j;
+                    }
+                }
+
+                if (maxIdx == -1 || dp[i] > dp[maxIdx])
+                {
+                    maxIdx = i;
+                }
+            }
+
+            List<int> ret = new List<int>();
+            while (maxIdx >= 0)
+            {
+                ret.Add(nums[maxIdx]);
+                maxIdx = fw[maxIdx];
+            }
+
+            return ret;
+        }
+        
+        // https://leetcode.com/problems/super-washing-machines/
+        public int FindMinMoves(int[] machines)
+        {
+            // REVIEW: 寻找积累的需要最大补充数的machine.
+            int total = machines.Sum();
+            if (total % machines.Length != 0) return -1;
+
+            int target = total / machines.Length;
+            int prev = 0;
+            int maxNeed = 0;
+            foreach (int machine in machines)
+            {
+                int need = target - machine + prev;
+                
+                // 两个限制（步数）的因素：1、单个machine需要移走，每次只能-1，2、单个machine需要通过(via)的数目
+                maxNeed = Math.Max(maxNeed, Math.Max(Math.Abs(need), machine - target));
+                prev = need;
+            }
+
+            return maxNeed;
+        }
 
         public void Run()
         {
