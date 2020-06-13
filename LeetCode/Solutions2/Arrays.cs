@@ -1638,6 +1638,168 @@ namespace LeetCode.Csharp.Solutions2
                 }
             }
         }
+        
+        // https://leetcode.com/problems/insert-delete-getrandom-o1/
+        public class RandomizedSet
+        {
+            private int _realCount = 0;
+            private List<int> _nums = new List<int>();
+            private Dictionary<int, int> _indexMap = new Dictionary<int, int>();
+            private Random _random = new Random();
+
+            /** Initialize your data structure here. */
+            public RandomizedSet()
+            {
+
+            }
+
+            /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+            public bool Insert(int val)
+            {
+                if (!this._indexMap.ContainsKey(val))
+                {
+                    int index = this._realCount;
+                    if (this._nums.Count > index)
+                    {
+                        this._nums[index] = val;
+                    }
+                    else
+                    {
+                        this._nums.Add(val);
+                    }
+
+                    this._indexMap[val] = index;
+                    this._realCount++;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            /** Removes a value from the set. Returns true if the set contained the specified element. */
+            public bool Remove(int val)
+            {
+                if (!this._indexMap.TryGetValue(val, out int index))
+                {
+                    return false;
+                }
+                else
+                {
+                    this._indexMap.Remove(val);
+                    this._realCount--;
+
+                    int lastIndex = this._realCount;
+                    if (lastIndex != index)
+                    {
+                        this._nums[index] = this._nums[lastIndex];
+                        this._indexMap[this._nums[index]] = index;
+                    }
+
+                    return true;
+                }
+            }
+
+            /** Get a random element from the set. */
+            public int GetRandom()
+            {
+                if (this._realCount == 0)
+                {
+                    throw new InvalidOperationException();
+                }
+                else
+                {
+                    int index = this._random.Next(this._realCount);
+                    return this._nums[index];
+                }
+            }
+        }
+        
+        // https://leetcode.com/problems/insert-delete-getrandom-o1-duplicates-allowed/
+        public class RandomizedCollection
+        {
+            private int _realCount = 0;
+            private List<int> _nums = new List<int>();
+            private Dictionary<int, List<int>> _indexMap = new Dictionary<int, List<int>>();
+            private Random _random = new Random();
+
+            /** Initialize your data structure here. */
+            public RandomizedCollection()
+            {
+            }
+
+            /** Inserts a value to the collection. Returns true if the collection did not already contain the specified element. */
+            public bool Insert(int val)
+            {
+                int index = this._realCount;
+                this._realCount++;
+                if (this._nums.Count > index)
+                {
+                    this._nums[index] = val;
+                }
+                else
+                {
+                    this._nums.Add(val);
+                }
+
+                if (!this._indexMap.TryGetValue(val, out List<int> indices))
+                {
+                    this._indexMap[val] = new List<int> {index};
+                    return true;
+                }
+                else
+                {
+                    indices.Add(index);
+                    return false;
+                }
+            }
+
+            /** Removes a value from the collection. Returns true if the collection contained the specified element. */
+            public bool Remove(int val)
+            {
+                if (this._indexMap.TryGetValue(val, out List<int> indices) && indices.Count > 0)
+                {
+                    int index = indices[indices.Count - 1];
+                    indices.RemoveAt(indices.Count - 1);
+                    this._realCount--;
+                    int lastIndex = this._realCount;
+                    if (lastIndex != index)
+                    {
+                        this._nums[index] = this._nums[lastIndex];
+                        List<int> repIndices = this._indexMap[this._nums[index]];
+                        for (int i = 0; i < repIndices.Count; i++)
+                        {
+                            if (repIndices[i] == lastIndex)
+                            {
+                                repIndices[i] = index;
+                                break;
+                            }
+                        }
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            /** Get a random element from the collection. */
+            public int GetRandom()
+            {
+                if (this._realCount == 0)
+                {
+                    throw new InvalidOperationException();
+                }
+                else
+                {
+                    int index = this._random.Next(this._realCount);
+                    return this._nums[index];
+                }
+            }
+        }
 
         public void Run()
         {
