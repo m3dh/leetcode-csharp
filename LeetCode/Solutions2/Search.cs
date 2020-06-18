@@ -398,24 +398,267 @@ namespace LeetCode.Csharp.Solutions2
 
             return -1;
         }
+        
+        // https://leetcode.com/problems/similar-string-groups/
+        public int NumSimilarGroups(string[] A)
+        {
+            // build the graph.
+            Dictionary<int, List<int>> g = new Dictionary<int, List<int>>();
+            for (int i1 = 0; i1 < A.Length; i1++)
+            {
+                List<int> l = new List<int>();
+                g[i1] = l;
+                for (int i2 = 0; i2 < A.Length; i2++)
+                {
+                    int distance = 0;
+                    for (int i = 0; i < A[i1].Length; i++)
+                    {
+                        if (A[i1][i] != A[i2][i]) distance++;
+                    }
+
+                    if (distance == 2)
+                    {
+                        l.Add(i2);
+                    }
+                }
+            }
+
+            int cnt = 0;
+            bool[] visited = new bool[A.Length];
+            for (int i = 0; i < A.Length; i++)
+            {
+                if (!visited[i])
+                {
+                    cnt++;
+                    Queue<int> q = new Queue<int>();
+                    q.Enqueue(i);
+                    visited[i] = true;
+                    while (q.Count > 0)
+                    {
+                        int cur = q.Dequeue();
+                        foreach (var t in g[cur])
+                        {
+                            if (!visited[t])
+                            {
+                                visited[t] = true;
+                                q.Enqueue(t);
+                            }
+                        }
+                    }
+                 }
+            }
+
+            return cnt;
+        }
+
+        // https://leetcode.com/problems/word-ladder/
+        public int LadderLength(string beginWord, string endWord, IList<string> wordList)
+        {
+            // REVIEW: The idea is to create a graph from generated a*c to abc, adc, aac...
+            Dictionary<string, List<string>> g = new Dictionary<string, List<string>>();
+            foreach (string s in wordList)
+            {
+                for (int l = 0; l < s.Length; l++)
+                {
+                    string wildCard = $"{s.Substring(0, l)}*{s.Substring(l+1)}";
+                    if (!g.TryGetValue(wildCard, out List<string> t))
+                    {
+                        g.Add(wildCard, new List<string> {s});
+                    }
+                    else
+                    {
+                        t.Add(s);
+                    }
+                }
+            }
+
+            int step = 0;
+            List<string> q = new List<string> {beginWord};
+            HashSet<string> visited = new HashSet<string> {beginWord};
+            while (q.Count > 0)
+            {
+                step++;
+                List<string> n = new List<string>();
+                foreach (string s in q)
+                {
+                    for (int l = 0; l < s.Length; l++)
+                    {
+                        string wildCard = $"{s.Substring(0, l)}*{s.Substring(l + 1)}";
+                        if (g.TryGetValue(wildCard, out List<string> ts))
+                        {
+                            foreach (string t in ts)
+                            {
+                                if (string.Equals(endWord, t, StringComparison.Ordinal)) return step + 1;
+
+                                if (!visited.Contains(t))
+                                {
+                                    visited.Add(t);
+                                    n.Add(t);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                q = n;
+            }
+
+            return 0;
+        }
+        
+        // https://leetcode.com/problems/word-ladder-ii/
+        public IList<IList<string>> FindLadders(string beginWord, string endWord, IList<string> wordList)
+        {
+            Dictionary<string, List<string>> g = new Dictionary<string, List<string>>();
+            foreach (string s in wordList)
+            {
+                for (int l = 0; l < s.Length; l++)
+                {
+                    string wildCard = $"{s.Substring(0, l)}*{s.Substring(l+1)}";
+                    if (!g.TryGetValue(wildCard, out List<string> t))
+                    {
+                        g.Add(wildCard, new List<string> {s});
+                    }
+                    else
+                    {
+                        t.Add(s);
+                    }
+                }
+            }
+            
+            List<IList<string>> ret = new List<IList<string>>();
+            Dictionary<string, List<string>> r = new Dictionary<string, List<string>> {[beginWord] = new List<string>()};
+            
+            List<string> q = new List<string> {beginWord};
+            Dictionary<string, int> visited = new Dictionary<string, int> {[beginWord] = 0};
+
+            int step = 1;
+            while (q.Count > 0)
+            {
+                bool found = false;
+                List<string> n = new List<string>();
+                foreach (string s in q)
+                {
+                    for (int l = 0; l < s.Length; l++)
+                    {
+                        string wildCard = $"{s.Substring(0, l)}*{s.Substring(l + 1)}";
+                        if (g.TryGetValue(wildCard, out List<string> ts))
+                        {
+                            foreach (string t in ts)
+                            {
+                                if (string.Equals(endWord, t, StringComparison.Ordinal))
+                                {
+                                    found = true;
+                                }
+
+                                if (!visited.TryGetValue(t, out int vStep) || vStep == step)
+                                {
+                                    // maintain 't' to 's'.
+                                    if (r.TryGetValue(t, out List<string> from))
+                                    {
+                                        from.Add(s);
+                                    }
+                                    else
+                                    {
+                                        r.Add(t, new List<string> {s});
+                                    }
+
+                                    visited[t] = step;
+                                    n.Add(t);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (found)
+                {
+                    this.BuildBackTrace(endWord, r, ret, new string[step + 1], 0);
+                    break;
+                }
+
+                step++;
+                q = n;
+            }
+
+            return ret;
+        }
+
+        private void BuildBackTrace(string endWord, Dictionary<string, List<string>> r, List<IList<string>> ret, string[] tmp, int idx)
+        {
+            tmp[idx] = endWord;
+            var back = r[endWord];
+            if (back.Any())
+            {
+                foreach (var bs in back.Distinct())
+                {
+                    this.BuildBackTrace(bs, r, ret, tmp, idx + 1);
+                }
+            }
+            else
+            {
+                ret.Add(tmp.Reverse().ToList());
+            }
+        }
+        
+        // https://leetcode.com/problems/palindrome-pairs/
+        public IList<IList<int>> PalindromePairs(string[] words)
+        {
+            Dictionary<string, int> wordsRevMap = new Dictionary<string, int>();
+            for (int i = 0; i < words.Length; i++)
+            {
+                string word = words[i];
+                char[] ca = word.ToCharArray();
+                wordsRevMap.Add(new string(ca.Reverse().ToArray()), i);
+            }
+            
+            List<IList<int>> ret = new List<IList<int>>();
+            for (int i = 0; i < words.Length; i++)
+            {
+                string word = words[i];
+
+                // length starts from 0 - handle corner cases
+                for (int l = 0; l <= word.Length; l++)
+                {
+                    // on left
+                    if (this.IsPalindrome(word, l, word.Length - 1) && wordsRevMap.TryGetValue(word.Substring(0, l), out int idx))
+                    {
+                        if (idx != i)
+                        {
+                            ret.Add(new[] {i, idx});
+                        }
+                    }
+
+                    // on right
+                    if (l != word.Length && // if l == word.Length, test once is good enough... (idx,i) will test another direction.
+                        this.IsPalindrome(word, 0, word.Length - 1 - l) && wordsRevMap.TryGetValue(word.Substring(word.Length - l), out idx))
+                    {
+                        if (idx != i)
+                        {
+                            ret.Add(new[] {idx, i});
+                        }
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        private bool IsPalindrome(string s, int l, int r)
+        {
+            while (l < r)
+            {
+                if (s[l] != s[r]) return false;
+                l++;
+                r--;
+            }
+
+            return true;
+        }
 
         public void Run()
         {
-            string dl =
-                "[" +
-                "[1,1,1,1,0,0,0]," +
-                "[0,1,0,1,0,0,0]," +
-                "[0,0,0,0,0,0,0]," +
-                "[1,1,1,1,0,0,0]," +
-                "[1,1,1,0,0,0,0]," +
-                "[0,0,0,0,0,0,0]," +
-                "[0,0,0,0,0,0,0]]";
-            
-            
-            Console.WriteLine(
-                JsonConvert.SerializeObject(
-                    this.ShortestBridge(JsonConvert.DeserializeObject<int[][]>(dl))
-                ));
+            Console.WriteLine(JsonConvert.SerializeObject(PalindromePairs(new[] {"a",""})));
         }
     }
 }
