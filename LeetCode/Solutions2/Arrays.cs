@@ -1962,6 +1962,43 @@ namespace LeetCode.Csharp.Solutions2
             string ret = b.ToString();
             return ret.Length > 1 && ret[0] == '0' ? "0" : ret;
         }
+        
+        // https://leetcode.com/problems/decode-string/submissions/
+        public string DecodeString(string s) {
+            int idx = 0;
+            return Decode(1, s, ref idx);   
+        }
+    
+        private string Decode(int factor, string s, ref int idx) {
+            StringBuilder b = new StringBuilder();
+            while(true) {
+                if(idx == s.Length) {
+                    return Return(factor, b.ToString());
+                }
+                else if (s[idx] == ']') {
+                    idx++;
+                    return Return(factor, b.ToString());
+                }
+                else if (char.IsDigit(s[idx])) {
+                    int nf = s[idx++] - '0';
+                    while(s[idx] != '[') {
+                        nf = nf*10 + s[idx++] - '0';
+                    }
+                
+                    idx++; // from '['
+                    b.Append(Decode(nf, s, ref idx));
+                }
+                else {
+                    b.Append(s[idx++]);
+                }
+            }
+        }
+    
+        private string Return(int factor, string s) {
+            StringBuilder b = new StringBuilder();
+            for(int i=0;i<factor;i++) b.Append(s);
+            return b.ToString();
+        }
 
         public void Run()
         {

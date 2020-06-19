@@ -309,11 +309,42 @@ namespace LeetCode.Csharp.Solutions2
             }
         }
 
+        public int HIndex(int[] citations)
+        {
+            if (citations.Length == 0) return 0;
+            int l = 0;
+            int r = citations.Length - 1;
+            while (l < r)
+            {
+                int mid = (l + r) / 2;
+                if (citations[mid] == citations.Length - mid)
+                {
+                    return citations.Length - mid;
+                }
+                else if (citations[mid] < citations.Length - mid)
+                {
+                    l = mid + 1;
+                }
+                else
+                {
+                    r = mid;
+                }
+            }
+
+            if (citations[l] >= citations.Length - l)
+            {
+                return citations.Length - l;
+            }
+            else
+            {
+                // Handle a corner case: We've reached the last element still not qualified.
+                return 0;
+            }
+        }
+
         public void Run()
         {
-            Solution s = new Solution(2, new int[]{1});
-            for(int i=0;i<10;i++)
-            Console.WriteLine(s.Pick());
+            Console.WriteLine(HIndex(new []{0}));
         }
     }
 }

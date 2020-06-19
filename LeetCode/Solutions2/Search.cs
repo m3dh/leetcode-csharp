@@ -655,10 +655,69 @@ namespace LeetCode.Csharp.Solutions2
 
             return true;
         }
+        
+        // https://leetcode.com/problems/critical-connections-in-a-network/
+        public IList<IList<int>> CriticalConnections(int n, IList<IList<int>> connections)
+        {
+            int[] visitOrder = new int[n]; // 0 - not visited.
+            int[] lowerOrder = new int[n];
+            Dictionary<int, List<int>> graph = new Dictionary<int, List<int>>();
+            foreach (IList<int> connection in connections)
+            {
+                if (graph.TryGetValue(connection[0], out List<int> fl))
+                {
+                    fl.Add(connection[1]);
+                }
+                else
+                {
+                    graph[connection[0]] = new List<int> {connection[1]};
+                }
+
+                if (graph.TryGetValue(connection[1], out List<int> fr))
+                {
+                    fr.Add(connection[0]);
+                }
+                else
+                {
+                    graph[connection[1]] = new List<int> {connection[0]};
+                }
+            }
+            
+            List<IList<int>> ret = new List<IList<int>>();
+            this.TarjanRec(1, graph, 0, -1, ret, visitOrder, lowerOrder);
+            return ret;
+        }
+
+        private void TarjanRec(int cnt, Dictionary<int, List<int>> g, int cur, int par, List<IList<int>> ret, int[] visitOrder, int[] lowerOrder)
+        {
+            // 寻找不能到达小于自己数字（非父）的边
+            if (lowerOrder[cur] == 0)
+            {
+                visitOrder[cur] = cnt;
+                lowerOrder[cur] = cnt; // can reach myself.
+                foreach (int target in g[cur])
+                {
+                    if (target == par) continue;
+                    
+                    this.TarjanRec(cnt + 1, g, target, cur, ret, visitOrder, lowerOrder);
+
+                    if (lowerOrder[target] < lowerOrder[cur])
+                    {
+                        lowerOrder[cur] = lowerOrder[target];
+                    }
+                }
+
+                if (lowerOrder[cur] == cnt && par >= 0)
+                {
+                    ret.Add(new[] {par, cur});
+                }
+            }
+        }
 
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(PalindromePairs(new[] {"a",""})));
+            List<IList<int>> input = JsonConvert.DeserializeObject<List<IList<int>>>("[[0,1],[1,2],[2,0],[1,3]]");
+            Console.WriteLine(JsonConvert.SerializeObject(this.CriticalConnections(4, input)));
         }
     }
 }
