@@ -1999,9 +1999,73 @@ namespace LeetCode.Csharp.Solutions2
             for(int i=0;i<factor;i++) b.Append(s);
             return b.ToString();
         }
+        
+        // https://leetcode.com/problems/longest-duplicate-substring/
+        public string LongestDupSubstring(string S)
+        {
+            // REVIEW: 二分查找最大长度的思想 + 字符串编码 Robin-Karp.
+            int[] str = S.ToCharArray().Select(c => c - 'a').ToArray();
+
+            int l = 1;
+            int r = S.Length - 1;
+            while (l < r)
+            {
+                int m = (l + r) / 2;
+                if (LongestDupSubstring(str, m, S) >= 0)
+                {
+                    l = m + 1;
+                }
+                else
+                {
+                    r = m;
+                }
+            }
+
+            int idx = LongestDupSubstring(str, l, S);
+            if (idx >= 0)
+            {
+                return S.Substring(idx, l);
+            }
+            else
+            {
+                idx = LongestDupSubstring(str, l - 1, S);
+                return idx >= 0 ? S.Substring(idx, l - 1) : "";
+            }
+        }
+        
+        private int LongestDupSubstring(int[] str, int len, string s)
+        {
+            // Starting index and their robin-karp decoded values.
+            Dictionary<long, int> rkHash = new Dictionary<long, int>();
+            long mod = (long)Math.Pow(2, 63);
+            long removal = 1;
+            for (int i = 1; i < len; i++) removal = removal * 26 % mod;
+
+            long hash = 0;
+            for (int i = 0; i < len; i++)
+            {
+                hash = (hash * 26 + str[i]) % mod;
+            }
+
+            rkHash[hash] = 0;
+            for (int i = 1; i <= str.Length - len; i++)
+            {
+                hash = (hash - removal * (str[i - 1])) * 26 + str[i + len - 1];
+                
+                if (rkHash.TryGetValue(hash, out int idx))
+                {
+                    return idx;
+                }
+                
+                rkHash[hash] = i;
+            }
+
+            return -1;
+        }
 
         public void Run()
         {
+            Console.WriteLine(this.LongestDupSubstring("moplvidmaagmsiyyrkchbyhivlqwqsjcgtumqscmxrxrvwsnjjvygrelcbjgbpounhuyealllginkitfaiviraqcycjmskrozcdqylbuejrgfnquercvghppljmojfvylcxakyjxnampmakyjbqgwbyokaybcuklkaqzawageypfqhhasetugatdaxpvtevrigynxbqodiyioapgxqkndujeranxgebnpgsukybyowbxhgpkwjfdywfkpufcxzzqiuglkakibbkobonunnzwbjktykebfcbobxdflnyzngheatpcvnhdwkkhnlwnjdnrmjaevqopvinnzgacjkbhvsdsvuuwwhwesgtdzuctshytyfugdqswvxisyxcxoihfgzxnidnfadphwumtgdfmhjkaryjxvfquucltmuoosamjwqqzeleaiplwcbbxjxxvgsnonoivbnmiwbnijkzgoenohqncjqnckxbhpvreasdyvffrolobxzrmrbvwkpdbfvbwwyibydhndmpvqyfmqjwosclwxhgxmwjiksjvsnwupraojuatksjfqkvvfroqxsraskbdbgtppjrnzpfzabmcczlwynwomebvrihxugvjmtrkzdwuafozjcfqacenabmmxzcueyqwvbtslhjeiopgbrbvfbnpmvlnyexopoahgmwplwxnxqzhucdieyvbgtkfmdeocamzenecqlbhqmdfrvpsqyxvkkyfrbyolzvcpcbkdprttijkzcrgciidavsmrczbollxbkytqjwbiupvsorvkorfriajdtsowenhpmdtvamkoqacwwlkqfdzorjtepwlemunyrghwlvjgaxbzawmikfhtaniwviqiaeinbsqidetfsdbgsydkxgwoqyztaqmyeefaihmgrbxzyheoegawthcsyyrpyvnhysynoaikwtvmwathsomddhltxpeuxettpbeftmmyrqclnzwljlpxazrzzdosemwmthcvgwtxtinffopqxbufjwsvhqamxpydcnpekqhsovvqugqhbgweaiheeicmkdtxltkalexbeftuxvwnxmqqjeyourvbdfikqnzdipmmmiltjapovlhkpunxljeutwhenrxyfeufmzipqvergdkwptkilwzdxlydxbjoxjzxwcfmznfqgoaemrrxuwpfkftwejubxkgjlizljoynvidqwxnvhngqakmmehtvykbjwrrrjvwnrteeoxmtygiiygynedvfzwkvmffghuduspyyrnftyvsvjstfohwwyxhmlfmwguxxzgwdzwlnnltpjvnzswhmbzgdwzhvbgkiddhirgljbflgvyksxgnsvztcywpvutqryzdeerlildbzmtsgnebvsjetdnfgikrbsktbrdamfccvcptfaaklmcaqmglneebpdxkvcwwpndrjqnpqgbgihsfeotgggkdbvcdwfjanvafvxsvvhzyncwlmqqsmledzfnxxfyvcmhtjreykqlrfiqlsqzraqgtmocijejneeezqxbtomkwugapwesrinfiaxwxradnuvbyssqkznwwpsbgatlsxfhpcidfgzrc"));
         }
     }
 }

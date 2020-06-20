@@ -83,10 +83,11 @@ namespace LeetCode.Csharp.Solutions2
             }
         }
 
-        // REVIEW: Morris traversal
         // https://leetcode.com/problems/binary-tree-inorder-traversal/
         public IList<int> InorderTraversal(TreeNode root)
         {
+            // REVIEW: Morris traversal
+
             List<int> ret = new List<int>();
             while (root != null)
             {
@@ -118,7 +119,66 @@ namespace LeetCode.Csharp.Solutions2
             return ret;
         }
         
-        
+        // https://leetcode.com/problems/recover-binary-search-tree/
+        public void RecoverTree(TreeNode root)
+        {
+            // REVIEW: Morris traversal -> find the first pair of (bigger, smaller) to get left, and last pair of (bigger, smaller) to get right.
+            // REVIEW: 修改版Morris (还原树）
+            // example: 1, 6, 4, 2, 7 
+
+            TreeNode prev = null;
+            TreeNode first = null;
+            TreeNode second = null;
+
+            while (root != null)
+            {
+                if (root.left != null)
+                {
+                    // find the predecessor of root node.
+                    TreeNode node = root.left;
+                    while (node.right != null && node.right.val != root.val)
+                    {
+                        node = node.right;
+                    }
+
+                    // 一种不需要干掉left指针的方法：当重复找到同一个left子树的时候，重置right指针；
+                    if (node.right != null)
+                    {
+                        node.right = null;
+                    }
+                    else
+                    {
+                        // link predecessor & curr-node.
+                        node.right = root;
+                        root = root.left;
+                        continue;
+                    }
+                }
+
+                // either left is really null or we have already visited left side.
+                // OUTPUT: ret.Add(root.val);
+                if (prev != null && prev.val > root.val)
+                {
+                    if (first == null)
+                    {
+                        first = prev;
+                    }
+
+                    second = root;
+                }
+
+                prev = root;
+                root = root.right;
+            }
+
+            if (first != null)
+            {
+                int tmp = first.val;
+                first.val = second.val;
+                second.val = tmp;
+            }
+        }
+
         // https://leetcode.com/problems/count-of-smaller-numbers-after-self/
         public IList<int> CountSmaller(int[] nums)
         {

@@ -713,11 +713,39 @@ namespace LeetCode.Csharp.Solutions2
                 }
             }
         }
+        
+        // https://leetcode.com/problems/spiral-matrix-ii/
+        public int[][] GenerateMatrix(int n) {
+            int[][] ret = new int[n][];
+            for(int i=0;i<n;i++) ret[i] = new int[n];
+        
+            int[][] dirs = new int[][] { new int[] {0,1}, new int[]{1,0}, new int[]{0,-1}, new int[]{-1,0} };
+        
+            int val = 1;
+            int dir = 0;
+            int[] cur = new int[] {0,0};
+            while(val <= n*n) {
+                if(ret[cur[0]][cur[1]] == 0) {
+                    ret[cur[0]][cur[1]] = val;
+                    val++;
+                }
+            
+                int nx = cur[0] + dirs[dir][0];
+                int ny = cur[1] + dirs[dir][1];
+                if(nx < 0 || nx >= n || ny < 0 || ny >= n || ret[nx][ny] > 0) {
+                    dir = (dir + 1) % 4;
+                } else {
+                    cur[0] = nx;
+                    cur[1] = ny;
+                }
+            }
+        
+            return ret;
+        }
 
         public void Run()
         {
-            List<IList<int>> input = JsonConvert.DeserializeObject<List<IList<int>>>("[[0,1],[1,2],[2,0],[1,3]]");
-            Console.WriteLine(JsonConvert.SerializeObject(this.CriticalConnections(4, input)));
+            Console.WriteLine(JsonConvert.SerializeObject(this.GenerateMatrix(4)));
         }
     }
 }
