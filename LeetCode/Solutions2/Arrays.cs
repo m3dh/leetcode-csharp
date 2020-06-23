@@ -439,7 +439,7 @@ namespace LeetCode.Csharp.Solutions2
 
             return result.ToArray();
         }
-        
+
         // 480 - https://leetcode.com/problems/sliding-window-median/
         public double[] MedianSlidingWindow(int[] nums, int k)
         {
@@ -447,10 +447,10 @@ namespace LeetCode.Csharp.Solutions2
             List<double> ret = new List<double> {k % 2 == 0 ? ((double) (window[k / 2 - 1] + window[k / 2]) / 2) : (double) window[k / 2]};
             for (int i = k; i < nums.Length; i++)
             {
-               // Console.WriteLine("BEGIN: {0}, R:{1}, A:{2}", string.Join(", ", window), nums[i-k], nums[i]);
-                
+                // Console.WriteLine("BEGIN: {0}, R:{1}, A:{2}", string.Join(", ", window), nums[i-k], nums[i]);
+
                 window.Remove(nums[i - k]);
-                
+
                 int idx = -1;
                 for (int j = 0; j < window.Count; j++)
                 {
@@ -469,8 +469,8 @@ namespace LeetCode.Csharp.Solutions2
                 {
                     window.Add(nums[i]);
                 }
-                
-               // Console.WriteLine("END: {0}", string.Join(", ", window));
+
+                // Console.WriteLine("END: {0}", string.Join(", ", window));
 
                 ret.Add(k % 2 == 0 ? ((double) (window[k / 2 - 1] + window[k / 2]) / 2) : (double) window[k / 2]);
             }
@@ -494,7 +494,7 @@ namespace LeetCode.Csharp.Solutions2
                     nextPos = Math.Max(nextPos, lastPos + nums[lastPos]);
                     lastPos++;
                 }
-                
+
                 // lastPos = currPos;
                 currPos = nextPos;
                 steps++;
@@ -502,7 +502,7 @@ namespace LeetCode.Csharp.Solutions2
 
             return steps;
         }
-        
+
         // https://leetcode.com/problems/jump-game-iii/
         public bool CanReach(int[] arr, int start)
         {
@@ -516,7 +516,7 @@ namespace LeetCode.Csharp.Solutions2
                 int idx = q.Dequeue();
 
                 if (arr[idx] == 0) return true;
-                
+
                 int l = idx - arr[idx];
                 int r = idx + arr[idx];
                 if (l >= 0 && !visited[l])
@@ -534,7 +534,7 @@ namespace LeetCode.Csharp.Solutions2
 
             return false;
         }
-        
+
         // https://leetcode.com/problems/jump-game-iv/
         public int MinJumps(int[] arr)
         {
@@ -544,9 +544,9 @@ namespace LeetCode.Csharp.Solutions2
                 .ToDictionary(t => t.Key, t => t.Select(ti => ti.i).ToList());
 
             int count = 0;
-            int start = 0; 
+            int start = 0;
             bool[] visited = new bool[arr.Length];
-            List<int> step = new List<int> ();
+            List<int> step = new List<int>();
             step.Add(start);
             visited[start] = true;
             while (step.Count > 0)
@@ -567,7 +567,7 @@ namespace LeetCode.Csharp.Solutions2
                         visited[idx + 1] = true;
                         nextStep.Add(idx + 1);
                     }
-                    
+
                     foreach (int ni in valMap[arr[idx]])
                     {
                         if (!visited[ni])
@@ -576,10 +576,10 @@ namespace LeetCode.Csharp.Solutions2
                             nextStep.Add(ni);
                         }
                     }
-                    
+
                     valMap[arr[idx]] = new List<int>();
                 }
-                
+
                 count++;
                 step = nextStep;
             }
@@ -620,7 +620,7 @@ namespace LeetCode.Csharp.Solutions2
             for (int i = 0; i < nums.Length - 2; i++)
             {
                 if (i > 0 && nums[i - 1] == nums[i]) continue;
-                
+
                 int l = i + 1;
                 int r = nums.Length - 1;
                 while (l < r)
@@ -672,7 +672,7 @@ namespace LeetCode.Csharp.Solutions2
                     {
                         closets = sum;
                     }
-                    
+
                     if (sum == target)
                     {
                         return 0;
@@ -700,7 +700,7 @@ namespace LeetCode.Csharp.Solutions2
             {
                 int mid = (l + r) / 2; // This cannot be r, since in that case l >= r.
                 if (mid % 2 == 1) mid = mid - 1; // => mid % 2 == 0
-                
+
                 // Result only appears in i % 2 == 0
                 if (nums[mid] != nums[mid + 1])
                 {
@@ -722,11 +722,11 @@ namespace LeetCode.Csharp.Solutions2
         }
 
         private int Divide(int[] nums, int l, int r)
-        {            
+        {
             if (l >= r) return 0;
 
             int mid = (l + r) / 2;
-            
+
             // 注意mid+1的必须有，否则会爆栈
             int ret = Divide(nums, l, mid) + Divide(nums, mid + 1, r);
 
@@ -735,7 +735,7 @@ namespace LeetCode.Csharp.Solutions2
             int ji = mid + 1;
             while (li < mid + 1)
             {
-                while (ji <= r && nums[li] > (long)nums[ji] * 2) ji++;
+                while (ji <= r && nums[li] > (long) nums[ji] * 2) ji++;
                 ret += (ji - mid - 1);
                 li++;
             }
@@ -746,11 +746,11 @@ namespace LeetCode.Csharp.Solutions2
                 nums[i + l] = vals[i];
             }
 
-           // Console.WriteLine($"FROM:{l}, TO:{r}, RET: {ret}");
+            // Console.WriteLine($"FROM:{l}, TO:{r}, RET: {ret}");
 
             return ret;
         }
-        
+
         // https://leetcode.com/problems/remove-k-digits/
         public string RemoveKdigits(string num, int k)
         {
@@ -763,7 +763,7 @@ namespace LeetCode.Csharp.Solutions2
             foreach (char c in num)
             {
                 // Console.WriteLine(new string(s.Reverse().ToArray()));
-                
+
                 if (c >= s.Peek())
                 {
                     s.Push(c);
@@ -789,12 +789,12 @@ namespace LeetCode.Csharp.Solutions2
             var ret = (new string(s.Reverse().ToArray())).TrimStart('0');
             return string.IsNullOrEmpty(ret) ? "0" : ret;
         }
-        
+
         // https://leetcode.com/problems/create-maximum-number/
         public int[] MaxNumber(int[] nums1, int[] nums2, int k)
         {
             // REVIEW: 分解成3个问题：1.枚举从两个数组分别取几个（用单调栈），2.拼接最大数字，3.计算最大值
-            
+
             // TODO: Finish this before 5/18
 
             return null;
@@ -819,7 +819,7 @@ namespace LeetCode.Csharp.Solutions2
 
             return s.Reverse().ToArray();
         }
-        
+
         // https://leetcode.com/problems/maximum-sum-circular-subarray/
         public int MaxSubarraySumCircular(int[] A)
         {
@@ -844,12 +844,12 @@ namespace LeetCode.Csharp.Solutions2
 
             return A.All(a => a <= 0) ? max : Math.Max(max, sum - min);
         }
-        
+
         // https://leetcode.com/problems/longest-repeating-character-replacement/
         public int CharacterReplacement(string s, int k)
         {
             if (k + 1 >= s.Length) return s.Length;
-            
+
             // REVIEW: 扩大滑动窗口
             int[] cnts = new int[26];
             int r = -1;
@@ -869,7 +869,7 @@ namespace LeetCode.Csharp.Solutions2
                             break;
                         }
                     }
-                    
+
                     Console.WriteLine($"MOVE R: {r}, LEN: {len}, F: {f}");
 
                     if (f)
@@ -939,15 +939,15 @@ namespace LeetCode.Csharp.Solutions2
 
         public int[][] Insert(int[][] intervals, int[] newInterval)
         {
-            if (intervals.Length == 0) return new[]{newInterval};
+            if (intervals.Length == 0) return new[] {newInterval};
             if (newInterval[1] < intervals[0][0]) return new List<int[]> {newInterval}.Concat(intervals).ToArray();
             if (newInterval[0] > intervals.Last()[1]) return intervals.Concat(new List<int[]> {newInterval}).ToArray();
-            
+
             List<int[]> ret = new List<int[]>();
             bool inserted = false;
             bool foundRight = false;
             int insertIdx = -1;
-            for(int i=0;i<intervals.Length;i++)
+            for (int i = 0; i < intervals.Length; i++)
             {
                 if (!inserted)
                 {
@@ -975,7 +975,7 @@ namespace LeetCode.Csharp.Solutions2
                         ret.Add(newInterval);
                     }
                     // case 3 : right overlap.
-                    else if(intervals[i][0] <= newInterval[1] && intervals[i][1] >= newInterval[1])
+                    else if (intervals[i][0] <= newInterval[1] && intervals[i][1] >= newInterval[1])
                     {
                         // since this is not covered by case 1, there's no left overlaps.
                         intervals[i][0] = Math.Min(newInterval[0], intervals[i][0]);
@@ -983,7 +983,7 @@ namespace LeetCode.Csharp.Solutions2
                         foundRight = true;
                     }
                     // case 4 : cover
-                    else if(intervals[i][0] >= newInterval[0] && intervals[i][1] <= newInterval[1])
+                    else if (intervals[i][0] >= newInterval[0] && intervals[i][1] <= newInterval[1])
                     {
                         inserted = true;
                         foundRight = intervals[i][1] == newInterval[1];
@@ -992,7 +992,7 @@ namespace LeetCode.Csharp.Solutions2
                         if (!foundRight) insertIdx = i;
                     }
                     // case 5 : smaller
-                    else if(intervals[i][0] <= newInterval[0] && intervals[i][1] >= newInterval[1])
+                    else if (intervals[i][0] <= newInterval[0] && intervals[i][1] >= newInterval[1])
                     {
                         inserted = true;
                         foundRight = true;
@@ -1024,13 +1024,13 @@ namespace LeetCode.Csharp.Solutions2
 
             return ret.ToArray();
         }
-        
+
         // 901 - https://leetcode.com/problems/online-stock-span/
         public class StockSpanner
         {
             // REVIEW: 吃掉前面所有比我大的数的Span，因为我是最大的以后的人不需要再check我。
             private readonly Stack<Span> _spans = new Stack<Span>();
-            
+
             public StockSpanner()
             {
             }
@@ -1066,18 +1066,18 @@ namespace LeetCode.Csharp.Solutions2
                 {
                     return true;
                 }
-                
-                while(secNums.Any() && secNums.Peek() < num)
+
+                while (secNums.Any() && secNums.Peek() < num)
                 {
                     thirdNum = Math.Max(thirdNum, secNums.Pop());
                 }
-                
+
                 secNums.Push(num);
             }
 
             return false;
         }
-        
+
         // https://leetcode.com/problems/next-greater-element-i/
         public int[] NextGreaterElement1(int[] nums1, int[] nums2)
         {
@@ -1089,7 +1089,7 @@ namespace LeetCode.Csharp.Solutions2
                 {
                     rbs.Pop();
                 }
-                
+
                 lookup.Add(nums2[i], rbs.Count == 0 ? -1 : rbs.Peek());
                 rbs.Push(nums2[i]);
             }
@@ -1119,7 +1119,7 @@ namespace LeetCode.Csharp.Solutions2
         public int NextGreaterElement(int n)
         {
             int input = n;
-            
+
             List<int> nums = new List<int>();
             while (n > 0)
             {
@@ -1128,7 +1128,7 @@ namespace LeetCode.Csharp.Solutions2
                     int minGreater = nums.Where(nu => nu > n % 10).Min();
                     nums.Remove(minGreater);
                     nums.Add(n % 10);
-                    
+
                     n -= n % 10;
                     n += minGreater;
                     nums = nums.OrderBy(nu => nu).ToList();
@@ -1147,7 +1147,7 @@ namespace LeetCode.Csharp.Solutions2
 
             return -1;
         }
-        
+
         // https://leetcode.com/problems/daily-temperatures/
         public int[] DailyTemperatures(int[] T)
         {
@@ -1167,7 +1167,7 @@ namespace LeetCode.Csharp.Solutions2
 
             return ret;
         }
-        
+
         // https://leetcode.com/problems/find-median-from-data-stream/
         public class MedianFinder
         {
@@ -1271,12 +1271,12 @@ namespace LeetCode.Csharp.Solutions2
                 }
             }
         }
-        
+
         // https://leetcode.com/problems/interval-list-intersections/
         public int[][] IntervalIntersection(int[][] A, int[][] B)
         {
             List<int[]> result = new List<int[]>();
-            
+
             int ai = 0;
             int bi = 0;
             while (ai < A.Length && bi < B.Length)
@@ -1306,14 +1306,14 @@ namespace LeetCode.Csharp.Solutions2
 
             return result.ToArray();
         }
-        
+
         // https://leetcode.com/problems/course-schedule-iii/solution/
         public int ScheduleCourse(int[][] courses)
         {
             // 贪心法：尽可能使得当前耗时小
             List<int> costList = new List<int>();
             int currTime = 0;
-            
+
             // Pick the courses with early due date first.
             foreach (int[] course in courses.OrderBy(c => c[1]))
             {
@@ -1341,10 +1341,10 @@ namespace LeetCode.Csharp.Solutions2
                     }
                 }
             }
-            
+
             return costList.Count;
         }
-        
+
         // https://leetcode.com/problems/rotate-array/
         public void Rotate(int[] nums, int k)
         {
@@ -1360,7 +1360,7 @@ namespace LeetCode.Csharp.Solutions2
                 {
                     Console.WriteLine(JsonConvert.SerializeObject(nums));
 
-                    
+
                     int tmp = nums[idx];
                     nums[idx] = prev;
                     prev = tmp;
@@ -1373,7 +1373,7 @@ namespace LeetCode.Csharp.Solutions2
                 count++;
             }
         }
-        
+
         // https://leetcode.com/problems/palindrome-partitioning/
         public IList<IList<string>> Partition(string s)
         {
@@ -1422,7 +1422,7 @@ namespace LeetCode.Csharp.Solutions2
             {
                 return true;
             }
-            
+
             for (int i = 0; i < len / 2; i++)
             {
                 if (s[idx + i] != s[idx + len - i - 1])
@@ -1433,7 +1433,7 @@ namespace LeetCode.Csharp.Solutions2
 
             return true;
         }
-        
+
         // https://leetcode.com/problems/palindrome-partitioning-ii/
         public int MinCut(string s)
         {
@@ -1457,8 +1457,8 @@ namespace LeetCode.Csharp.Solutions2
             Console.WriteLine(string.Join(",", dp));
             return dp[s.Length - 1];
         }
-        
-        
+
+
         // https://leetcode.com/problems/palindromic-substrings/
         public int CountSubstrings(string s)
         {
@@ -1563,7 +1563,7 @@ namespace LeetCode.Csharp.Solutions2
 
             return ret;
         }
-        
+
         // https://leetcode.com/problems/queue-reconstruction-by-height/
         public int[][] ReconstructQueue(int[][] people)
         {
@@ -1610,7 +1610,7 @@ namespace LeetCode.Csharp.Solutions2
             int zp = 0;
             int tp = nums.Length - 1;
             int i = 0;
-            
+
             while (i < nums.Length)
             {
                 if (nums[i] == 0 && zp < i)
@@ -1639,7 +1639,7 @@ namespace LeetCode.Csharp.Solutions2
                 }
             }
         }
-        
+
         // https://leetcode.com/problems/insert-delete-getrandom-o1/
         public class RandomizedSet
         {
@@ -1716,7 +1716,7 @@ namespace LeetCode.Csharp.Solutions2
                 }
             }
         }
-        
+
         // https://leetcode.com/problems/insert-delete-getrandom-o1-duplicates-allowed/
         public class RandomizedCollection
         {
@@ -1801,25 +1801,25 @@ namespace LeetCode.Csharp.Solutions2
                 }
             }
         }
-        
+
         public string ValidIPAddress(string IP)
         {
             Dictionary<char, int> hexLetters = new Dictionary<char, int>
             {
-                ['a']=10,
-                ['A']=10,
-                ['b']=11,
-                ['B']=11,
-                ['c']=12,
-                ['C']=12,
-                ['d']=13,
-                ['D']=13,
-                ['e']=14,
-                ['E']=14,
-                ['f']=15,
-                ['F']=15,
+                ['a'] = 10,
+                ['A'] = 10,
+                ['b'] = 11,
+                ['B'] = 11,
+                ['c'] = 12,
+                ['C'] = 12,
+                ['d'] = 13,
+                ['D'] = 13,
+                ['e'] = 14,
+                ['E'] = 14,
+                ['f'] = 15,
+                ['F'] = 15,
             };
-            
+
             if (!string.IsNullOrEmpty(IP))
             {
                 bool ipv4 = IP.Count(c => c == '.') == 3;
@@ -1838,7 +1838,7 @@ namespace LeetCode.Csharp.Solutions2
                             {
                                 if (!char.IsDigit(c)) return "Neither";
                                 val = val * 10 + c - '0';
-                                
+
                                 if (val > 255) return "Neither";
                             }
                         }
@@ -1948,7 +1948,7 @@ namespace LeetCode.Csharp.Solutions2
                     }
                 }
             }
-            
+
             StringBuilder b = new StringBuilder();
             for (int i = 9; i >= 0; i--)
             {
@@ -1958,48 +1958,57 @@ namespace LeetCode.Csharp.Solutions2
                     cnts[i]--;
                 }
             }
-            
+
             string ret = b.ToString();
             return ret.Length > 1 && ret[0] == '0' ? "0" : ret;
         }
-        
+
         // https://leetcode.com/problems/decode-string/submissions/
-        public string DecodeString(string s) {
+        public string DecodeString(string s)
+        {
             int idx = 0;
-            return Decode(1, s, ref idx);   
+            return Decode(1, s, ref idx);
         }
-    
-        private string Decode(int factor, string s, ref int idx) {
+
+        private string Decode(int factor, string s, ref int idx)
+        {
             StringBuilder b = new StringBuilder();
-            while(true) {
-                if(idx == s.Length) {
+            while (true)
+            {
+                if (idx == s.Length)
+                {
                     return Return(factor, b.ToString());
                 }
-                else if (s[idx] == ']') {
+                else if (s[idx] == ']')
+                {
                     idx++;
                     return Return(factor, b.ToString());
                 }
-                else if (char.IsDigit(s[idx])) {
+                else if (char.IsDigit(s[idx]))
+                {
                     int nf = s[idx++] - '0';
-                    while(s[idx] != '[') {
-                        nf = nf*10 + s[idx++] - '0';
+                    while (s[idx] != '[')
+                    {
+                        nf = nf * 10 + s[idx++] - '0';
                     }
-                
+
                     idx++; // from '['
                     b.Append(Decode(nf, s, ref idx));
                 }
-                else {
+                else
+                {
                     b.Append(s[idx++]);
                 }
             }
         }
-    
-        private string Return(int factor, string s) {
+
+        private string Return(int factor, string s)
+        {
             StringBuilder b = new StringBuilder();
-            for(int i=0;i<factor;i++) b.Append(s);
+            for (int i = 0; i < factor; i++) b.Append(s);
             return b.ToString();
         }
-        
+
         // https://leetcode.com/problems/longest-duplicate-substring/
         public string LongestDupSubstring(string S)
         {
@@ -2032,12 +2041,12 @@ namespace LeetCode.Csharp.Solutions2
                 return idx >= 0 ? S.Substring(idx, l - 1) : "";
             }
         }
-        
+
         private int LongestDupSubstring(int[] str, int len, string s)
         {
             // Starting index and their robin-karp decoded values.
             Dictionary<long, int> rkHash = new Dictionary<long, int>();
-            long mod = (long)Math.Pow(2, 63);
+            long mod = (long) Math.Pow(2, 63);
             long removal = 1;
             for (int i = 1; i < len; i++) removal = removal * 26 % mod;
 
@@ -2051,21 +2060,199 @@ namespace LeetCode.Csharp.Solutions2
             for (int i = 1; i <= str.Length - len; i++)
             {
                 hash = (hash - removal * (str[i - 1])) * 26 + str[i + len - 1];
-                
+
                 if (rkHash.TryGetValue(hash, out int idx))
                 {
                     return idx;
                 }
-                
+
                 rkHash[hash] = i;
             }
 
             return -1;
         }
 
+        public string GetPermutation(int n, int k)
+        {
+            StringBuilder b = new StringBuilder();
+
+            int m = 1; // the count of sub permutations.
+            int f = 1; // the last multiply factor.
+            for (; f < n; f++) m = m * f;
+
+            k = k - 1; // k starts from 0.
+            bool[] used = new bool[n];
+
+            while (b.Length < n)
+            {
+                f--;
+
+                int ordinal = k / m;
+                k = k % m;
+
+                int skip = 0;
+                for (int i = 0; i < used.Length; i++)
+                {
+                    if (!used[i])
+                    {
+                        if (skip == ordinal)
+                        {
+                            b.Append((i + 1).ToString());
+                            used[i] = true;
+                            break;
+                        }
+                        else
+                        {
+                            skip++;
+                        }
+                    }
+                }
+
+                if (f > 0)
+                {
+                    m = m / f;
+                }
+            }
+
+            return b.ToString();
+        }
+
+        // https://leetcode.com/problems/next-permutation/
+        public void NextPermutation(int[] nums)
+        {
+            // the idea is to find the right most number that could be replaced by a larger number on it's right, or there's not result.
+            for (int i = nums.Length - 1; i >= 1; i--)
+            {
+                if (nums[i - 1] < nums[i])
+                {
+                    int numIdx = i - 1;
+                    int minIdx = -1;
+                    for (int j = i; j < nums.Length; j++)
+                    {
+                        // Corner case : if use <, may not be increasing. 
+                        if (nums[j] <= nums[numIdx])
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            // Find till the last bigger than num
+                            minIdx = j;
+                        }
+                    }
+
+                    // swap
+                    int tmp = nums[minIdx];
+                    nums[minIdx] = nums[numIdx];
+                    nums[numIdx] = tmp;
+
+                    Array.Reverse(nums, i, nums.Length - i);
+                    return;
+                }
+            }
+
+            Array.Reverse(nums);
+        }
+
+        // https://leetcode.com/problems/decoded-string-at-index/
+        public string DecodeAtIndex(string S, int K)
+        {
+            int i = 0;
+            long len = 0;
+            while (len < K)
+            {
+                if (char.IsDigit(S[i]))
+                {
+                    len *= (S[i] - '0');
+                }
+                else
+                {
+                    len++;
+                }
+
+                i++;
+            }
+
+            i--;
+            while (i >= 0)
+            {
+                if (char.IsDigit(S[i]))
+                {
+                    len /= (S[i] - '0');
+
+                    if (K % len == 0)
+                    {
+                        K = (int) len;
+                    }
+                    else
+                    {
+                        K = (int) (K % len);
+                    }
+                }
+                else
+                {
+                    if (K == len)
+                    {
+                        return S[i].ToString();
+                    }
+                    else
+                    {
+                        len--;
+                    }
+                }
+
+                i--;
+            }
+
+            return null;
+        }
+        
+        // https://leetcode.com/problems/delete-columns-to-make-sorted-ii/
+        public int MinDeletionSize(string[] A)
+        {
+            // REVIEW ME
+            
+            if (A.Length == 0) return 0;
+
+            int ret = 0;
+            int sLen = A[0].Length;
+
+            // marks that the current item has clearly wins the [previous] one.
+            bool[] cut = new bool[A.Length];
+            for (int i = 0; i < sLen; i++)
+            {
+                bool canKeep = true;
+                for (int j = 1; j < A.Length; j++)
+                {
+                    if (!cut[j] && A[j][i] < A[j - 1][i])
+                    {
+                        ret++;
+
+                        // current column cannot used to cut. (to be removed)
+                        canKeep = false;
+                        break;
+                    }
+                }
+
+                if (canKeep)
+                {
+                    for (int j = 1; j < A.Length; j++)
+                    {
+                        // not a tie
+                        if (A[j][i] > A[j - 1][i])
+                        {
+                            cut[j] = true;
+                        }
+                    }
+                }
+            }
+
+            return ret;
+        }
+
         public void Run()
         {
-            Console.WriteLine(this.LongestDupSubstring("moplvidmaagmsiyyrkchbyhivlqwqsjcgtumqscmxrxrvwsnjjvygrelcbjgbpounhuyealllginkitfaiviraqcycjmskrozcdqylbuejrgfnquercvghppljmojfvylcxakyjxnampmakyjbqgwbyokaybcuklkaqzawageypfqhhasetugatdaxpvtevrigynxbqodiyioapgxqkndujeranxgebnpgsukybyowbxhgpkwjfdywfkpufcxzzqiuglkakibbkobonunnzwbjktykebfcbobxdflnyzngheatpcvnhdwkkhnlwnjdnrmjaevqopvinnzgacjkbhvsdsvuuwwhwesgtdzuctshytyfugdqswvxisyxcxoihfgzxnidnfadphwumtgdfmhjkaryjxvfquucltmuoosamjwqqzeleaiplwcbbxjxxvgsnonoivbnmiwbnijkzgoenohqncjqnckxbhpvreasdyvffrolobxzrmrbvwkpdbfvbwwyibydhndmpvqyfmqjwosclwxhgxmwjiksjvsnwupraojuatksjfqkvvfroqxsraskbdbgtppjrnzpfzabmcczlwynwomebvrihxugvjmtrkzdwuafozjcfqacenabmmxzcueyqwvbtslhjeiopgbrbvfbnpmvlnyexopoahgmwplwxnxqzhucdieyvbgtkfmdeocamzenecqlbhqmdfrvpsqyxvkkyfrbyolzvcpcbkdprttijkzcrgciidavsmrczbollxbkytqjwbiupvsorvkorfriajdtsowenhpmdtvamkoqacwwlkqfdzorjtepwlemunyrghwlvjgaxbzawmikfhtaniwviqiaeinbsqidetfsdbgsydkxgwoqyztaqmyeefaihmgrbxzyheoegawthcsyyrpyvnhysynoaikwtvmwathsomddhltxpeuxettpbeftmmyrqclnzwljlpxazrzzdosemwmthcvgwtxtinffopqxbufjwsvhqamxpydcnpekqhsovvqugqhbgweaiheeicmkdtxltkalexbeftuxvwnxmqqjeyourvbdfikqnzdipmmmiltjapovlhkpunxljeutwhenrxyfeufmzipqvergdkwptkilwzdxlydxbjoxjzxwcfmznfqgoaemrrxuwpfkftwejubxkgjlizljoynvidqwxnvhngqakmmehtvykbjwrrrjvwnrteeoxmtygiiygynedvfzwkvmffghuduspyyrnftyvsvjstfohwwyxhmlfmwguxxzgwdzwlnnltpjvnzswhmbzgdwzhvbgkiddhirgljbflgvyksxgnsvztcywpvutqryzdeerlildbzmtsgnebvsjetdnfgikrbsktbrdamfccvcptfaaklmcaqmglneebpdxkvcwwpndrjqnpqgbgihsfeotgggkdbvcdwfjanvafvxsvvhzyncwlmqqsmledzfnxxfyvcmhtjreykqlrfiqlsqzraqgtmocijejneeezqxbtomkwugapwesrinfiaxwxradnuvbyssqkznwwpsbgatlsxfhpcidfgzrc"));
+            Console.WriteLine(DecodeAtIndex("ll2", 4));
         }
     }
 }

@@ -1058,6 +1058,50 @@ namespace LeetCode.Csharp.Solutions2
 
             return maxNeed;
         }
+        
+        // https://leetcode.com/problems/dungeon-game/
+        public int CalculateMinimumHP(int[][] dungeon)
+        {
+            // dp means the required minimal health to enter each of the positions.
+            int[][] dp = new int[dungeon.Length][];
+            for (int i = 0; i < dp.Length; i++)
+            {
+                dp[i] = new int[dungeon[i].Length];
+            }
+
+            for (int i = dp.Length - 1; i >= 0; i--)
+            {
+                for (int j = dp[i].Length - 1; j >= 0; j--)
+                {
+                    if (i == dp.Length - 1 && j == dp[i].Length - 1)
+                    {
+                        dp[i][j] = Math.Max(1, 1 - dungeon[i][j]);
+                    }
+                    else if (i == dp.Length - 1)
+                    {
+                        dp[i][j] = Math.Max(1, dp[i][j + 1] - dungeon[i][j]);
+                    }
+                    else if (j == dp[i].Length - 1)
+                    {
+                        dp[i][j] = Math.Max(1, dp[i + 1][j] - dungeon[i][j]);
+                    }
+                    else
+                    {
+                        dp[i][j] = Math.Max(1, Math.Min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j]);
+                    }
+                }
+            }
+
+            return dp[0][0];
+        }
+        
+        
+        // https://leetcode.com/problems/cherry-pickup/
+        public int CherryPickup(int[][] grid)
+        {
+            // TODO (too hard)
+            return -1;
+        }
 
         public void Run()
         {

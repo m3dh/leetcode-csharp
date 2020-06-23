@@ -16,7 +16,7 @@
     {
         public static void Main()
         {
-            new Search().Run();
+            new Arrays().Run();
         }
     }
 }
