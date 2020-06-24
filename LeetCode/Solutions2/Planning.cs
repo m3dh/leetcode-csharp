@@ -1,4 +1,3 @@
-
 namespace LeetCode.Csharp.Solutions2
 {
     using System;
@@ -1101,6 +1100,40 @@ namespace LeetCode.Csharp.Solutions2
         {
             // TODO (too hard)
             return -1;
+        }
+
+        // https://leetcode.com/problems/unique-binary-search-trees-ii/
+        public IList<TreeNode> GenerateTrees(int n)
+        {
+            if (n == 0) return new List<TreeNode>();
+            return this.GenerateTreesRec(1, n);
+        }
+
+        public List<TreeNode> GenerateTreesRec(int start, int len)
+        {
+            if (len == 0) return new List<TreeNode> { null };
+            if (len == 1) return new List<TreeNode> { new TreeNode(start) };
+            else
+            {
+                List<TreeNode> ret = new List<TreeNode>();
+                for (int llen = 0; llen < len; llen++)
+                {
+                    List<TreeNode> lset = GenerateTreesRec(start, llen);
+                    List<TreeNode> rset = GenerateTreesRec(start + llen + 1, len - llen - 1);
+                    for (int i = 0; i < lset.Count; i++)
+                    {
+                        for (int j = 0; j < rset.Count; j++)
+                        {
+                            var node = new TreeNode(start + llen);
+                            node.left = lset[i];
+                            node.right = rset[j];
+                            ret.Add(node);
+                        }
+                    }
+                }
+
+                return ret;
+            }
         }
 
         public void Run()
