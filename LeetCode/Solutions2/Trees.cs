@@ -229,6 +229,192 @@ namespace LeetCode.Csharp.Solutions2
             return cnt;
         }
 
+        // https://leetcode.com/problems/path-sum-ii/
+        public IList<IList<int>> PathSum2(TreeNode root, int sum)
+        {
+            IList<IList<int>> result = new List<IList<int>>();
+            this.PathSum2(root, sum, new List<int>(), 0, result);
+            return result;
+        }
+
+        private void PathSum2(TreeNode root, int sum, List<int> path, int pLen, IList<IList<int>> result)
+        {
+            if (root == null) return;
+
+            if (path.Count <= pLen)
+            {
+                path.Add(root.val);
+            }
+            else
+            {
+                path[pLen] = root.val;
+            }
+            
+            if (root.left == null && root.right == null)
+            {
+                if (sum - root.val == 0)
+                {
+                    result.Add(path.Take(pLen + 1).ToArray());
+                }
+            }
+            else
+            {
+                this.PathSum2(root.left, sum - root.val, path, pLen + 1, result);
+                this.PathSum2(root.right, sum - root.val, path, pLen + 1, result);
+            }
+        }
+        
+        // https://leetcode.com/problems/path-sum-iii/
+        public int PathSum(TreeNode root, int sum)
+        {
+            int result = 0;
+            this.PathSum(root, sum, 0, new List<int>(), 0, ref result);
+            return result;
+        }
+
+        private void PathSum(TreeNode root, int sum, int cur, List<int> path, int pLen, ref int result)
+        {
+            if (root == null) return;
+
+            if (path.Count <= pLen)
+            {
+                path.Add(root.val);
+            }
+            else
+            {
+                path[pLen] = root.val;
+            }
+
+            pLen++;
+            cur += root.val;
+
+            int t = cur;
+            if (t == sum) result++;
+            for (int i = 0; i < pLen - 1; i++)
+            {
+                t -= path[i];
+                if (t == sum) result++;
+            }
+            
+            this.PathSum(root.left, sum, cur, path, pLen + 1, ref result);
+            this.PathSum(root.right, sum, cur, path, pLen + 1, ref result);
+        }
+
+        // https://leetcode.com/problems/validate-binary-search-tree/
+        public bool IsValidBST(TreeNode root)
+        {
+            // use int? to handle corner cases...
+            return root == null || (IsValidBstRec(root.left, null, root.val) && IsValidBstRec(root.right, root.val, null));
+        }
+
+        public bool IsValidBstRec(TreeNode root, int? curMin, int? curMax)
+        {
+            if (root == null)
+            {
+                return true;
+            }
+            else if ( (curMin != null && root.val <= curMin.Value) || (curMax != null && root.val >= curMax.Value))
+            {
+                return false;
+            }
+            else
+            {
+                bool ret = IsValidBstRec(root.left, curMin, root.val) && IsValidBstRec(root.right, root.val, curMax);
+                return ret;
+            }
+        }
+
+        // https://leetcode.com/problems/find-mode-in-binary-search-tree/
+        public int[] FindMode(TreeNode root)
+        {
+            // In-order traversal
+            List<int> modes = new List<int>();
+            int pre = -1;
+            int len = 0;
+            int mLen = 0;
+            FindModeRec(root, ref pre, ref len, ref mLen, modes);
+            return modes.ToArray();
+        }
+
+        public void FindModeRec(TreeNode root, ref int pre, ref int len, ref int mLen, List<int> modes)
+        {
+            if (root == null) return;
+
+            if (root.left != null) FindModeRec(root.left, ref pre, ref len, ref mLen, modes);
+
+            if (len == 0 || pre != root.val)
+            {
+                len = 1;
+                pre = root.val;
+            }
+            else if (pre == root.val)
+            {
+                len++;
+            }
+
+            if (len > mLen)
+            {
+                modes.Clear();
+                modes.Add(root.val);
+                mLen = len;
+            }
+            else if (len == mLen)
+            {
+                modes.Add(root.val);
+            }
+
+            if (root.right != null) FindModeRec(root.right, ref pre, ref len, ref mLen, modes);
+        }
+
+        // https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
+        public class Codec
+        {
+            public string serialize(TreeNode root)
+            {
+                List<int?> buffer = new List<int?>();
+                Serialize(root, buffer);
+                return string.Join("|", buffer.Select(item => item == null ? "n" : item.Value.ToString()));
+            }
+
+            public TreeNode deserialize(string data)
+            {
+                List<int?> buffer = data.Split("|").Select(item => item == "n" ? null : (int?) int.Parse(item)).ToList();
+                int idx = 0;
+                return Deserialize(ref idx, buffer);
+            }
+
+            private void Serialize(TreeNode root, List<int?> buffer)
+            {
+                if (root == null)
+                {
+                    buffer.Add(null);
+                }
+                else
+                {
+                    buffer.Add(root.val);
+                    Serialize(root.left, buffer);
+                    Serialize(root.right, buffer);
+                }
+            }
+
+            private TreeNode Deserialize(ref int idx, List<int?> buffer)
+            {
+                if (buffer[idx] == null)
+                {
+                    idx++;
+                    return null;
+                }
+                else
+                {
+                    TreeNode n = new TreeNode(buffer[idx].Value);
+                    idx++;
+                    n.left = Deserialize(ref idx, buffer);
+                    n.right = Deserialize(ref idx, buffer);
+                    return n;
+                }
+            }
+        }
+
         public void Run()
         {
             Console.WriteLine(CountRangeSum(new []{-2147483647,0,-2147483647,2147483647}, -5, 64));
