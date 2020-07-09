@@ -743,6 +743,38 @@ namespace LeetCode.Csharp.Solutions2
             return ret;
         }
 
+        public int IslandPerimeter(int[][] grid)
+        {
+            int cnt = 0;
+
+            int[][] dirs = new int[][] { new int[] { 0, 1 }, new int[] { 1, 0 }, new int[] { 0, -1 }, new int[] { -1, 0 } };
+
+            for (int i = 0; i < grid.Length; i++)
+            {
+                for (int j = 0; j < grid[i].Length; j++)
+                {
+                    if (grid[i][j] == 1)
+                    {
+                        for (int k = 0; k < dirs.Length; k++)
+                        {
+                            int ii = i + dirs[k][0];
+                            int jj = j + dirs[k][1];
+                            if (ii < 0 || ii >= grid.Length || jj < 0 || jj >= grid[i].Length)
+                            {
+                                cnt++;
+                            }
+                            else if (grid[ii][jj] == 0)
+                            {
+                                cnt++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return cnt;
+        }
+
         public void Run()
         {
             Console.WriteLine(JsonConvert.SerializeObject(this.GenerateMatrix(4)));

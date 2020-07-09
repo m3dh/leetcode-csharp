@@ -26,7 +26,7 @@ namespace LeetCode.Csharp.Solutions2
         {
             List<IList<int>> ret = new List<IList<int>>();
             bool directFromLeft = false;
-            List<TreeNode> roots = new List<TreeNode> {root};
+            List<TreeNode> roots = new List<TreeNode> { root };
             while (roots.Count > 0)
             {
                 List<int> level = new List<int>();
@@ -52,7 +52,7 @@ namespace LeetCode.Csharp.Solutions2
         {
             if (root == null) return;
             if (store.TryGetValue(x, out IList<Tuple<int, int>> nodes)) nodes.Add(Tuple.Create(y, root.val));
-            else store[x] = new List<Tuple<int, int>> {Tuple.Create(y, root.val)};
+            else store[x] = new List<Tuple<int, int>> { Tuple.Create(y, root.val) };
             this.Lc987Recursion(root.left, x - 1, y - 1, store);
             this.Lc987Recursion(root.right, x + 1, y - 1, store);
         }
@@ -118,7 +118,7 @@ namespace LeetCode.Csharp.Solutions2
 
             return ret;
         }
-        
+
         // https://leetcode.com/problems/recover-binary-search-tree/
         public void RecoverTree(TreeNode root)
         {
@@ -197,22 +197,22 @@ namespace LeetCode.Csharp.Solutions2
         {
             long sum = 0;
             int cnt = 0;
-            
+
             // Find greater or equal than.
             BoundBinaryTree lowerBounder = new BoundBinaryTree();
             lowerBounder.Add(0);
-            
+
             // Find smaller or equal than.
             BoundBinaryTree upperBounder = new BoundBinaryTree();
             upperBounder.Add(0);
-            
+
             foreach (int num in nums)
             {
                 sum += num;
-                
+
                 // sum - ? >= lower  ->  -? >= lower - sum
                 // sum - ? <= upper  ->  -? <= upper - sum   ->    ?  >=  sum - upper
-                
+
                 // Find how many sums have been found between 
                 int greaterOrEqualThanLowerCnt = lowerBounder.Count - lowerBounder.CountSmallerThan(lower - sum);
                 int lessOrEqualThanUpperCnt = upperBounder.Count - upperBounder.CountSmallerThan(sum - upper);
@@ -221,7 +221,7 @@ namespace LeetCode.Csharp.Solutions2
                 {
                     cnt += greaterOrEqualThanLowerCnt + lessOrEqualThanUpperCnt - lowerBounder.Count;
                 }
-                
+
                 lowerBounder.Add(-sum);
                 upperBounder.Add(sum);
             }
@@ -249,7 +249,7 @@ namespace LeetCode.Csharp.Solutions2
             {
                 path[pLen] = root.val;
             }
-            
+
             if (root.left == null && root.right == null)
             {
                 if (sum - root.val == 0)
@@ -263,7 +263,7 @@ namespace LeetCode.Csharp.Solutions2
                 this.PathSum2(root.right, sum - root.val, path, pLen + 1, result);
             }
         }
-        
+
         // https://leetcode.com/problems/path-sum-iii/
         public int PathSum(TreeNode root, int sum)
         {
@@ -295,7 +295,7 @@ namespace LeetCode.Csharp.Solutions2
                 t -= path[i];
                 if (t == sum) result++;
             }
-            
+
             this.PathSum(root.left, sum, cur, path, pLen + 1, ref result);
             this.PathSum(root.right, sum, cur, path, pLen + 1, ref result);
         }
@@ -313,7 +313,7 @@ namespace LeetCode.Csharp.Solutions2
             {
                 return true;
             }
-            else if ( (curMin != null && root.val <= curMin.Value) || (curMax != null && root.val >= curMax.Value))
+            else if ((curMin != null && root.val <= curMin.Value) || (curMax != null && root.val >= curMax.Value))
             {
                 return false;
             }
@@ -415,9 +415,58 @@ namespace LeetCode.Csharp.Solutions2
             }
         }
 
+        // https://leetcode.com/problems/maximum-width-of-binary-tree/
+        public int WidthOfBinaryTree(TreeNode root)
+        {
+            int width = 0;
+            if (root != null)
+            {
+                List<TreeNode> level = new List<TreeNode> { root };
+                while (true)
+                {
+                    width = Math.Max(width, level.Count);
+
+                    List<TreeNode> next = new List<TreeNode>();
+                    foreach (TreeNode t in level)
+                    {
+                        if (t != null)
+                        {
+                            next.Add(t.left);
+                            next.Add(t.right);
+                        }
+                        else
+                        {
+                            next.Add(null);
+                            next.Add(null);
+                        }
+                    }
+
+                    int l = 0;
+                    int r = next.Count - 1;
+                    while (l < next.Count && next[l] == null) l++;
+                    while (r >= 0 && next[r] == null) r--;
+
+                    if (l <= r)
+                    {
+                        level = new List<TreeNode>();
+                        for (int i = l; i <= r; i++)
+                        {
+                            level.Add(next[i]);
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return width;
+        }
+
         public void Run()
         {
-            Console.WriteLine(CountRangeSum(new []{-2147483647,0,-2147483647,2147483647}, -5, 64));
+            Console.WriteLine(CountRangeSum(new[] { -2147483647, 0, -2147483647, 2147483647 }, -5, 64));
         }
     }
 }
