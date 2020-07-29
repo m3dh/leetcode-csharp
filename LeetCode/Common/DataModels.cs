@@ -25,6 +25,13 @@ namespace LeetCode.Csharp.Common
         {
             val = x;
         }
+
+        public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
+        {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
     }
 
     public class BinaryMatrix

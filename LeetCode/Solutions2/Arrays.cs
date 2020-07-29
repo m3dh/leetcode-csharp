@@ -2250,9 +2250,52 @@ namespace LeetCode.Csharp.Solutions2
             return ret;
         }
 
+        public string ReverseWords(string s)
+        {
+            List<char> ret = new List<char>();
+
+            bool needASpace = false;
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (s[i] == ' ')
+                {
+                    needASpace = ret.Count() > 0;
+                }
+                else
+                {
+                    if (needASpace)
+                    {
+                        ret.Add(' ');
+                        needASpace = false;
+                    }
+
+                    ret.Add(s[i]);
+                }
+            }
+
+            int l = 0;
+            for (int i = 0; i < ret.Count(); i++)
+            {
+                if (i + 1 == ret.Count() || ret[i + 1] == ' ')
+                {
+                    int r = i;
+                    for (int k = 0; k < (r - l + 1) / 2; k++)
+                    {
+                        char t = ret[k + l];
+                        ret[k + l] = ret[r - k];
+                        ret[r - k] = t;
+                    }
+
+                    l = r + 2;
+                }
+            }
+
+            return new string(ret.Where(c => true).Reverse().ToArray());
+        }
+
         public void Run()
         {
-            Console.WriteLine(DecodeAtIndex("ll2", 4));
+            Console.WriteLine(ReverseWords("the sky is blue"));
         }
     }
 }

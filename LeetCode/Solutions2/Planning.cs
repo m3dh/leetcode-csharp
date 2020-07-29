@@ -36,7 +36,7 @@ namespace LeetCode.Csharp.Solutions2
         }
 
         // 122 - https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
-        public int MaxProfit(int[] prices)
+        public int MaxProfit0(int[] prices)
         {
             // REVIEW: 局部性思维
             int maxProfit = 0;
@@ -1136,8 +1136,41 @@ namespace LeetCode.Csharp.Solutions2
             }
         }
 
+        public int MaxProfit(int[] prices)
+        {
+            int[] sold = new int[prices.Length]; // just sold
+            int[] bought = new int[prices.Length]; // just bought
+            int[] restIn = new int[prices.Length];
+            int[] restOut = new int[prices.Length];
+
+            for (int i = 0; i < prices.Length; i++)
+            {
+                if (i == 0)
+                {
+                    sold[0] = Int32.MinValue; // not possible to sell @ day 0
+                    restIn[0]= Int32.MinValue;; // not possible to restIn @ day 0
+                    bought[0] = -prices[0];
+                    restOut[0] = 0;
+                }
+                else
+                {
+                    sold[i] = Math.Max(prices[i] + restIn[i - 1], prices[i] + bought[i - 1]);
+                    restIn[i] = Math.Max(restIn[i - 1], bought[i - 1]);
+                    bought[i] = restOut[i - 1] - prices[i];
+                    restOut[i] = Math.Max(restOut[i - 1], sold[i - 1]);
+                }
+            }
+
+            // Console.WriteLine(string.Join(", ", sold));
+            // Console.WriteLine(string.Join(", ", restIn));
+            // Console.WriteLine(string.Join(", ", restOut));
+
+            return Math.Max(sold[prices.Length - 1], restOut[prices.Length - 1]);
+        }
+
         public void Run()
         {
+            MaxProfit(new[] { 1, 2, 3, 0, 2 });
         }
     }
 }

@@ -464,9 +464,44 @@ namespace LeetCode.Csharp.Solutions2
             return width;
         }
 
+        public TreeNode BuildTree(int[] inorder, int[] postorder)
+        {
+            Stack<int> s = new Stack<int>();
+            foreach (int n in postorder)
+            {
+                s.Push(n);
+            }
+
+            return BuildTree(0, inorder.Count() - 1, inorder, s);
+        }
+
+        private TreeNode BuildTree(int l, int r, int[] inorder, Stack<int> s)
+        {
+            Console.WriteLine($"L:{l}, R:{r}");
+
+            if (l > r) return null;
+
+            int root = s.Pop();
+            Console.WriteLine($"L:{l}, R:{r}, ROOT:{root}");
+            for (int i = l; i <= r; i++)
+            {
+                if (inorder[i] == root)
+                {
+                    var rn = BuildTree(i + 1, r, inorder, s);
+                    var ln = BuildTree(l, i - 1, inorder, s);
+
+                    TreeNode node = new TreeNode(root, ln, rn);
+                    return node;
+                }
+            }
+
+            // ??
+            return null;
+        }
+
         public void Run()
         {
-            Console.WriteLine(CountRangeSum(new[] { -2147483647, 0, -2147483647, 2147483647 }, -5, 64));
+            var t = BuildTree(new[] { 9, 3, 15, 20, 7 }, new[] { 9, 15, 7, 20, 3 });
         }
     }
 }
