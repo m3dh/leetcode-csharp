@@ -1168,6 +1168,40 @@ namespace LeetCode.Csharp.Solutions2
             return Math.Max(sold[prices.Length - 1], restOut[prices.Length - 1]);
         }
 
+        public int NumFactoredBinaryTrees(int[] A)
+        {
+            int mod = 1_000_000_007;
+            A = A.OrderBy(a => a).ToArray();
+            long[] dp = new long[A.Length];
+
+            Dictionary<int, int> map = new Dictionary<int, int>();
+            for (int i = 0; i < dp.Length; i++)
+            {
+                dp[i] = 1;
+                map[A[i]] = i;
+            }
+
+            for (int i = 0; i < dp.Length; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    if (A[i] % A[j] == 0 && map.TryGetValue(A[i] / A[j], out int idx))
+                    {
+                        dp[i] += dp[j] * dp[idx] % mod;
+                    }
+                }
+            }
+
+            long ret = 0;
+            for (int i = 0; i < dp.Length; i++)
+            {
+                ret = ret + dp[i];
+                ret %= mod;
+            }
+
+            return (int) ret;
+        }
+
         public void Run()
         {
             MaxProfit(new[] { 1, 2, 3, 0, 2 });
