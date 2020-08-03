@@ -16,7 +16,7 @@
     {
         public static void Main()
         {
-            new Planning().Run();
+            new Search().Run();
         }
     }
 }

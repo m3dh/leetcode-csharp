@@ -775,9 +775,118 @@ namespace LeetCode.Csharp.Solutions2
             return cnt;
         }
 
+        // https://leetcode.com/problems/course-schedule-iv/
+        public IList<bool> CheckIfPrerequisite(int n, int[][] prerequisites, int[][] queries)
+        {
+            // A simple solution
+            List<int>[] deps = new List<int>[n];
+            foreach (int[] prerequisite in prerequisites)
+            {
+                int first = prerequisite[0];
+                int second = prerequisite[1];
+                if (deps[second] != null)
+                {
+                    deps[second].Add(first);
+                }
+                else
+                {
+                    deps[second] = new List<int> { first };
+                }
+            }
+
+            bool[] ret = new bool[queries.Length];
+            int[][] memo = new int[n][];
+            for(int i=0;i<n;i++) memo[i] = new int[n];
+            for (int i = 0; i < ret.Length; i++)
+            {
+                ret[i] = CheckIfPrerequisite(deps, queries[i][0], queries[i][1], memo);
+            }
+
+            return ret;
+        }
+
+        private bool CheckIfPrerequisite(List<int>[] deps, int to, int from, int[][] memo)
+        {
+            if (to == from) return true;
+
+            if (deps[from] != null)
+            {
+                if (memo[to][from] != 0) return memo[to][from] > 0;
+
+                bool found = false;
+                foreach (int i in deps[from])
+                {
+                    if (CheckIfPrerequisite(deps, to, i, memo))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                memo[to][from] = found ? 1 : -1;
+                return found;
+            }
+
+            return false;
+        }
+
+        public int KthSmallest(int[][] matrix, int k)
+        {
+            int n = matrix.Length;
+            int[] idx = new int[n];
+            int start = 0;
+            while (true)
+            {
+                int cMin = int.MaxValue;
+                int cIdx = -1;
+                for (int i = start; i < n; i++)
+                {
+                    if (idx[i] == n)
+                    {
+                        start = i + 1;
+                        continue;
+                    }
+                    else
+                    {
+                        if (cMin > matrix[i][idx[i]])
+                        {
+                            cMin = matrix[i][idx[i]];
+                            cIdx = i;
+
+                           // Console.WriteLine($"{i} - {cMin}");
+                        }
+                        else if (idx[i] == 0)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                if (k == 1)
+                {
+                    return cMin;
+                }
+                else
+                {
+                   // Console.WriteLine($">> {cMin}");
+                    k--;
+                    idx[cIdx]++;
+                }
+            }
+        }
+
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(this.GenerateMatrix(4)));
+            // [
+            // [1,4,7,11,15],
+            // [2,5,8,12,19],
+            // [3,6,9,16,22],
+            // [10,13,14,17,24],
+            // [18,21,23,26,30]]
+
+            string input = "[[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]]";
+
+            Console.WriteLine(JsonConvert.SerializeObject(this.KthSmallest(JsonConvert.DeserializeObject<int[][]>(input), 20)));
         }
     }
 }
