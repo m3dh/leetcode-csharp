@@ -16,7 +16,6 @@
     {
         public static void Main()
         {
-            new Search().Run();
         }
     }
 }

@@ -874,7 +874,7 @@ namespace LeetCode.Csharp.Solutions2
         }
         
         // https://leetcode.com/problems/wildcard-matching/
-        public bool IsMatch(string s, string p)
+        public bool IsMatchWildcard(string s, string p)
         {
             // DP than DFA.
             while (p.Contains("**"))
@@ -1202,9 +1202,74 @@ namespace LeetCode.Csharp.Solutions2
             return (int) ret;
         }
 
+        // https://leetcode.com/problems/regular-expression-matching/
+        public bool IsMatch(string s, string p)
+        {
+            return IsMatchRegex(s, 0, p, 0, new Dictionary<string, bool>());
+        }
+
+        private bool IsMatchRegex(string s, int si, string p, int pi, Dictionary<string, bool> memo)
+        {
+            if (si == s.Length && pi == p.Length) return true;
+            if (pi == p.Length) return false;
+
+            string key = $"{si}-{pi}";
+            if (!memo.TryGetValue(key, out bool ret))
+            {
+                ret = false;
+                if (p[pi] == '.')
+                {
+                    if (pi + 1 < p.Length && p[pi + 1] == '*')
+                    {
+                        for (int sn = si; sn <= s.Length; sn++)
+                        {
+                            if (IsMatchRegex(s, sn, p, pi + 2, memo))
+                            {
+                                ret = true;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ret = IsMatchRegex(s, si + 1, p, pi + 1, memo);
+                    }
+                }
+                else
+                {
+                    if (pi + 1 < p.Length && p[pi + 1] == '*')
+                    {
+                        for (int sn = si; sn <= s.Length; sn++)
+                        {
+                            if ((sn == si || p[pi] == s[sn - 1]))
+                            {
+                                if (IsMatchRegex(s, sn, p, pi + 2, memo))
+                                {
+                                    ret = true;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    else if(si < s.Length && p[pi] == s[si])
+                    {
+                        ret = IsMatchRegex(s, si + 1, p, pi + 1, memo);
+                    }
+                }
+
+                memo[key] = ret;
+            }
+
+            return ret;
+        }
+
         public void Run()
         {
-            MaxProfit(new[] { 1, 2, 3, 0, 2 });
+            Console.WriteLine(IsMatch("aa", "a*"));
         }
     }
 }
