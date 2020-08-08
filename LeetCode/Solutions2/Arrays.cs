@@ -2293,6 +2293,31 @@ namespace LeetCode.Csharp.Solutions2
             return new string(ret.Where(c => true).Reverse().ToArray());
         }
 
+        public int EraseOverlapIntervals(int[][] intervals)
+        {
+            intervals = intervals.OrderBy(iv => iv[0]).ToArray();
+
+            int cnt = 0;
+            int prev = 0;
+            for (int i = 1; i < intervals.Length; i++)
+            {
+                if(intervals[i][0] < intervals[prev][1])
+                {
+                    cnt++;
+                    if (intervals[i][1] < intervals[prev][1])
+                    {
+                        prev = i;
+                    }
+                }
+                else
+                {
+                    prev = i;
+                }
+            }
+
+            return cnt;
+        }
+
         public void Run()
         {
             Console.WriteLine(ReverseWords("the sky is blue"));
