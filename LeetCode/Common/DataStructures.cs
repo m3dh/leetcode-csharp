@@ -1,6 +1,7 @@
 namespace LeetCode.Csharp.Common
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     public interface IHeapNode
@@ -155,6 +156,51 @@ namespace LeetCode.Csharp.Common
             else
             {
                 return root.Left == null ? 0 : this.CountSmallerThan(root.Left, val);
+            }
+        }
+    }
+
+    public class Counter<TKey>
+    {
+        private readonly Dictionary<TKey, int> _counter = new Dictionary<TKey, int>();
+
+        public int Incr(TKey k)
+        {
+            if (this._counter.TryGetValue(k, out int cnt))
+            {
+                this._counter[k] = cnt + 1;
+                return cnt + 1;
+            }
+            else
+            {
+                this._counter[k] = 1;
+                return 1;
+            }
+        }
+
+        public int Decr(TKey k)
+        {
+            if (this._counter.TryGetValue(k, out int cnt))
+            {
+                this._counter[k] = cnt - 1;
+                return cnt - 1;
+            }
+            else
+            {
+                this._counter[k] = -1;
+                return -1;
+            }
+        }
+
+        public int Get(TKey k)
+        {
+            if (this._counter.TryGetValue(k, out int cnt))
+            {
+                return cnt;
+            }
+            else
+            {
+                return 0;
             }
         }
     }
