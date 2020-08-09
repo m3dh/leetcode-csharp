@@ -64,6 +64,61 @@ namespace LeetCode.Csharp.Solutions2
             return null;
         }
 
+        // https://leetcode.com/problems/satisfiability-of-equality-equations/
+        public bool EquationsPossible(string[] equations)
+        {
+            int[] set = new int[26];
+            for (int i = 0; i < 26; i++) set[i] = i;
+            foreach (string equation in equations)
+            {
+                char l = equation[0];
+                char r = equation[3];
+                bool e = equation[1] == '=';
+
+                if(e) Union(set, l, r);
+            }
+
+            foreach (string equation in equations)
+            {
+                char l = equation[0];
+                char r = equation[3];
+                bool e = equation[1] == '=';
+
+                if (!e)
+                {
+                    int il = Find(set, l);
+                    int ir = Find(set, r);
+                    if (il == ir) return false;
+                }
+            }
+
+            return true;
+        }
+
+        private int Find(int[] set, int val)
+        {
+            while (set[val] != val)
+            {
+                int nVal = set[val];
+                set[val] = set[nVal];
+                val = nVal;
+            }
+
+            return val;
+        }
+
+        private bool Union(int[]set, int l, int r)
+        {
+            int il = Find(set, l);
+            int ir = Find(set, r);
+            if (il == ir) return false;
+            else
+            {
+                set[ir] = il;
+                return true;
+            }
+        }
+
         public void Run() {
             Console.WriteLine(
                 JsonConvert.SerializeObject(

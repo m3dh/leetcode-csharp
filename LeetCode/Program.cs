@@ -16,6 +16,7 @@
     {
         public static void Main()
         {
+            new Arrays2().Run();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace LeetCode.Csharp.Solutions2
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using LeetCode.Csharp.Common;
@@ -109,6 +110,161 @@
             }
 
             return cnt;
+        }
+
+        // https://leetcode.com/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/
+        public int CountTriplets(int[] arr)
+        {
+            int[] xorLeft = new int[arr.Length];
+            xorLeft[0] = arr[0];
+            for (int i = 1; i < arr.Length; i++)
+            {
+                xorLeft[i] = xorLeft[i-1] ^ arr[i];
+            }
+
+            int cnt = 0;
+
+            for (int i = 0; i < arr.Length; i++)
+            {
+                for (int j = i + 1; j < arr.Length; j++)
+                {
+                    for (int k = j; k < arr.Length; k++)
+                    {
+                        int x1; // 第一个数组的亦或值
+                        if (i == 0)
+                        {
+                            x1 = xorLeft[j - 1];
+                        }
+                        else
+                        {
+                            x1 = (xorLeft[i - 1] ^ xorLeft[j - 1]);
+                        }
+
+                        // 第一个数组与第二个数组亦或值相同时，结果加一
+                        if (x1 == (xorLeft[j - 1] ^ xorLeft[k]))
+                        {
+                            Console.WriteLine($"{i},{j},{k}");
+                            cnt++;
+                        }
+                    }
+                }
+            }
+
+            return cnt;
+        }
+
+        public string PushDominoes(string dominoes)
+        {
+            if (string.IsNullOrEmpty(dominoes))
+            {
+                return dominoes;
+            }
+
+            char[] dChars = dominoes.ToArray();
+
+            int pIdx = 0;
+            char prev = dChars[0];
+            for (int i = 1; i < dominoes.Length; i++)
+            {
+                if (dChars[i] != '.')
+                {
+                    if (dChars[i] == 'L')
+                    {
+                        if (prev == '.' || prev == 'L')
+                        {
+                            for (int j = pIdx; j < i; j++) dChars[j] = 'L';
+                        }
+                        else
+                        {
+                            // prev == 'R' # R...L
+                            int slots = i - pIdx - 1;
+                            for (int j = 1; j <= slots / 2; j++)
+                            {
+                                dChars[pIdx + j] = 'R';
+                                dChars[i - j] = 'L';
+                            }
+
+                            if (slots % 2 == 1)
+                            {
+                                dChars[pIdx + slots / 2 + 1] = '.';
+                            }
+                        }
+
+                        prev = 'L';
+                        pIdx = i;
+                    }
+                    else
+                    {
+                        prev = dChars[i];
+                        pIdx = i;
+                    }
+                }
+                else
+                {
+                    if (prev == 'R') dChars[i] = 'R';
+                }
+            }
+
+            return new string(dChars);
+        }
+
+        // https://leetcode.com/problems/interleaving-string/
+        public bool IsInterleave(string s1, string s2, string s3)
+        {
+            if (s1.Length + s2.Length != s3.Length) return false;
+
+            // REVIEW: DP复杂度分析第一招：因为最多要填满整个DP数组，所以复杂度就是DP数组大小.
+            // REVIEW: 一维数组即可，因为在当前计算中dp[j]的值就是dp[i-1][j]
+            bool[] dp = new bool[s2.Length+1];
+            for (int i = 0; i <= s1.Length; i++)
+            {
+                for (int j = 0; j <= s2.Length; j++)
+                {
+                    if (i == 0 && j == 0)
+                    {
+                        dp[j] = true;
+                    }
+                    else if (i == 0)
+                    {
+                        dp[j] = dp[j - 1] && s2[j - 1] == s3[i + j - 1];
+                    }
+                    else if (j == 0)
+                    {
+                        dp[j] = dp[j] && s1[i - 1] == s3[i + j - 1];
+                    }
+                    else
+                    {
+                        dp[j] = (dp[j - 1] && s2[j - 1] == s3[i + j - 1]) || (dp[j] && s1[i - 1] == s3[i + j - 1]);
+                    }
+                }
+            }
+
+            return dp[s2.Length];
+        }
+
+        public void WiggleSort(int[] nums)
+        {
+            // REVIEW: 第一个数必须从中间开始取（所以此处从左半的最后一个开始，以避免可能的相等情况）
+            int[] sNums = nums.OrderBy(n => n).ToArray();
+            int l = (nums.Count() - 1) / 2; // 4 -> 1, 5 -> 2
+            int r = nums.Count() - 1;
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    nums[i] = sNums[l--];
+                }
+                else
+                {
+                    nums[i] = sNums[r--];
+                }
+            }
+        }
+
+        public void Run()
+        {
+            Console.WriteLine(CountTriplets(new[] { 1, 3, 5, 7, 9 }));
         }
     }
 }
