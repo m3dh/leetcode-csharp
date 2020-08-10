@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using LeetCode.Csharp.Common;
+    using Newtonsoft.Json;
 
     public class Arrays2
     {
@@ -262,9 +263,57 @@
             }
         }
 
+        // https://leetcode.com/problems/4sum/
+        public IList<IList<int>> FourSum(int[] nums, int target)
+        {
+            nums = nums.OrderBy(n => n).ToArray();
+            Dictionary<int, List<Tuple<int, int>>> left = new Dictionary<int, List<Tuple<int, int>>>();
+            List<IList<int>> ret = new List<IList<int>>();
+            for (int i = 1; i < nums.Length - 2; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    int lSum = nums[i] + nums[j];
+                    if (!left.TryGetValue(lSum, out List<Tuple<int, int>> l))
+                    {
+                        l = new List<Tuple<int, int>>();
+                        left[lSum] = l;
+                    }
+
+                    l.Add(Tuple.Create(nums[j], nums[i]));
+                }
+
+                for (int j = i + 1; j < nums.Length - 1; j++)
+                {
+                    for (int k = j + 1; k < nums.Length; k++)
+                    {
+                        int rSum = nums[j] + nums[k];
+                        if (left.TryGetValue(target - rSum, out List<Tuple<int, int>> l) && l.Count > 0)
+                        {
+                            foreach (Tuple<int, int> t in l)
+                            {
+                                ret.Add(new[] { t.Item1, t.Item2, nums[j], nums[k] });
+                            }
+                        }
+                    }
+                }
+            }
+
+            HashSet<string> dedup = new HashSet<string>();
+            return ret.Where(p =>
+            {
+                string k = string.Join(",", p);
+                return dedup.Add(k);
+            }).ToArray();
+        }
+
         public void Run()
         {
-            Console.WriteLine(CountTriplets(new[] { 1, 3, 5, 7, 9 }));
+            var ret = FourSum(new[] { 1, 0, -1, 0, -2, 2 }, 0);
+            foreach (IList<int> ints in ret)
+            {
+                Console.WriteLine(JsonConvert.SerializeObject(ints));
+            }
         }
     }
 }

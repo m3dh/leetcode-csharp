@@ -1267,9 +1267,39 @@ namespace LeetCode.Csharp.Solutions2
             return ret;
         }
 
+        public int KSimilarity(string A, string B)
+        {
+            return KSim(A, B, new Dictionary<string, int>());
+        }
+
+        private int KSim(string a, string b, Dictionary<string, int> memo)
+        {
+           // Console.WriteLine($"{a} {b}");
+
+            if (a.Length == b.Length && a.Length == 0) return 0;
+            else if (a[0] == b[0]) return KSim(a.Substring(1), b.Substring(1), memo);
+
+            string key = $"{a}:{b}";
+            if (!memo.TryGetValue(key, out int k))
+            {
+                k = int.MaxValue;
+                for (int i = 1; i < b.Length; i++)
+                {
+                    if (b[i] == a[0])
+                    {
+                        k = Math.Min(k, 1 + KSim(a.Substring(1), b.Substring(1, i-1) + b[0] + b.Substring(i + 1), memo));
+                    }
+                }
+
+                memo[key] = k;
+            }
+
+            return k;
+        }
+
         public void Run()
         {
-            Console.WriteLine(IsMatch("aa", "a*"));
+            Console.WriteLine(KSimilarity("ab", "ba"));
         }
     }
 }
