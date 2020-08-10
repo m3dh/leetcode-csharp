@@ -16,7 +16,7 @@
     {
         public static void Main()
         {
-            new Arrays2().Run();
+            new Planning2().Run();
         }
     }
 }

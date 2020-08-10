@@ -307,6 +307,34 @@
             }).ToArray();
         }
 
+        public int MaxScore(int[] cardPoints, int k)
+        {
+            // REVIEW: Sliding window!
+
+            if (cardPoints.Length == 0)
+            {
+                return 0;
+            }
+            else if (cardPoints.Length <= k)
+            {
+                return cardPoints.Sum();
+            }
+
+            // This is actually a sliding window of size k
+            int sum = 0;
+            for (int i = 0; i < k; i++) sum += cardPoints[i];
+
+            int max = sum;
+            for (int i = 0; i < k; i++)
+            {
+                sum -= cardPoints[k - i - 1];
+                sum += cardPoints[cardPoints.Length - i - 1];
+                max = Math.Max(max, sum);
+            }
+
+            return max;
+        }
+
         public void Run()
         {
             var ret = FourSum(new[] { 1, 0, -1, 0, -2, 2 }, 0);

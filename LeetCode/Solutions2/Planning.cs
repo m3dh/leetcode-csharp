@@ -626,30 +626,38 @@ namespace LeetCode.Csharp.Solutions2
         // 312 - https://leetcode.com/problems/burst-balloons/
         public int MaxCoins(int[] nums)
         {
-            // REVIEW: Brilliant solution!
-            // 1. Remove 0 nums 'cuz they won't contribute to the result!
-            int[] filteredNumbers = new[] {1}.Concat(nums.Where(n => n != 0)).Concat(new[] {1}).ToArray();
-            Dictionary<string, int> cachedSums = new Dictionary<string, int>();
-            return this.SubMaxCoins(filteredNumbers, 0, filteredNumbers.Length - 1, cachedSums);
+            nums = new[] { 1 }
+                .Concat(nums.Where(n => n != 0)).Concat(new[] { 1 })
+                .ToArray();
+
+            return MaxCoinsRec(nums, 0, nums.Length - 1, new Dictionary<string, int>());
         }
 
-        public int SubMaxCoins(int[] nums, int l, int r, Dictionary<string, int> cachedSums)
+        private int MaxCoinsRec(int[] nums, int l, int r, Dictionary<string, int> memo)
         {
-            if (r - l < 2) return 0; // 如果子串已经少于三个元素，计算结果已经在上一层得出了。
-            if (cachedSums.TryGetValue($"{l}_{r}", out int val)) return val;
+            // [1],[2],3,4,[5]
+            if (r - l <= 1) return 0; // 一个或零个数字
 
-            int maxSum = 0;
-            for (int mid = l + 1; mid < r; mid++)
+            string key = $"{l}:{r}";
+            if (!memo.TryGetValue(key, out int cnt))
             {
-                maxSum = Math.Max(maxSum, nums[l] * nums[r] * nums[mid]
-                                          + this.SubMaxCoins(nums, l, mid, cachedSums)
-                                          + this.SubMaxCoins(nums, mid, r, cachedSums));
+                cnt = 0;
+
+                for (int mid = l + 1; mid <= r - 1; mid++)
+                {
+                    var sum = nums[l] * nums[r] * nums[mid]
+                              + MaxCoinsRec(nums, l, mid, memo)
+                              + MaxCoinsRec(nums, mid, r, memo);
+
+                    cnt = Math.Max(cnt, sum);
+                }
+
+                memo[key] = cnt;
             }
 
-            cachedSums.Add($"{l}_{r}", maxSum);
-            return maxSum;
+            return cnt;
         }
-        
+
         // 338 - https://leetcode.com/problems/counting-bits/
         public int[] CountBits(int num)
         {
