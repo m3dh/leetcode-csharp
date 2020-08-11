@@ -16,7 +16,7 @@
     {
         public static void Main()
         {
-            new Planning2().Run();
+            new Trees2().Run();
         }
     }
 }
