@@ -97,15 +97,52 @@
             return val;
         }
 
+        public int MergeStones(int[] stones, int k)
+        {
+            // REVIEW: 重做一遍
+            if (stones == null || stones.Length <= 1)
+            {
+                return 0;
+            }
+
+            if (stones.Length < k || (stones.Length - 1) % (k - 1) != 0)
+            {
+                return -1;
+            }
+
+            int[] prefixSum = new int[stones.Length + 1];
+            for (int i = 0; i < stones.Length; i++)
+            {
+                prefixSum[i + 1] = prefixSum[i] + stones[i];
+            }
+
+            int[,] d = new int[stones.Length, stones.Length];
+
+            for (int length = k; length <= stones.Length; length++)
+            {
+                for (int start = 0; start <= stones.Length - length; start++)
+                {
+                    int end = start + length - 1;
+                    d[start, end] = int.MaxValue;
+
+                    for (int mid = start; mid < end; mid += (k - 1))
+                    {
+                        d[start, end] = Math.Min(d[start, end], d[start, mid] + d[mid + 1, end]);
+                    }
+
+                    if ((end - start) % (k - 1) == 0)
+                    {
+                        d[start, end] += prefixSum[end + 1] - prefixSum[start];
+                    }
+                }
+            }
+
+            return d[0, stones.Length - 1];
+        }
+
         public void Run()
         {
-            Console.WriteLine(this.MinCost(
-                24811,
-                new[]
-                {
-                    409, 8398, 9521, 15901, 13345, 12723, 15849, 23078, 9522, 16862, 2255, 21622, 8351, 9870, 8069, 10200, 21779, 17694, 11383, 2188, 16705, 13192, 1675, 6011, 2598, 22470, 8164, 2642,
-                    3391, 596, 21537, 4668, 4524, 13209, 24249
-                }));
+            Console.WriteLine(this.MaxNonOverlapping(new[] { -1, 3, 5, 1, 4, 2, -9 }, 6));
         }
     }
 }
