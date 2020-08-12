@@ -2318,6 +2318,23 @@ namespace LeetCode.Csharp.Solutions2
             return cnt;
         }
 
+        // https://leetcode.com/problems/pascals-triangle-ii/
+        public IList<int> GetRow(int rowIndex)
+        {
+            // REVIEW: 如何将状态压缩到一维
+            int[] ret = new int[rowIndex + 1];
+            ret[0] = 1;
+            for (int i = 0; i < rowIndex; i++)
+            {
+                for (int j = rowIndex; j >= 1; j--)
+                {
+                    ret[j] += ret[j - 1];
+                }
+            }
+
+            return ret;
+        }
+
         public void Run()
         {
             Console.WriteLine(ReverseWords("the sky is blue"));
