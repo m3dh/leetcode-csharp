@@ -400,10 +400,30 @@
             return new[] { -1, -1 };
         }
 
+        // https://leetcode.com/problems/maximum-product-subarray/
+        public int MaxProduct(int[] nums)
+        {
+            int max = 1;
+            int min = 1;
+            int ret = int.MinValue;
+
+            // 2,3,-2,4
+            // (2,0), (6,0), (0,-12), (4, -48)
+
+            foreach (int num in nums)
+            {
+                int a = max * num;
+                int b = min * num;
+                max = Math.Max(num, Math.Max(a, b));
+                min = Math.Min(num, Math.Min(a, b));
+                ret = Math.Max(max, ret);
+            }
+
+            return ret;
+        }
+
         public void Run()
         {
-            // 5, 16
-            Console.WriteLine(JsonConvert.SerializeObject(ThreeEqualParts(new[] { 0, 1, 0, 1, 1, 0, /**/ 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, /**/ 1, 1, 1, 0 })));
         }
     }
 }

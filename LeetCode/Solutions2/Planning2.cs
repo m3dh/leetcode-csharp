@@ -140,6 +140,31 @@
             return d[0, stones.Length - 1];
         }
 
+        // https://leetcode.com/problems/target-sum/
+        public int FindTargetSumWays(int[] nums, int S)
+        {
+            return FindTargetSumWays(nums, 0, 0, S, new Dictionary<string, int>());
+        }
+
+        private int FindTargetSumWays(int[] nums, int idx, int curSum, int S, Dictionary<string, int> memo)
+        {
+            if (idx == nums.Length)
+            {
+                return curSum == S ? 1 : 0;
+            }
+            else
+            {
+                string key = $"{curSum}-{idx}";
+                if (!memo.TryGetValue(key, out int cnt))
+                {
+                    cnt = FindTargetSumWays(nums, idx + 1, curSum - nums[idx], S, memo) + FindTargetSumWays(nums, idx + 1, curSum + nums[idx], S, memo);
+                    memo[key] = cnt;
+                }
+
+                return cnt;
+            }
+        }
+
         public void Run()
         {
             Console.WriteLine(this.MaxNonOverlapping(new[] { -1, 3, 5, 1, 4, 2, -9 }, 6));

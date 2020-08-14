@@ -63,6 +63,43 @@
             }
         }
 
+        public TreeNode ConstructMaximumBinaryTree(int[] nums)
+        {
+            // REVIEW: 用栈来实现O(n)
+            Stack<TreeNode> s = new Stack<TreeNode>();
+            foreach (int num in nums)
+            {
+                TreeNode n = new TreeNode(num);
+                if (s.Count == 0)
+                {
+                    s.Push(n);
+                }
+                else if (s.Peek().val > num)
+                {
+                    s.Peek().right = n;
+                    s.Push(n);
+                }
+                else
+                {
+                    while (s.Count > 0 && s.Peek().val < num)
+                    {
+                        n.left = s.Pop();
+                    }
+
+                    if (s.Count > 0)
+                    {
+                        s.Peek().right = n;
+                    }
+
+                    s.Push(n);
+                }
+            }
+
+            while (s.Count > 1) s.Pop();
+
+            return s.First();
+        }
+
         public void Run()
         {
             Console.WriteLine(JsonConvert.SerializeObject(DiffWaysToCompute("2*3-4*5"), Formatting.Indented));
