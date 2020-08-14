@@ -422,8 +422,35 @@
             return ret;
         }
 
+        public int FindNthDigit(int n)
+        {
+            long an = n;
+            long l = 1;
+            long r = 9;
+            int w = 1;
+
+            while (true)
+            {
+                if (an <= (r - l + 1) * w)
+                {
+                    long num = (an - 1) / w + l;
+                    long cnt = (an - 1) % w;
+                    return int.Parse(num.ToString()[(int)cnt].ToString());
+                }
+                else
+                {
+                    var clen = (r - l + 1) * (long) w;
+                    an -= clen;
+                    l *= 10;
+                    r = r * 10 + 9;
+                    w++;
+                }
+            }
+        }
+
         public void Run()
         {
+                Console.Write( FindNthDigit(1000000000));
         }
     }
 }
