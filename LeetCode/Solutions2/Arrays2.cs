@@ -335,13 +335,75 @@
             return max;
         }
 
+        public int[] ThreeEqualParts(int[] a)
+        {
+            // REVIEW: IDEA - 通过计算1的数量来分段
+
+            int oneCount = a.Count(i => i == 1);
+            if (oneCount % 3 == 0 && oneCount > 0)
+            {
+                int partOneCount = oneCount / 3;
+                int lastOneIdx = a.Length - 1;
+                while (a[lastOneIdx] == 0) lastOneIdx--;
+
+                int trailingZeroCount = a.Length - lastOneIdx - 1;
+
+                int index = 0;
+                int curOneCnt = 0;
+                while (curOneCnt < partOneCount)
+                {
+                    if (a[index] == 1) curOneCnt++;
+                    index++;
+                }
+
+                for (int i = 0; i < trailingZeroCount; i++)
+                {
+                    if (a[index] != 0) return new[] { -1, -1 };
+                    index++;
+                }
+
+                int secondStart = index;
+                curOneCnt = 0;
+                while (curOneCnt < partOneCount)
+                {
+                    if (a[index] == 1) curOneCnt++;
+                    index++;
+                }
+
+                for (int i = 0; i < trailingZeroCount; i++)
+                {
+                    if (a[index] != 0) return new[] { -1, -1 };
+                    index++;
+                }
+
+                int thirdStart = index;
+
+                int al = secondStart - 1;
+                int bl = thirdStart - 1;
+                int cl = a.Length - 1;
+
+                while (partOneCount > 0)
+                {
+                    int ct = a[al--] + a[bl--] + a[cl--];
+                    if (ct != 0 && ct != 3) return new[] { -1, -1 };
+                    partOneCount--;
+                }
+
+                return new[] { secondStart - 1, thirdStart };
+            }
+
+            if (oneCount == 0)
+            {
+                return new[] { 0, a.Length - 1 };
+            }
+
+            return new[] { -1, -1 };
+        }
+
         public void Run()
         {
-            var ret = FourSum(new[] { 1, 0, -1, 0, -2, 2 }, 0);
-            foreach (IList<int> ints in ret)
-            {
-                Console.WriteLine(JsonConvert.SerializeObject(ints));
-            }
+            // 5, 16
+            Console.WriteLine(JsonConvert.SerializeObject(ThreeEqualParts(new[] { 0, 1, 0, 1, 1, 0, /**/ 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, /**/ 1, 1, 1, 0 })));
         }
     }
 }

@@ -16,7 +16,7 @@
     {
         public static void Main()
         {
-            new Trees2().Run();
+            new Arrays2().Run();
         }
     }
 
