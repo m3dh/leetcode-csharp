@@ -411,9 +411,45 @@ namespace LeetCode.Csharp.Solutions2
             return -1;
         }
 
+        // https://leetcode.com/problems/koko-eating-bananas/solution/
+        public int MinEatingSpeed(int[] piles, int H)
+        {
+            if (piles == null || piles.Count() == 0) return 0;
+            if (piles.Count() > H) return -1; // impossible
+
+            int l = 1;
+            int r = piles.Max();
+
+            while (l < r)
+            {
+                int m = l + (r - l) / 2; // l + r/2 - l/2
+                if (CanFinish(m, piles, H))
+                {
+                    r = m;
+                }
+                else
+                {
+                    l = m + 1;
+                }
+            }
+
+            return CanFinish(l, piles, H) ? l : r;
+        }
+
+        private bool CanFinish(int k, int[] piles, int H)
+        {
+            int count = 0;
+            foreach (int pile in piles)
+            {
+                count += (pile / k + (pile % k > 0 ? 1 : 0));
+            }
+
+            return count <= H;
+        }
+
         public void Run()
         {
-            Console.WriteLine(HIndex(new []{0}));
+            Console.WriteLine(MinEatingSpeed(new[] { 3, 6, 7, 11 }, 8));
         }
     }
 }

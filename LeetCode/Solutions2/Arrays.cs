@@ -118,42 +118,20 @@ namespace LeetCode.Csharp.Solutions2
         {
             int count = 0;
 
-            // Think about cornor cases.
-
-            for (int i = 0; i < height.Length - 1;)
+            Stack<int> descStack = new Stack<int>();
+            for (int i = 0; i < height.Length; i++)
             {
-                if (height[i] == 0)
+                while (descStack.Count() > 0 && height[descStack.Peek()] < height[i])
                 {
-                    i++;
-                    continue;
-                }
-
-                int maxVal = -1;
-                int maxIdx = -1;
-                for (int j = i + 1; j < height.Length; j++)
-                {
-                    if (height[j] > maxVal)
+                    int min = descStack.Pop();
+                    if (descStack.Count() > 0)
                     {
-                        maxVal = height[j];
-                        maxIdx = j;
-                    }
-
-                    if (height[j] >= height[i])
-                    {
-                        // In this case, the first if has been executed.
-                        break;
+                        int area = (Math.Min(height[i], height[descStack.Peek()]) - height[min]) * (i - descStack.Peek() - 1);
+                        count += area;
                     }
                 }
 
-                int level = Math.Min(height[maxIdx], height[i]);
-                for (int j = i + 1; j < maxIdx; j++)
-                {
-                    count += (level - height[j]);
-                }
-
-                // Console.WriteLine($"FROM: {height[i]} MAX:{maxVal} IDX:{i}-{maxIdx}, C:{count}");
-
-                i = maxIdx;
+                descStack.Push(i);
             }
 
             return count;

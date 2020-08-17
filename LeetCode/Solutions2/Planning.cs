@@ -550,31 +550,6 @@ namespace LeetCode.Csharp.Solutions2
             return max * max;
         }
 
-        // 84 - https://leetcode.com/problems/largest-rectangle-in-histogram/
-        public int LargestRectangleArea(int[] heights)
-        {
-            // REVIEW: 从每个下降区前开始往前回溯；因为之前的面积都包含在更长的柱子的面积里了
-            int max = 0;
-            for (int i = 1; i <= heights.Length; i++)
-            {
-                if (i == heights.Length || heights[i] < heights[i - 1])
-                {
-                    int currHeight = heights[i - 1];
-                    for (int j = i - 1; j >= 0; j--)
-                    {
-                        currHeight = Math.Min(currHeight, heights[j]);
-                        int currArea = currHeight * (i - j);
-
-                        // Console.WriteLine($"F:{j},T:{i-1},A:{currArea}");
-
-                        max = Math.Max(currArea, max);
-                    }
-                }
-            }
-
-            return max;
-        }
-
         // 85 - https://leetcode.com/problems/maximal-rectangle/
         public int MaximalRectangle(char[][] matrix)
         {

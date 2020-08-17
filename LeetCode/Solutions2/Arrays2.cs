@@ -448,9 +448,74 @@
             }
         }
 
+        // https://leetcode.com/problems/remove-duplicate-letters/
+        public string RemoveDuplicateLetters(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return s;
+
+            // REVIEW: 用类似最大栈的方法来求值！
+            char[] ret = new char[s.Length];
+            char[] counters = new char[26];
+            foreach (char c in s)
+            {
+                counters[c - 'a']++;
+            }
+
+            int i = 0;
+            HashSet<char> contains = new HashSet<char>();
+            foreach (char c in s)
+            {
+                counters[c - 'a']--;
+
+                if (contains.Contains(c)) continue;
+
+                while (i > 0 && ret[i - 1] > c && counters[ret[i - 1] - 'a'] > 0)
+                {
+                    // we can remove char @ i to make the string smaller, and we still have more same char in the future.
+                    contains.Remove(ret[i - 1]);
+                    i--;
+                }
+
+                ret[i++] = c;
+                contains.Add(c);
+
+               // Console.WriteLine(new string(ret.Take(i).ToArray()));
+            }
+
+            return new string(ret.Take(i).ToArray());
+        }
+
+        // https://leetcode.com/problems/largest-rectangle-in-histogram/
+        public int LargestRectangleArea(int[] heights)
+        {
+            // REVIEW: 递增栈思想的运用
+
+            if (heights.Count() == 0) return 0;
+
+            var hList = new List<int>(heights);
+            hList.Add(0);
+
+            int max = 0;
+            Stack<int> s = new Stack<int>();
+            for (int i = 0; i < hList.Count(); i++)
+            {
+                while (s.Count() > 0 && hList[s.Peek()] >= hList[i])
+                {
+                    int curTop = s.Pop();
+
+                    // all numbers got pop-ed by current number previous must be larger than it.
+                    int area = hList[curTop] * (s.Count() == 0 ? i : (i - s.Peek() - 1));
+                    max = Math.Max(max, area);
+                }
+
+                s.Push(i);
+            }
+
+            return max;
+        }
+
         public void Run()
         {
-                Console.Write( FindNthDigit(1000000000));
         }
     }
 }
