@@ -514,6 +514,41 @@
             return max;
         }
 
+        // https://leetcode.com/problems/find-permutation/solution/
+        public int[] FindPermutation(string s)
+        {
+            // REVIEW: IDEA - 每当我们遇到 'I' 的时候，前面的数字就和后面的数字无关了 - 因为我们incr到多大都合法!
+            int[] ret = new int[s.Length + 1];
+            int lptr = 0;
+            ret[0] = 1;
+
+            // DDI
+            // i = 1, [1,2,
+            // i = 2, [1,2,3,
+            // i = 3, [3,2,1,4]    => rev(0, 3) => lptr <= 3
+            // reverse(3, 3-3
+
+
+            // 3,2,1,4
+
+            // DIDI
+
+            for (int i = 1; i <= s.Length; i++)
+            {
+                if (s[i - 1] == 'I')
+                {
+                    Array.Reverse(ret, lptr, i - lptr);
+                    lptr = i;
+                }
+
+                ret[i] = i + 1;
+            }
+
+            Array.Reverse(ret, lptr, s.Length - lptr + 1);
+
+            return ret;
+        }
+
         public void Run()
         {
         }
