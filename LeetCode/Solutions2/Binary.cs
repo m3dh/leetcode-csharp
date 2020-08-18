@@ -447,6 +447,31 @@ namespace LeetCode.Csharp.Solutions2
             return count <= H;
         }
 
+        // https://leetcode.com/problems/find-peak-element/
+        // https://segmentfault.com/a/1190000016825704
+        public int FindPeakElement(int[] nums)
+        {
+            // REVIEW: 二分查找寻找区域极值
+            int l = 0;
+            int r = nums.Count() - 1;
+            while (l < r)
+            {
+                int m = l + (r - l) / 2;
+                // if (m == nums.Count() - 1) return m; - Won't happen, this need l = r
+
+                if (nums[m] > nums[m + 1])
+                {
+                    r = m;
+                }
+                else
+                {
+                    l = m + 1;
+                }
+            }
+
+            return l;
+        }
+
         public void Run()
         {
             Console.WriteLine(MinEatingSpeed(new[] { 3, 6, 7, 11 }, 8));

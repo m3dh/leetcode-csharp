@@ -165,6 +165,41 @@
             }
         }
 
+        // https://leetcode.com/problems/arithmetic-slices-ii-subsequence/solution/
+        public int NumberOfArithmeticSlices(int[] A)
+        {
+            // REVIEW: Count how many two item tuple can we find before item[i].
+
+            // [A.Index -> <Diff, Count>]
+            Dictionary<int, int>[] diffCounts = new Dictionary<int, int>[A.Length];
+            int ans = 0;
+            for (int i = 0; i < A.Length; i++)
+            {
+                diffCounts[i] = new Dictionary<int, int>();
+                for (int j = 0; j < i; j++)
+                {
+                    long lDelta = (long) A[i] - (long) A[j];
+                    if (lDelta > int.MaxValue || lDelta < int.MinValue) continue;
+
+                    int delta = (int) lDelta;
+
+                    // we have found 1 more tuple anyways.
+                    diffCounts[i][delta] = 1 + (diffCounts[i].TryGetValue(delta, out int o2) ? o2 : 0);
+
+                    // how many pairs before me? (So all the pairs can be into 3 or more items).
+                    int prevSum = diffCounts[j].TryGetValue(delta, out int o1) ? o1 : 0;
+
+                    if (prevSum > 0)
+                    {
+                        ans += prevSum;
+                        diffCounts[i][delta] += prevSum;
+                    }
+                }
+            }
+
+            return ans;
+        }
+
         public void Run()
         {
             Console.WriteLine(this.MaxNonOverlapping(new[] { -1, 3, 5, 1, 4, 2, -9 }, 6));
