@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using LeetCode.Csharp.Common;
     using Newtonsoft.Json;
 
@@ -547,6 +548,56 @@
             Array.Reverse(ret, lptr, s.Length - lptr + 1);
 
             return ret;
+        }
+
+        // https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses/
+        public string MinRemoveToMakeValid(string s)
+        {
+            // REVIEW: Two pass remove extra parenthesis.
+            StringBuilder sb1 = new StringBuilder();
+            int openCnt = 0;
+            int openTtl = 0;
+            foreach (char c in s)
+            {
+                if (c == '(')
+                {
+                    openCnt++;
+                    openTtl++;
+                    sb1.Append(c);
+                }
+                else if (c == ')')
+                {
+                    if (openCnt > 0)
+                    {
+                        openCnt--;
+                        sb1.Append(c);
+                    }
+                }
+                else
+                {
+                    sb1.Append(c);
+                }
+            }
+
+            int balance = openTtl - openCnt;
+            StringBuilder sb2 = new StringBuilder();
+            foreach (char c in sb1.ToString())
+            {
+                if (c == '(')
+                {
+                    if (balance > 0)
+                    {
+                        sb2.Append(c);
+                        balance--;
+                    }
+                }
+                else
+                {
+                    sb2.Append(c);
+                }
+            }
+
+            return sb2.ToString();
         }
 
         public void Run()
