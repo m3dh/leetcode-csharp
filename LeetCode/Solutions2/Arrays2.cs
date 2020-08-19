@@ -600,6 +600,76 @@
             return sb2.ToString();
         }
 
+        // https://leetcode.com/problems/continuous-subarray-sum/
+        public bool CheckSubarraySum(int[] nums, int k)
+        {
+            // REVIEW: 每次都 mod k，因为可以被k整除的部分根本不影响结果
+            Dictionary<int, int> map = new Dictionary<int, int>(); // sum - index
+            map[0] = -1;
+
+            int sum = 0;
+            for (int i = 0; i < nums.Length; i++)
+            {
+                sum += nums[i];
+                if (k != 0)
+                {
+                    sum %= k;
+                }
+
+                if (map.TryGetValue(sum, out int idx))
+                {
+                    if (i - idx > 1) return true;
+                }
+                else
+                {
+                    map[sum] = i;
+                }
+            }
+
+            return false;
+        }
+
+        // https://leetcode.com/problems/next-greater-element-iii/
+        public int NextGreaterElement(int n)
+        {
+            // REVIEW: Same thing that the one to be replaced will have exact reverse order of sorted.
+            char[] c = n.ToString().ToCharArray();
+
+            // Find the last "incr"
+            int incr = -1;
+            for (int i = 1; i < c.Count(); i++)
+            {
+                if (c[i - 1] < c[i])
+                {
+                    // where it could be replaced with larger char.
+                    incr = i - 1;
+                }
+            }
+
+            if (incr < 0) return -1;
+
+            // Find the last and smaller number that's larger than 'incr'
+            int larger = -1;
+            for (int i = c.Count() - 1; i > incr; i--)
+            {
+                if (c[i] > c[incr])
+                {
+                    larger = i;
+                    break;
+                }
+            }
+
+            char tmp = c[incr];
+            c[incr] = c[larger];
+            c[larger] = tmp;
+
+            Array.Reverse(c, incr + 1, c.Length - incr - 1);
+
+            var r = long.Parse(new string(c));
+            if (r > int.MaxValue) return -1;
+            else return (int)r;
+        }
+
         public void Run()
         {
         }

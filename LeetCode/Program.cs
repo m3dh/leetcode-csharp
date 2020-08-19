@@ -18,11 +18,6 @@
         {
             new Arrays2().Run();
         }
-
-        public int[] NumsSameConsecDiff(int N, int K)
-        {
-
-        }
     }
 
     // https://leetcode.com/problems/iterator-for-combination/
