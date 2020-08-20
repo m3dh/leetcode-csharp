@@ -16,7 +16,82 @@
     {
         public static void Main()
         {
-            new Binary().Run();
+            Console.WriteLine(new Program().AlienOrder(new[] { "za", "zb", "ca", "cb" }));
+        }
+
+        public string AlienOrder(string[] words)
+        {
+            List<char[]> odr = new List<char[]>(); // having a < b.
+            HashSet<char> apr = new HashSet<char>();
+            for (int i = 0; i < words.Length; i++)
+            {
+                for (int j = 0; j < words[i].Length; j++)
+                    apr.Add(words[i][j]);
+            }
+
+            for (int i = 1; i < words.Length; i++)
+            {
+                string s = words[i - 1];
+                string l = words[i];
+                int minLen = Math.Min(s.Length, l.Length);
+                for (int j = 0; j < minLen; j++)
+                {
+                    if (s[j] != l[j])
+                    {
+                        odr.Add(new[] { s[j], l[j] });
+                        break;
+                    }
+                }
+            }
+
+            List<char> result = new List<char>();
+            Dictionary<char, HashSet<char>> dirs = new Dictionary<char, HashSet<char>>();
+
+            int[] inCnt = new int[26];
+            foreach (char[] od in odr)
+            {
+                if (dirs.TryGetValue(od[0], out HashSet<char> h))
+                {
+                    if (h.Add(od[1]))
+                    {
+                        inCnt[od[1] - 'a']++;
+                    }
+                }
+                else
+                {
+                    h = new HashSet<char>();
+                    h.Add(od[1]);
+                    dirs[od[0]] = h;
+
+                    inCnt[od[1] - 'a']++;
+                }
+            }
+
+            while (apr.Count() > 0)
+            {
+                bool flag = false;
+                foreach (char c in apr)
+                {
+                    if (inCnt[c - 'a'] == 0)
+                    {
+                        flag = true;
+                        result.Add(c);
+                        apr.Remove(c);
+                        if (dirs.TryGetValue(c, out HashSet<char> h))
+                        {
+                            foreach (char c2 in h)
+                            {
+                                inCnt[c2 - 'a']--;
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                if (!flag) return "";
+            }
+
+            return new string(result.ToArray());
         }
     }
 

@@ -37,5 +37,32 @@
 
             return false;
         }
+
+        // https://leetcode.com/problems/sparse-matrix-multiplication/
+        public int[][] Multiply(int[][] A, int[][] B)
+        {
+            // 结果矩阵的大小：[ALen][B[0]Len]
+            int[][] result = new int[A.Length][];
+            for (int i = 0; i < A.Length; i++)
+            {
+                result[i] = new int[B[0].Length];
+            }
+
+            for (int i = 0; i < A.Length; i++)
+            {
+                for (int j = 0; j < A[0].Length; j++)
+                {
+                    if (A[i][j] != 0)
+                    {
+                        for (int k = 0; k < B[0].Length; k++)
+                        {
+                            result[i][k] += A[i][j] * B[j][k];
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
     }
 }
