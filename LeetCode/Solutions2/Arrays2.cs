@@ -670,6 +670,29 @@
             else return (int)r;
         }
 
+        // https://leetcode.com/problems/remove-covered-intervals/
+        public int RemoveCoveredIntervals(int[][] intervals)
+        {
+            // REVIEW: 为了防止误判，当前值相等时，把长边放在短边前面(ThenBy).
+            intervals = intervals.OrderBy(i => i[0]).ThenBy(i => -i[1]).ToArray();
+            int cnt = 0;
+            int preEnd = 0;
+            foreach (int[] curr in intervals)
+            {
+                if (preEnd >= curr[1])
+                {
+                    // overlap
+                }
+                else
+                {
+                    cnt++;
+                    preEnd = curr[1];
+                }
+            }
+
+            return cnt;
+        }
+
         public void Run()
         {
         }

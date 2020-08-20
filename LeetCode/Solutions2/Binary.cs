@@ -472,9 +472,76 @@ namespace LeetCode.Csharp.Solutions2
             return l;
         }
 
+        // https://leetcode.com/problems/find-in-mountain-array
+        public int FindInMountainArray(int target, int[] mountainArr)
+        {
+            // 先找极值，再二分搜索
+            int len = mountainArr.Length;
+            int l = 0;
+            int r = len - 1;
+            while (l < r)
+            {
+                Console.WriteLine($"L:{l}, R:{r}");
+                int m = l + (r - l) / 2;
+                if (mountainArr[m] < mountainArr[m + 1])
+                {
+                    l = m + 1;
+                }
+                else
+                {
+                    r = m ;
+                }
+            }
+
+            int peak = r;
+
+            l = 0;
+
+            while (l <= r)
+            {
+                int m = l + (r - l) / 2;
+                int mv = mountainArr[m];
+                if (mv == target)
+                {
+                    return m;
+                }
+                else if (mv < target)
+                {
+                    l = m + 1;
+                }
+                else
+                {
+                    r = m - 1;
+                }
+            }
+
+            l = peak;
+            r = len - 1;
+
+            while (l <= r)
+            {
+                int m = l + (r - l) / 2;
+                int mv = mountainArr[m];
+                if (mv == target)
+                {
+                    return m;
+                }
+                else if (mv > target)
+                {
+                    l = m + 1;
+                }
+                else
+                {
+                    r = m - 1;
+                }
+            }
+
+            return -1;
+        }
+
         public void Run()
         {
-            Console.WriteLine(MinEatingSpeed(new[] { 3, 6, 7, 11 }, 8));
+            Console.WriteLine(FindInMountainArray(0, new[] { 3, 5, 3, 2, 0 }));
         }
     }
 }
