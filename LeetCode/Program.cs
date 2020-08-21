@@ -16,7 +16,7 @@
     {
         public static void Main()
         {
-            Console.WriteLine(new Program().AlienOrder(new[] { "za", "zb", "ca", "cb" }));
+            new Binary().Run();
         }
 
         public string AlienOrder(string[] words)

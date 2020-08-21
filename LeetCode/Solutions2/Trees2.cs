@@ -100,6 +100,24 @@
             return s.First();
         }
 
+        // https://leetcode.com/problems/distribute-coins-in-binary-tree/submissions/
+        public int DistributeCoins(TreeNode root)
+        {
+            int count = 0;
+            DistributeCoinsRec(root, ref count);
+            return count;
+        }
+
+        private int DistributeCoinsRec(TreeNode root, ref int count)
+        {
+            if (root == null) return 0;
+
+            int curCoins = root.val + DistributeCoinsRec(root.left, ref count) + DistributeCoinsRec(root.right, ref count);
+            int diff = Math.Abs(1 - curCoins);
+            count += diff;
+            return curCoins - 1;
+        }
+
         public void Run()
         {
             Console.WriteLine(JsonConvert.SerializeObject(DiffWaysToCompute("2*3-4*5"), Formatting.Indented));

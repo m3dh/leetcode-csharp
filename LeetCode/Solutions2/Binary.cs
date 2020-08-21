@@ -539,9 +539,26 @@ namespace LeetCode.Csharp.Solutions2
             return -1;
         }
 
+        public int BulbSwitch(int n)
+        {
+            // 只有平方数能确保toggle奇数次！例如：16 - (1,16)(2,8)(4,4)，每次被整除都是一对，而4这个因数只会出现一次！
+            int cnt = 0;
+            for (int i = 1; i <= n; i++)
+            {
+                if (i * i <= n)
+                {
+                    Console.WriteLine($"{i * i}");
+                    cnt++;
+                }
+                // else break;
+            }
+
+            return cnt;
+        }
+
         public void Run()
         {
-            Console.WriteLine(FindInMountainArray(0, new[] { 3, 5, 3, 2, 0 }));
+            Console.WriteLine(BulbSwitch(99999));
         }
     }
 }
