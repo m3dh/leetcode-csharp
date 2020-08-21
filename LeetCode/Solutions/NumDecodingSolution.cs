@@ -1,5 +1,7 @@
-namespace LeetCode.Csharp.Solutions
+﻿namespace LeetCode.Csharp.Solutions
 {
+    using System.Linq;
+
     public class NumDecodingSolution
     {
         // https://leetcode.com/problems/decode-ways-ii/
@@ -65,28 +67,20 @@ namespace LeetCode.Csharp.Solutions
         // https://leetcode.com/problems/decode-ways/
         public int NumDecodings(string s)
         {
-            if (s.Length == 0) return 0;
+            // REVIEW: Corner case! 数字为0无法当作单个数字处理！
+            if (s.Count() == 0) return 1;
+            if (s[0] == '0') return 0;
 
-            int[] dp = new int[s.Length];
-            for (int i = 0; i < s.Length; i++)
+            int[] dp = new int[s.Count()];
+            dp[0] = 1;
+            for (int i = 1; i < s.Count(); i++)
             {
-                int currCount = 0;
-                if (s[i] != '0')
-                {
-                    if (i == 0) currCount += 1;
-                    else currCount += dp[i - 1];
-                }
-
-                if (i >= 1 && ((s[i] <= '6' && s[i - 1] == '2') || s[i - 1] < '2') && s[i - 1] != '0')
-                {
-                    if (i == 1) currCount += 1;
-                    else currCount += dp[i - 2];
-                }
-
-                dp[i] = currCount;
+                bool canBeTwo = (s[i - 1] == '2' && s[i] <= '6') || (s[i - 1] == '1');
+                bool canBeOne = s[i] != '0';
+                dp[i] = (canBeOne ? dp[i - 1] : 0) + (canBeTwo ? (i == 1 ? 1 : dp[i - 2]) : 0);
             }
 
-            return dp[s.Length - 1];
+            return dp[s.Count() - 1];
         }
     }
 }
