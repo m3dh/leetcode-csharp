@@ -16,7 +16,42 @@
     {
         public static void Main()
         {
-            new Binary().Run();
+            Console.WriteLine(new Program().FindLengthOfLCIS(new[] { 1, 3, 5, 4, 7 }));
+        }
+
+        public int FindLengthOfLCIS(int[] nums)
+        {
+            int l = 0;
+            int r = 0;
+            int max = 0;
+
+            // 1,3,5,4,7
+            // 0, 0 => 1
+            //    2 => 3
+            //    2
+
+            while (l < nums.Count())
+            {
+                if (r - l + 1 > max)
+                {
+                    max = r - l + 1;
+                }
+
+                bool moved = false;
+                while (r + 1 < nums.Count() && nums[r + 1] > nums[r])
+                {
+                    moved = true;
+                    r++;
+                }
+
+                if (!moved)
+                {
+                    l = r + 1;
+                    r = l;
+                }
+            }
+
+            return max;
         }
 
         public string AlienOrder(string[] words)
