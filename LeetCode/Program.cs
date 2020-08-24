@@ -16,7 +16,7 @@
     {
         public static void Main()
         {
-            Console.WriteLine(new Program().FindLengthOfLCIS(new[] { 1, 3, 5, 4, 7 }));
+            new Trees2().Run();
         }
 
         public int FindLengthOfLCIS(int[] nums)

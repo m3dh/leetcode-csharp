@@ -4,6 +4,57 @@ namespace LeetCode.Csharp.Solutions2
 
     public class LinkedLists
     {
+        // https://leetcode.com/problems/merge-k-sorted-lists/
+        public ListNode MergeKLists(ListNode[] lists)
+        {
+            MaxHeap<ListHeapNode> h = new MaxHeap<ListHeapNode>(lists.Length * 2);
+            foreach (ListNode node in lists)
+            {
+                h.Insert(new ListHeapNode { Node = node });
+            }
+
+            ListNode head = null;
+            ListNode curr = null;
+            while (h.Count > 0)
+            {
+                ListHeapNode min = h.GetMax();
+                h.RemoveMax();
+
+                if (min.Node.next != null)
+                {
+                    h.Insert(new ListHeapNode { Node = min.Node.next });
+                }
+
+                if (head == null)
+                {
+                    head = min.Node;
+                }
+
+                if (curr == null)
+                {
+                    curr = head;
+                }
+                else
+                {
+                    curr.next = min.Node;
+                    curr = curr.next;
+                }
+            }
+
+            return head;
+        }
+
+        private class ListHeapNode : IHeapNode
+        {
+            public ListNode Node { get; set; }
+
+            public int GetValue()
+            {
+                // Make it a min heap.
+                return -this.Node.val;
+            }
+        }
+
         // 143 - https://leetcode.com/problems/reorder-list/
         public void ReorderList(ListNode head) {
             int cnt = this.Count(head);

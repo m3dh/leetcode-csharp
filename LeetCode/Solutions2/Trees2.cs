@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Collections.Generic;
+    using System.Threading;
     using LeetCode.Csharp.Common;
     using Newtonsoft.Json;
 
@@ -118,9 +119,71 @@
             return curCoins - 1;
         }
 
+        public TreeNode SortedListToBST(ListNode head)
+        {
+            if (head == null) return null;
+
+            int len = 0;
+            ListNode n = head;
+            while (n != null)
+            {
+                len++;
+                n = n.next;
+            }
+
+            return SortedListToBST(ref head, 0, len - 1);
+        }
+
+        private TreeNode SortedListToBST(ref ListNode n, int l, int r)
+        {
+            TreeNode ret = null;
+
+            if (n != null)
+            {
+                if (l == r)
+                {
+                    ret = new TreeNode(n.val);
+                    n = n.next;
+                }
+                else
+                {
+                    // 0, 3 (0,1,2,3)
+                    // 0, | 1 | 2, 3
+
+                    int leftLen = (r - l) / 2;
+                    int rightLen = (r - l) - leftLen;
+
+                    // REVIEW: 边界条件处理
+
+                    TreeNode lt = leftLen == 0 ? null : SortedListToBST(ref n, l, l + leftLen - 1);
+                    ret = new TreeNode(n.val);
+                    n = n.next;
+
+                    TreeNode rt = rightLen == 0 ? null : SortedListToBST(ref n, r - rightLen + 1, r);
+
+                    ret.left = lt;
+                    ret.right = rt;
+                }
+            }
+
+            return ret;
+        }
+
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(DiffWaysToCompute("2*3-4*5"), Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(SortedListToBST(new ListNode(1)
+            {
+                next = new ListNode(2)
+                {
+                    next = new ListNode(3)
+                    {
+                        next = new ListNode(4)
+                        {
+                            next = new ListNode(5)
+                        }
+                    }
+                }
+            }), Formatting.Indented));
         }
     }
 }
