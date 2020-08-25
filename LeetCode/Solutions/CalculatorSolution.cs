@@ -2,14 +2,180 @@ namespace LeetCode.Csharp.Solutions
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public class CalculatorSolution
     {
         // 224 - https://leetcode.com/problems/basic-calculator/
         public int Calculate(string s)
         {
-            // TODO.
-            return -1;
+            var ops = Tokenize('|' + s);
+            var operatorStack = new Stack<Op>();
+            var operandStack = new Stack<Op>();
+
+            foreach (Op op in ops.ToArray() .Reverse())
+            {
+                Console.WriteLine(string.Join(", ", operatorStack));
+                Console.WriteLine(string.Join(", ", operandStack));
+
+                if (op.IsOperator)
+                {
+                    if (op.Operator == ')')
+                    {
+                        operatorStack.Push(op);
+                    }
+                    else if (op.Operator == '(' || op.Operator == '|')
+                    {
+                        while (operatorStack.Count > 0)
+                        {
+                            var topOper = operatorStack.Pop();
+                            if (topOper.Operator == ')')
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                int val = 0;
+                                var val1 = operandStack.Pop().Operand;
+                                var val2 = operandStack.Pop().Operand;
+
+                                switch (topOper.Operator)
+                                {
+                                    case '+':
+                                        val = val1 + val2;
+                                        break;
+                                    case '-':
+                                        val = val1 - val2;
+                                        break;
+                                    case '*':
+                                        val = val1 * val2;
+                                        break;
+                                    case '/':
+                                        val = val1 / val2;
+                                        break;
+                                    default: throw new Exception();
+                                }
+
+                                operandStack.Push(new Op { Operand = val });
+                            }
+                        }
+                    }
+                    else if (op.Operator == '+' || op.Operator == '-')
+                    {
+                        while (operatorStack.Count > 0 && (operatorStack.Peek().Operator == '*' || operatorStack.Peek().Operator == '/'))
+                        {
+                                int val = 0;
+                                var val1 = operandStack.Pop().Operand;
+                                var val2 = operandStack.Pop().Operand;
+
+                                var topOper = operatorStack.Pop();
+                                switch (topOper.Operator)
+                                {
+                                    case '+':
+                                        val = val1 + val2;
+                                        break;
+                                    case '-':
+                                        val = val1 - val2;
+                                        break;
+                                    case '*':
+                                        val = val1 * val2;
+                                        break;
+                                    case '/':
+                                        val = val1 / val2;
+                                        break;
+                                    default: throw new Exception();
+                                }
+
+                                operandStack.Push(new Op { Operand = val });
+                        }
+
+                        operatorStack.Push(op);
+                    }
+                    else
+                    {
+                        operatorStack.Push(op);
+                    }
+                }
+                else
+                {
+                    operandStack.Push(op);
+                }
+            }
+
+            return operandStack.Single().Operand;
+        }
+
+        private List<Op> Tokenize(string s)
+        {
+            char[] operators = new[] { '(', ')', '+', '-', '/', '*', '|' };
+
+            List<Op> ret = new List<Op>();
+            int? val = null;
+            foreach (char c in s)
+            {
+                if (operators.Any(o => o == c))
+                {
+                    if (val != null)
+                    {
+                        ret.Add(new Op
+                        {
+                            Operand = val.Value,
+                        });
+
+                        val = null;
+                    }
+
+                    ret.Add(new Op
+                    {
+                        IsOperator = true,
+                        Operator = c,
+                    });
+                }
+                else if (char.IsWhiteSpace(c))
+                {
+                    if (val != null)
+                    {
+                        ret.Add(new Op
+                        {
+                            Operand = val.Value,
+                        });
+
+                        val = null;
+                    }
+                }
+                else
+                {
+                    if (val == null)
+                    {
+                        val = 0;
+                    }
+
+                    val *= 10;
+                    val += (c - '0');
+                }
+            }
+
+            if (val != null)
+            {
+                ret.Add(new Op
+                {
+                    Operand = val.Value,
+                });
+            }
+
+            return ret;
+        }
+
+        private class Op
+        {
+            public bool IsOperator { get; set; }
+            public char Operator { get; set; }
+            public int Operand { get; set; }
+
+            public override string ToString()
+            {
+                return IsOperator ? Operator.ToString() : Operand.ToString();
+            }
         }
 
         // 227 - https://leetcode.com/problems/basic-calculator-ii/

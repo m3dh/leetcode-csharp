@@ -16,7 +16,9 @@
     {
         public static void Main()
         {
-            new Binary().Run();
+            Console.WriteLine($"RET: {new CalculatorSolution().Calculate("(1+(4+5+2)-3)+(6+8)")}");
+            Console.WriteLine($"RET: {new CalculatorSolution().Calculate(" 2-1 + 2")}");
+            Console.WriteLine($"RET: {new CalculatorSolution().Calculate(" 3+5/2")}");
         }
 
         public int FindLengthOfLCIS(int[] nums)
