@@ -16,7 +16,7 @@
     {
         public static void Main()
         {
-            new Trees2().Run();
+            new Binary().Run();
         }
 
         public int FindLengthOfLCIS(int[] nums)

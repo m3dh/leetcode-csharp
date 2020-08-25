@@ -200,9 +200,58 @@
             return ans;
         }
 
+        public int JobScheduling(int[] startTime, int[] endTime, int[] profit)
+        {
+            List<Job> jobs = new List<Job>();
+            for (int i = 0; i < startTime.Length; i++)
+            {
+                jobs.Add(new Job
+                {
+                    StartTime = startTime[i],
+                    EndTime = endTime[i],
+                    Profit = profit[i]
+                });
+            }
+
+            jobs = jobs.OrderBy(j => j.EndTime).ToList();
+
+            // dp - 前面的总结外加选定当前的
+            int[] dp = new int[jobs.Count];
+            dp[0] = jobs[0].Profit; // dp[0] 只有选定一种情况(as profit > 0)
+
+            for (int i = 1; i < dp.Length; i++)
+            {
+                // Max of <Prev, StartFromMe>
+                dp[i] = Math.Max(dp[i - 1], jobs[i].Profit);
+                for (int j = i - 1; j >= 0; j--)
+                {
+                    if (jobs[j].EndTime <= jobs[i].StartTime)
+                    {
+                        // 因为一路携带，所以比到第一个end < start就可以了
+                        // Max of <Prev, StartFromMe, HavingSomeoneAhead>
+                        dp[i] = Math.Max(dp[i], dp[j] + jobs[i].Profit);
+                        break;
+                    }
+                }
+            }
+
+            return dp.Last();
+        }
+
+        private class Job
+        {
+            public int StartTime { get; set; }
+            public int EndTime { get; set; }
+            public int Profit { get; set; }
+        }
+
         public void Run()
         {
-            Console.WriteLine(this.MaxNonOverlapping(new[] { -1, 3, 5, 1, 4, 2, -9 }, 6));
+            // [1,2,3,4,6]
+            // [3,5,10,6,9]
+            // [20,20,100,70,60]
+
+            Console.WriteLine(this.JobScheduling(new[] { 1, 2, 3, 4, 6 }, new[] { 3, 5, 10, 6, 9 }, new[] { 20, 20, 100, 70, 60 }));
         }
     }
 }

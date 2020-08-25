@@ -556,9 +556,96 @@ namespace LeetCode.Csharp.Solutions2
             return cnt;
         }
 
+        public int MissingElement(int[] nums, int k)
+        {
+            // [4,7,9,10] (5,6,8) -> (10 - 4 - 4)
+            int totalMissing = nums[nums.Length - 1] - nums[0] - nums.Length + 1;
+            if (totalMissing < k)
+            {
+                return nums[nums.Length - 1] + k - totalMissing;
+            }
+            else
+            {
+                int l = 0;
+                int r = nums.Length - 1;
+
+                // find left = right index such that 
+                // missing(left - 1) < k <= missing(left)
+                while (l < r)
+                {
+                    int m = l + (r - l) / 2; // m = 2, (9-4-[2+1])
+                    int curMissing = nums[m] - nums[0] - m;
+                    if (curMissing < k)
+                    {
+                        l = m + 1;
+                    }
+                    else
+                    {
+                        r = m;
+                    }
+                }
+
+                return nums[l - 1] + k - (nums[l - 1] - nums[0] - (l - 1));
+            }
+        }
+
+        // https://leetcode.com/problems/search-in-rotated-sorted-array-ii/
+        public bool Search(int[] nums, int target)
+        {
+            // REVIEW: Rotated Binary Search
+            return SearchI(nums, target) != -1;
+        }
+
+        public int SearchI(int[] nums, int target)
+        {
+            if (nums.Length == 0) return -1;
+
+            int l = 0;
+            int r = nums.Length - 1;
+            while (l <= r)
+            {
+                int mid = (l + r) / 2;
+
+                if (nums[mid] == target) return mid;
+
+                Console.WriteLine($"L:{l} R:{r} M:{mid}");
+
+                if (nums[mid] < nums[r]) // rhs
+                {
+                    if (nums[mid] < target && nums[r] >= target)
+                    {
+                        // between mid,right
+                        l = mid + 1;
+                    }
+                    else
+                    {
+                        r = mid - 1;
+                    }
+                }
+                else if (nums[mid] > nums[r]) // lhs
+                {
+                    if (nums[l] <= target && target < nums[mid])
+                    {
+                        r = mid - 1;
+                    }
+                    else
+                    {
+                        l = mid + 1;
+                    }
+                }
+                else // nums[mid] == nums[r]
+                {
+                    // 因为同样的值还是被nums[mid]保留了
+                    r--;
+                }
+            }
+
+            return -1;
+        }
+
         public void Run()
         {
-            Console.WriteLine(BulbSwitch(99999));
+            Console.WriteLine(MissingElement(new[] { 4, 7, 9, 10 }, 1));
         }
     }
 }
