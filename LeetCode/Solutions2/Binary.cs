@@ -4,6 +4,7 @@ namespace LeetCode.Csharp.Solutions2
     using System.Linq;
     using System.Collections.Generic;
     using LeetCode.Csharp.Common;
+    using Newtonsoft.Json;
 
     public class Binary
     {
@@ -643,9 +644,52 @@ namespace LeetCode.Csharp.Solutions2
             return -1;
         }
 
+        // https://leetcode.com/problems/find-right-interval/
+        public int[] FindRightInterval(int[][] intervals)
+        {
+            var sorted = intervals.Select((a, i) => new int[] { a[0], a[1], i }).OrderBy(itv => itv[0]).ToList();
+
+
+            Console.WriteLine(JsonConvert.SerializeObject(sorted));
+
+            int[] ret = new int[intervals.Length];
+            for (int i = 0; i < intervals.Length; i++)
+            {
+                ret[i] = FindIndex(sorted, intervals[i][1]);
+            }
+
+            return ret;
+        }
+
+        // should find l and greater or equal to val (or -1)
+        private int FindIndex(List<int[]> sorted, int val)
+        {
+            int l = 0;
+            int r = sorted.Count - 1;
+            while (l < r)
+            {
+                int m = l + (r - l) / 2;
+                if (sorted[m][0] < val)
+                {
+                    l = m + 1;
+                }
+                else if (sorted[m][0] == val)
+                {
+                    return sorted[m][2];
+                }
+                else
+                {
+                    r = m;
+                }
+            }
+
+            if (sorted[l][0] >= val) return sorted[l][2];
+            else return -1;
+        }
+
         public void Run()
         {
-            Console.WriteLine(MissingElement(new[] { 4, 7, 9, 10 }, 1));
+            Console.WriteLine(JsonConvert .SerializeObject(  FindRightInterval(new[] { new[] { 1, 2 }, new[] { 2, 3 }, new[] { 0, 1 }, new[] { 3, 4 } })));
         }
     }
 }
