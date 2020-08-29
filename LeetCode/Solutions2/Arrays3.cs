@@ -1,6 +1,7 @@
 ﻿namespace LeetCode.Csharp.Solutions2
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     using LeetCode.Csharp.Common;
@@ -150,6 +151,36 @@
             }
 
             return min == int.MaxValue ? -1 : min;
+        }
+
+        // https://leetcode.com/problems/string-transforms-into-another-string/
+        public bool CanConvert(string str1, string str2)
+        {
+            // REVIEW: 每个不同字符map到一个字符，注意最后避免26个字母成环的检测
+            Dictionary<char, char> map = new Dictionary<char, char>();
+            for (int i = 0; i < str1.Length; i++)
+            {
+                char c1 = str1[i];
+                char c2 = str2[i];
+                if (map.TryGetValue(c1, out char cm1))
+                {
+                    c1 = cm1;
+                }
+                else
+                {
+                    map[c1] = c2;
+                    c1 = c2;
+                }
+
+                if (c1 != c2) return false;
+            }
+
+            if (map.Values.Distinct().Count() == 26)
+            {
+                return map.Keys.All(k => map[k] == k);
+            }
+
+            return true;
         }
     }
 }
