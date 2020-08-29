@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Text;
     using LeetCode.Csharp.Common;
 
     class Arrays3
@@ -43,6 +44,112 @@
             }
 
             return max;
+        }
+
+        // https://leetcode.com/problems/validate-stack-sequences/
+        public bool ValidateStackSequences(int[] pushed, int[] popped)
+        {
+            // REVIEW: Idea - 把pushed数组当成stack来用 - 修改里面的内容
+
+            if (pushed.Length != popped.Length) return false;
+
+            if (pushed.Length == 0) return true;
+
+            int sTop = 0;
+            int popIdx = 0;
+
+            for (int pushIndex = 0; pushIndex < pushed.Length; pushIndex++)
+            {
+                // push
+                pushed[sTop] = pushed[pushIndex];
+                sTop++;
+
+                while (sTop > 0 && pushed[sTop - 1] == popped[popIdx])
+                {
+                    sTop--;
+                    popIdx++;
+
+                    if (popIdx == popped.Length) return true;
+                }
+            }
+
+            return false;
+        }
+
+        // https://leetcode.com/problems/find-and-replace-in-string/
+        public string FindReplaceString(string S, int[] indexes, string[] sources, string[] targets)
+        {
+            // REVIEW: 看一下 O(n) 的解法
+            int[] replaces = new int[S.Length];
+            for (int i = 0; i < replaces.Length; i++) replaces[i] = -1;
+
+            for (int i = 0; i < indexes.Length; i++)
+            {
+                bool canReplace = true;
+                for (int j = 0; j < sources[i].Length; j++)
+                {
+                    if (sources[i][j] != S[indexes[i] + j])
+                    {
+                        canReplace = false;
+                        break;
+                    }
+                }
+
+                if (canReplace)
+                {
+                    replaces[indexes[i]] = i;
+                }
+            }
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < S.Length;)
+            {
+                if (replaces[i] < 0)
+                {
+                    sb.Append(S[i]);
+                    i++;
+                }
+                else
+                {
+                    sb.Append(targets[replaces[i]]);
+                    i += sources[replaces[i]].Length;
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        // https://leetcode.com/problems/minimum-domino-rotations-for-equal-row/
+        public int MinDominoRotations(int[] A, int[] B)
+        {
+            // 看似简单，但 tc 不能是每个数出现的总数量，需要去重！
+
+            if (A.Length == 0) return 0;
+
+            int[] ac = new int[6];
+            int[] bc = new int[6];
+            int[] tc = new int[6];
+            for (int i = 0; i < A.Length; i++)
+            {
+                ac[A[i] - 1]++;
+                bc[B[i] - 1]++;
+                tc[A[i] - 1]++;
+                if (B[i] != A[i])
+                {
+                    tc[B[i] - 1]++;
+                }
+            }
+
+            int min = int.MaxValue;
+            for (int i = 0; i < 6; i++)
+            {
+                if (tc[i] == A.Length)
+                {
+                    min = Math.Min(min, A.Length - Math.Max(ac[i], bc[i]));
+                }
+            }
+
+            return min == int.MaxValue ? -1 : min;
         }
     }
 }

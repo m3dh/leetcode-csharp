@@ -1,6 +1,6 @@
 ﻿namespace LeetCode.Csharp.Solutions2
 {
-    class Random
+    class Randoms
     {
         private int Rand7()
         {
