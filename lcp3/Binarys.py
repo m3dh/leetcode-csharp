@@ -25,10 +25,6 @@ class TimeMap:
                     r = m - 1
             return t[l-1][1] if l and t[l-1][0] <= timestamp else ""
 
-
-
-
-
 if __name__ == "__main__":
     map = collections.defaultdict(list)
     map.get("123").append(2)
