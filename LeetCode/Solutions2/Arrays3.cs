@@ -234,6 +234,47 @@
             return (start == -1) ? "" : S.Substring(start, minLen);
         }
 
+        // https://leetcode.com/problems/split-array-with-equal-sum/
+        public bool SplitArray(int[] nums)
+        {
+            // REVIEW: Divide-n-conquer
+            int[] sums = new int[nums.Length];
+            int sum = 0;
+            for (int i = 0; i < nums.Length; i++)
+            {
+                sum += nums[i];
+                sums[i] = sum;
+            }
+
+            // fact: i >= 1, j >= 3, k >= 5
+            // divide by 'j'
+            for (int j = 3; j < nums.Length - 3; j++)
+            {
+                // record all the possibilities to make it o(n) [inner loop]
+                HashSet<int> possibles = new HashSet<int>();
+                for (int i = 1; i < j - 1; i++)
+                {
+                    if (sums[i - 1] == sums[j - 1] - sums[i])
+                    {
+                        possibles.Add(sums[i - 1]);
+                    }
+                }
+
+                for (int k = j + 2; k < nums.Length - 1; k++)
+                {
+                    if (sum - sums[k] == sums[k - 1] - sums[j])
+                    {
+                        if (possibles.Contains(sum - sums[k]))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public void Run()
         {
             Console.WriteLine(MinWindow("jmeqksfrsdcmsiwvaovztaqenprpvnbstl", "u"));
