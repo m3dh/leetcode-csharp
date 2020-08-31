@@ -182,5 +182,61 @@
 
             return true;
         }
+
+        // https://leetcode.com/problems/minimum-window-subsequence/
+        // 用的还是普通最长子序列的 DP，但传递的是 S 中的起始位置
+        public string MinWindow(string S, string T)
+        {
+            // REVIEW: 重写并改成不是S.Length+1的！
+            int start = -1;
+            int minLen = int.MaxValue;
+            int[][] dp = new int[S.Length][];
+            for (int i = 0; i < S.Length; i++)
+            {
+                dp[i] = new int[T.Length];
+                for (int j = 0; j < T.Length; j++) dp[i][j] = -1;
+            }
+
+            for (int i = 0; i < S.Length; i++)
+            {
+                for (int j = 0; j < T.Length && j <= i; j++)
+                {
+                    if (S[i] == T[j])
+                    {
+                        // now pass this start index to following items
+                        if (j == 0 || i == 0)
+                        {
+                            dp[i][j] = i;
+                        }
+                        else
+                        {
+                            // from previous items
+                            dp[i][j] = dp[i - 1][j - 1];
+                        }
+                    }
+                    else
+                    {
+                        dp[i][j] = i == 0 ? -1 : dp[i - 1][j]; // dp[i][j-1] is not considered as j must be all matched.
+                    }
+                }
+
+                if (dp[i][T.Length - 1] != -1)
+                {
+                    int len = i - dp[i][T.Length - 1] + 1;
+                    if (len < minLen)
+                    {
+                        minLen = len;
+                        start = dp[i][T.Length - 1];
+                    }
+                }
+            }
+
+            return (start == -1) ? "" : S.Substring(start, minLen);
+        }
+
+        public void Run()
+        {
+            Console.WriteLine(MinWindow("jmeqksfrsdcmsiwvaovztaqenprpvnbstl", "u"));
+        }
     }
 }

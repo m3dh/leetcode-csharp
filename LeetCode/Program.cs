@@ -16,7 +16,7 @@
     {
         public static void Main()
         {
-            new Binary().Run();
+            new Arrays3().Run();
         }
 
         public int FindLengthOfLCIS(int[] nums)
