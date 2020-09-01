@@ -275,9 +275,48 @@
             return false;
         }
 
+        // https://leetcode.com/problems/longest-substring-without-repeating-characters/
+        public int LengthOfLongestSubstring(string s)
+        {
+            // REVIEW: 滑动窗口模板
+            if (s == null) return 0;
+
+            int maxLen = 0;
+            int l = 0;
+            int r = 0;
+            HashSet<char> window = new HashSet<char>();
+
+            while(l < s.Length)
+            {
+                if (!window.Contains(s[r]))
+                {
+                    window.Add(s[r]);
+                    maxLen = Math.Max(maxLen, window.Count);
+                    if (r == s.Length - 1)
+                    {
+                        // because moving r is not possible but moving l cannot extend the window, just give up.
+                        break;
+                    }
+                    else
+                    {
+                        // push right
+                        r++;
+                    }
+                }
+                else
+                {
+                    // move left
+                    window.Remove(s[l]);
+                    l++;
+                }
+            }
+
+            return maxLen;
+        }
+
         public void Run()
         {
-            Console.WriteLine(MinWindow("jmeqksfrsdcmsiwvaovztaqenprpvnbstl", "u"));
+            Console.WriteLine(LengthOfLongestSubstring("abcabcbb"));
         }
     }
 }

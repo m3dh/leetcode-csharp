@@ -47,5 +47,11 @@
                 return false;
             }
         }
+
+        // https://leetcode.com/problems/strobogrammatic-number-iii/
+        public int StrobogrammaticInRange(string low, string high)
+        {
+            // 这可以用搜索做！
+        }
     }
 }
