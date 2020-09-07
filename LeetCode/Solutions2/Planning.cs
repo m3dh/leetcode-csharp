@@ -1022,7 +1022,7 @@ namespace LeetCode.Csharp.Solutions2
         // https://leetcode.com/problems/super-washing-machines/
         public int FindMinMoves(int[] machines)
         {
-            // REVIEW: 寻找积累的需要最大补充数的machine.
+            // REVIEW: 寻找积累的需要最大补充数的machine. -> 难
             int total = machines.Sum();
             if (total % machines.Length != 0) return -1;
 
@@ -1044,6 +1044,7 @@ namespace LeetCode.Csharp.Solutions2
         // https://leetcode.com/problems/dungeon-game/
         public int CalculateMinimumHP(int[][] dungeon)
         {
+            // REVIEW
             // dp means the required minimal health to enter each of the positions.
             int[][] dp = new int[dungeon.Length][];
             for (int i = 0; i < dp.Length; i++)

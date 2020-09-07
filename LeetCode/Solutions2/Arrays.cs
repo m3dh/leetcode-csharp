@@ -2313,6 +2313,41 @@ namespace LeetCode.Csharp.Solutions2
             return ret;
         }
 
+        // https://leetcode.com/problems/cracking-the-safe/
+        // 某种程度上是一个贪心算法。。。就是已知每次改一个字符可以遍历全部可能
+        public string CrackSafe(int n, int k)
+        {
+            // REVIEW: 硬记题
+            StringBuilder initBuilder = new StringBuilder();
+            for (int i = 0; i < n; i++)
+            {
+                initBuilder.Append('0');
+            }
+
+            string ans = initBuilder.ToString();
+
+            var visited = new HashSet<string>();
+            visited.Add(ans);
+
+            for (int c = 1; c < Math.Pow(k, n); c++)
+            {
+                string sub = ans.Substring(ans.Length - n + 1);
+
+                // 注意由于我们是从 0000 开始的，所以此处必须逆序
+                for (int i = k - 1; i >= 0; i--)
+                {
+                    string next = sub + i;
+                    if (visited.Add(next))
+                    {
+                        ans += i;
+                        break;
+                    }
+                }
+            }
+
+            return ans;
+        }
+
         public void Run()
         {
             Console.WriteLine(ReverseWords("the sky is blue"));

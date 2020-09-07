@@ -245,13 +245,95 @@
             public int Profit { get; set; }
         }
 
+        // https://leetcode.com/problems/expression-add-operators/
+        public IList<string> AddOperators(string num, int target)
+        {
+            List<string> result = new List<string>();
+            AddOperatorsRec(target, num, string.Empty, 0, 0, result, true);
+            return result;
+        }
+
+        // cannot have prefixing '-'
+        private void AddOperatorsRec(int target, string num, string path, long cur, long tmp, List<string> ret, bool first)
+        {
+            // 注意此时无论如何都结束了，只是看一下要不要计入result
+            if (string.IsNullOrEmpty(num))
+            {
+                if ((cur + tmp == target))
+                {
+                    ret.Add(path);
+                }
+
+                return;
+            }
+
+            // looping through all the split positions.
+            long val = 0;
+            for (int len = 1; len <= num.Length; len++)
+            {
+                // handle case: leading zeros.
+                if (len > 1 && val == 0)
+                {
+                    continue;
+                }
+
+                val = val * 10 + num[len - 1] - '0';
+
+                // handle first number (?)
+                if (first)
+                {
+                    AddOperatorsRec(
+                        target,
+                        num.Substring(len),
+                        path + $"{val}",
+                        cur + tmp,
+                        val,
+                        ret,
+                        false);
+                }
+                else
+                {
+                    // + val
+                    // eval previous operator
+                    AddOperatorsRec(
+                        target,
+                        num.Substring(len),
+                        path + $"+{val}",
+                        cur + tmp,
+                        val,
+                        ret,
+                        false);
+
+                    // * val
+                    AddOperatorsRec(
+                        target,
+                        num.Substring(len),
+                        path + $"*{val}",
+                        cur,
+                        tmp * val,
+                        ret,
+                        false);
+
+                    // - val
+                    AddOperatorsRec(
+                        target,
+                        num.Substring(len),
+                        path + $"-{val}",
+                        cur + tmp,
+                        -val,
+                        ret,
+                        false);
+                }
+            }
+        }
+
         public void Run()
         {
             // [1,2,3,4,6]
             // [3,5,10,6,9]
             // [20,20,100,70,60]
 
-            Console.WriteLine(this.JobScheduling(new[] { 1, 2, 3, 4, 6 }, new[] { 3, 5, 10, 6, 9 }, new[] { 20, 20, 100, 70, 60 }));
+            this.AddOperators("105", 5).JsonPrint();
         }
     }
 }

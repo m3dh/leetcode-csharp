@@ -404,6 +404,7 @@
         // https://leetcode.com/problems/maximum-product-subarray/
         public int MaxProduct(int[] nums)
         {
+            // 注意这种写法！
             int max = 1;
             int min = 1;
             int ret = int.MinValue;
@@ -693,8 +694,64 @@
             return cnt;
         }
 
+        public string MinWindow(string s, string t)
+        {
+            Dictionary<char, int> counts = new Dictionary<char, int>();
+            Dictionary<char, int> excnts = new Dictionary<char, int>();
+            foreach (char c in t)
+            {
+                excnts[c] = excnts.TryGetValue(c, out int cnt) ? cnt + 1 : 1;
+                counts[c] = 0;
+            }
+
+            string maxStr = null;
+
+            int l = 0;
+            int r = 0;
+
+            while (l < s.Length)
+            {
+                bool flag = true;
+                foreach (char c in excnts.Keys)
+                {
+                    if (counts[c] < excnts[c])
+                    {
+                        flag = false;
+                        break;
+                    }
+                }
+
+                if (flag)
+                {
+                    int len = r - l;
+                    if (maxStr == null || len < maxStr.Length)
+                    {
+                        maxStr = s.Substring(l, len);
+                    }
+
+                    counts[s[l]]--;
+                    l++;
+                }
+                else
+                {
+                    if (r < s.Length)
+                    {
+                        counts[s[r]]++;
+                        r++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return maxStr;
+        }
+
         public void Run()
         {
+            MinWindow("a", "a");
         }
     }
 }

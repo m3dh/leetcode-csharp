@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using System.Threading.Tasks;
     using LeetCode.Csharp.Common;
@@ -16,7 +17,7 @@
     {
         public static void Main()
         {
-            new Arrays3().Run();
+            new Planning2().Run();
         }
 
         public int FindLengthOfLCIS(int[] nums)

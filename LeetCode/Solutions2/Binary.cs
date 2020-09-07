@@ -687,6 +687,56 @@ namespace LeetCode.Csharp.Solutions2
             else return -1;
         }
 
+        // https://leetcode.com/problems/split-array-largest-sum/
+        public int SplitArray(int[] nums, int m)
+        {
+            // REVIEW: 注意一下这种类型的二分的写法
+            long minSum = nums.Max();
+            long maxSum = nums.Sum();
+            long ans = maxSum;
+
+            // binary search for the left edge of count m.
+            long l = minSum;
+            long r = maxSum;
+            while (l <= r)
+            {
+                long mid = l + (r - l) / 2;
+                int splits = SplitArrayWithMaxSum(nums, mid);
+
+                if (splits > m)
+                {
+                    l = mid + 1;
+                }
+                else if (splits <= m)
+                {
+                    ans = Math.Min(ans, mid);
+                    r = mid - 1;
+                }
+            }
+
+            return (int)ans;
+        }
+
+        private int SplitArrayWithMaxSum(int[] nums, long maxSum)
+        {
+            int cnt = 0;
+            long sum = int.MaxValue;
+            foreach (int num in nums)
+            {
+                if (sum + num > maxSum)
+                {
+                    cnt++;
+                    sum = num;
+                }
+                else
+                {
+                    sum += num;
+                }
+            }
+
+            return cnt;
+        }
+
         public void Run()
         {
             Console.WriteLine(JsonConvert .SerializeObject(  FindRightInterval(new[] { new[] { 1, 2 }, new[] { 2, 3 }, new[] { 0, 1 }, new[] { 3, 4 } })));

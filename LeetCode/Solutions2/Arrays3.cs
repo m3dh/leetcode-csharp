@@ -286,7 +286,7 @@
             int r = 0;
             HashSet<char> window = new HashSet<char>();
 
-            while(l < s.Length)
+            while (l < s.Length)
             {
                 if (!window.Contains(s[r]))
                 {
@@ -314,9 +314,49 @@
             return maxLen;
         }
 
+        // https://leetcode.com/problems/contains-duplicate-iii/
+        public bool ContainsNearbyAlmostDuplicate(int[] nums, int k, int t)
+        {
+            // REVIEW: SortedSet -> GetViewBetween -> Inclusive!
+            SortedSet<long> ss = new SortedSet<long>();
+            int l = 0;
+            int r = 0;
+            while (l < nums.Length)
+            {
+                // k = 2 (2-0)
+                if (r - l + 1 <= k + 1)
+                {
+                    if (r < nums.Length)
+                    {
+                        long lo = Math.Min((long)nums[r] - t, (long)nums[r] + t);
+                        long up = Math.Max((long)nums[r] - t, (long)nums[r] + t);
+                        var subView = ss.GetViewBetween(lo, up);
+                        if (subView.Count > 0 && subView.Any(v => Math.Abs((long) nums[r] - v) <= t))
+                        {
+                            return true;
+                        }
+
+                        ss.Add(nums[r]);
+                        r++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    ss.Remove(nums[l]);
+                    l++;
+                }
+            }
+
+            return false;
+        }
+
         public void Run()
         {
-            Console.WriteLine(LengthOfLongestSubstring("abcabcbb"));
+            Console.WriteLine(ContainsNearbyAlmostDuplicate(new[] { 2, 1 }, 1, 1));
         }
     }
 }

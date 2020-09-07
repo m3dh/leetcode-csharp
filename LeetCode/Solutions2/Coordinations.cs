@@ -1,5 +1,6 @@
 ﻿namespace LeetCode.Csharp.Solutions2
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -63,6 +64,40 @@
             }
 
             return result;
+        }
+
+        // https://leetcode.com/problems/image-overlap/
+        public int LargestOverlap(int[][] A, int[][] B)
+        {
+            int m = A.Length;
+            int n = A[0].Length;
+            
+            // move [1-n, n-1]
+            int max = 0;
+            for (int xd = 1 - n; xd <= n - 1; xd++)
+            {
+                for (int yd = 1 - m; yd <= m - 1; yd++)
+                {
+                    int count = 0;
+                    for (int i = 0; i < n; i++)
+                    {
+                        int xt = i - xd;
+                        if (xt < 0 || xt >= n) continue;
+                        for (int j = 0; j < m; j++)
+                        {
+                            int yt = j - yd;
+                            if (yt >= 0 && yt < m && A[xt][yt] + B[i][j] == 2)
+                            {
+                                count++;
+                            }
+                        }
+                    }
+
+                    max = Math.Max(max, count);
+                }
+            }
+
+            return max;
         }
     }
 }

@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
 
     public class Search2
     {
@@ -52,6 +53,7 @@
         public int StrobogrammaticInRange(string low, string high)
         {
             // 这可以用搜索做！
+            return -1;
         }
     }
 }
