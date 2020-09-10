@@ -27,6 +27,7 @@
         public int MinMeetingRooms(int[][] intervals)
         {
             // REVIEW: Idea - 维护一个堆，里面是现在正在开的会，每来一个新会就把已经开完的会弹出
+            // REVIEW: 还有更好的解法，不需要堆，就是维护occupied count就行了，end来了occupied --, begin来了occupied ++
 
             intervals = intervals.OrderBy(i => i[0]).ThenBy(i => -i[1]).ToArray();
             MaxHeap<MinMeetingRoomNode> roomMinHeap = new MaxHeap<MinMeetingRoomNode>(intervals.Length);
@@ -352,6 +353,60 @@
             }
 
             return false;
+        }
+
+        // https://leetcode.com/problems/employee-free-time/
+        public class Interval
+        {
+            public int start;
+            public int end;
+
+            public Interval() { }
+            public Interval(int _start, int _end)
+            {
+                start = _start;
+                end = _end;
+            }
+        }
+
+        private class Oper
+        {
+            public int Time;
+            public int Op; // 0 - End, 1 - Begin
+        }
+
+        public IList<Interval> EmployeeFreeTime(IList<IList<Interval>> schedule)
+        {
+            var opers = schedule
+                .SelectMany(sc => sc.SelectMany(s => new[] { new Oper { Op = 1, Time = s.start }, new Oper { Op = 0, Time = s.end }, }))
+                .OrderBy(op => op.Time)
+                .ThenBy(op => op.Op);
+
+            List<Interval> ret = new List<Interval>();
+            int prevEnd = -1;
+            int started = 0;
+            foreach (Oper oper in opers)
+            {
+                if (oper.Op == 0)
+                {
+                    started = Math.Max(0, started - 1);
+                    prevEnd = oper.Time;
+                }
+                else
+                {
+                    if (started == 0)
+                    {
+                        if (prevEnd >= 0 && prevEnd < oper.Time)
+                        {
+                            ret.Add(new Interval(prevEnd, oper.Time));
+                        }
+                    }
+
+                    started++;
+                }
+            }
+
+            return ret;
         }
 
         public void Run()
