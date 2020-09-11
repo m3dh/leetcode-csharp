@@ -328,6 +328,17 @@
             }
         }
 
+        // https://leetcode.com/problems/encode-string-with-shortest-length/
+        public string Encode(string s)
+        {
+
+        }
+
+        private void EncodeZRec(string s)
+        {
+
+        }
+
         public void Run()
         {
             // [1,2,3,4,6]
