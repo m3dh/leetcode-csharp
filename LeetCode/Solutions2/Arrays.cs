@@ -1564,23 +1564,30 @@ namespace LeetCode.Csharp.Solutions2
             Dictionary<char, List<int>> indices = new Dictionary<char, List<int>>();
             for (int i = 0; i < s.Length; i++)
             {
-                if (indices.TryGetValue(s[i], out List<int> ind)) ind.Add(i);
-                else indices.Add(s[i], new List<int> {i});
-            }
-
-            // REVIEW: 计算数量的方式
-            long count = 0;
-            foreach (List<int> idx in indices.Values)
-            {
-                for (int i = 0; i < idx.Count; i++)
+                if (indices.TryGetValue(s[i], out List<int> idxs))
                 {
-                    int l = (i == 0 ? 0 : idx[i - 1] + 1);
-                    int r = (i == idx.Count - 1 ? s.Length - 1 : idx[i + 1] - 1);
-                    count += (idx[i] - l + 1) * (r - idx[i] + 1); // 0 - 2, 1
+                    idxs.Add(i);
+                }
+                else
+                {
+                    indices[s[i]] = new List<int> { i };
                 }
             }
 
-            return (int) (count % 1000000007);
+            int mod = 1000000007;
+            int cnt = 0;
+            foreach (List<int> idxs in indices.Values)
+            {
+                for (int i = 0; i < idxs.Count; i++)
+                {
+                    int preLen = i == 0 ? idxs[i] + 1 : idxs[i] - idxs[i - 1];
+                    int aftLen = i == idxs.Count - 1 ? (s.Length - idxs[i]) : (idxs[i + 1] - idxs[i]);
+
+                    cnt = (cnt + (preLen * aftLen) % mod) % mod;
+                }
+            }
+
+            return cnt % mod;
         }
 
         public void SortColors(int[] nums)

@@ -1,5 +1,7 @@
 namespace LeetCode.Csharp.Solutions2
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using LeetCode.Csharp.Common;
 
     public class LinkedLists
@@ -163,6 +165,116 @@ namespace LeetCode.Csharp.Solutions2
             }
             
             return head;
+        }
+
+        // https://leetcode.com/problems/all-oone-data-structure/
+        public class AllOne
+        {
+            private Dictionary<string, LinkedListNode<Node>> _map = new Dictionary<string, LinkedListNode<Node>>();
+            private LinkedList<Node> _list = new LinkedList<Node>();
+
+            /** Initialize your data structure here. */
+            public AllOne()
+            {
+            }
+
+            /** Inserts a new key <Key> with value 1. Or increments an existing key by 1. */
+            public void Inc(string key)
+            {
+                if (!_map.TryGetValue(key, out LinkedListNode<Node> ln))
+                {
+                    if (this._list.Count > 0 && this._list.First.Value.Val == 1)
+                    {
+                        this._map[key] = this._list.First;
+                        this._list.First.Value.Keys.Add(key);
+                    }
+                    else
+                    {
+                        Node n = new Node
+                        {
+                            Val = 1,
+                            Keys = new HashSet<string> { key }
+                        };
+
+                        this._list.AddFirst(n);
+                        this._map[key] = this._list.First;
+                    }
+                }
+                else
+                {
+                    ln.Value.Keys.Remove(key);
+                    if (ln.Next != null && ln.Next.Value.Val == ln.Value.Val + 1)
+                    {
+                        ln.Next.Value.Keys.Add(key);
+                        this._map[key] = ln.Next;
+                    }
+                    else
+                    {
+                        this._map[key] = this._list.AddAfter(ln, new Node
+                        {
+                            Val = ln.Value.Val + 1,
+                            Keys = new HashSet<string> { key }
+                        });
+                    }
+
+                    if (ln.Value.Keys.Count == 0)
+                    {
+                        this._list.Remove(ln);
+                    }
+                }
+            }
+
+            /** Decrements an existing key by 1. If Key's value is 1, remove it from the data structure. */
+            public void Dec(string key)
+            {
+                if (_map.TryGetValue(key, out LinkedListNode<Node> ln))
+                {
+                    ln.Value.Keys.Remove(key);
+                    if (ln.Value.Val == 1)
+                    {
+                        this._map.Remove(key);
+                    }
+                    else
+                    {
+                        if (ln.Previous != null && ln.Previous.Value.Val == ln.Value.Val - 1)
+                        {
+                            ln.Previous.Value.Keys.Add(key);
+                            this._map[key] = ln.Previous;
+                        }
+                        else
+                        {
+                            this._map[key] = this._list.AddBefore(ln, new Node
+                            {
+                                Val = ln.Value.Val - 1,
+                                Keys = new HashSet<string> { key }
+                            });
+                        }
+                    }
+
+                    if (ln.Value.Keys.Count == 0)
+                    {
+                        this._list.Remove(ln);
+                    }
+                }
+            }
+
+            /** Returns one of the keys with maximal value. */
+            public string GetMaxKey()
+            {
+                return this._list.Last.Value.Keys.First();
+            }
+
+            /** Returns one of the keys with Minimal value. */
+            public string GetMinKey()
+            {
+                return this._list.First.Value.Keys.First();
+            }
+
+            private class Node
+            {
+                public int Val { get; set; }
+                public HashSet<string> Keys { get; set; }
+            }
         }
 
         private ListNode Reverse(ListNode head) {
