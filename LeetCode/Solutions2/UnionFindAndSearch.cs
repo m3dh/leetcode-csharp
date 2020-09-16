@@ -1,6 +1,7 @@
 namespace LeetCode.Csharp.Solutions2
 {
     using System;
+    using System.Collections.Generic;
     using Newtonsoft.Json;
 
     public class UnionFindAndSearch
@@ -117,6 +118,26 @@ namespace LeetCode.Csharp.Solutions2
                 set[ir] = il;
                 return true;
             }
+        }
+
+        // https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/
+        public int RemoveStones(int[][] stones)
+        {
+            int[] ufs = new int[20005];
+            for (int i = 0; i < 20005; i++) ufs[i] = i;
+            foreach (int[] stone in stones)
+            {
+                Union(ufs, stone[0], 10000 + stone[1]);
+            }
+
+            HashSet<int> roots = new HashSet<int>();
+            foreach (int[] stone in stones)
+            {
+                roots.Add(Find(ufs, stone[0]));
+                roots.Add(Find(ufs, 10000 + stone[1]));
+            }
+
+            return stones.Length - roots.Count;
         }
 
         public void Run() {

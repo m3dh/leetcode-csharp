@@ -331,12 +331,72 @@
         // https://leetcode.com/problems/encode-string-with-shortest-length/
         public string Encode(string s)
         {
-
+            return EncodeZRec(s, new Dictionary<string, string>());
         }
 
-        private void EncodeZRec(string s)
+        private string EncodeZRec(string s, Dictionary<string, string> memo)
         {
+            if (s.Length <= 4)
+            {
+                // 2[a].Length = 4
+                return s;
+            }
 
+            if (!memo.TryGetValue(s, out string best))
+            {
+                best = s;
+                for (int len = 1; len < s.Length; len++)
+                {
+                    // abcabc ->
+                    //  len = 1, repeat = 1
+
+                    // REVIEW: 重复子串也应该递归收缩！
+                    string curStr = EncodeZRec(s.Substring(0, len), memo);
+                    int repeat = 1;
+                    while (len * repeat <= s.Length)
+                    {
+                        string suffixBest = EncodeZRec(s.Substring(len * repeat), memo);
+                        string curBest = repeat == 1
+                            ? $"{curStr}{suffixBest}"
+                            : $"{repeat}[{curStr}]{suffixBest}";
+
+                        if (curBest.Length < best.Length)
+                        {
+                            best = curBest;
+                        }
+
+                        if (len * (1 + repeat) <= s.Length)
+                        {
+                            bool flag = true;
+                            for (int i = 0; i < len; i++)
+                            {
+                                if (s[i] != s[len * repeat + i])
+                                {
+                                    flag = false;
+                                    break;
+                                }
+                            }
+
+                            if (flag)
+                            {
+                                repeat++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                memo[s] = best;
+            }
+
+            return best;
         }
 
         public void Run()
