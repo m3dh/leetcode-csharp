@@ -287,6 +287,7 @@ namespace LeetCode.Csharp.Solutions2
         // 678 - https://leetcode.com/problems/valid-parenthesis-string/
         public bool CheckValidString(string s)
         {
+            // REVIEW AGAIN - Clever solution (聪明题)
             // The brilliant idea here is, like for strings don't have a '*' (and we use a counter of left c's to valid it),
             // we just maintain the minimal left c's and a maximal, then decide if it's still possible to have it always positive though the iteration.
 
@@ -421,6 +422,7 @@ namespace LeetCode.Csharp.Solutions2
         // 480 - https://leetcode.com/problems/sliding-window-median/
         public double[] MedianSlidingWindow(int[] nums, int k)
         {
+            // REVIEW: Removing item from heap is O(n) anyways...
             List<int> window = nums.Take(k).OrderBy(n => n).ToList();
             List<double> ret = new List<double> {k % 2 == 0 ? ((double) (window[k / 2 - 1] + window[k / 2]) / 2) : (double) window[k / 2]};
             for (int i = k; i < nums.Length; i++)
@@ -633,6 +635,7 @@ namespace LeetCode.Csharp.Solutions2
             return ret;
         }
 
+        // https://leetcode.com/problems/3sum-closest/
         public int ThreeSumClosest(int[] nums, int target)
         {
             int closets = nums[0] + nums[1] + nums[2];
@@ -696,6 +699,7 @@ namespace LeetCode.Csharp.Solutions2
         // 493 - https://leetcode.com/problems/reverse-pairs/
         public int ReversePairs(int[] nums)
         {
+            // REVIEW AGAIN.
             return Divide(nums, 0, nums.Length - 1);
         }
 
@@ -780,6 +784,7 @@ namespace LeetCode.Csharp.Solutions2
 
         public int[] FindMaxSubseqFrom(int size, int[] nums)
         {
+            // IDEA: Find the maximum front values, fill the remaining with whatever we have.
             Stack<int> s = new Stack<int>();
             for (int i = 0; i < nums.Length; i++)
             {
@@ -796,6 +801,78 @@ namespace LeetCode.Csharp.Solutions2
             }
 
             return s.Reverse().ToArray();
+        }
+
+        // https://leetcode.com/problems/maximum-swap/
+        public int MaximumSwap(int num)
+        {
+            // IDEA: 每次保存合法的 swap，并尝试更新他
+            char[] cs = num.ToString().ToCharArray();
+
+            int maxNum = -1;
+
+            int frSwap = -1;
+            int toSwap = -1;
+            for (int i = cs.Length - 1; i >= 0; i--)
+            {
+                if (maxNum == -1 || cs[i] > cs[maxNum])
+                {
+                    maxNum = i;
+                }
+
+                if (maxNum != -1 && cs[maxNum] > cs[i])
+                {
+                    toSwap = i;
+                    frSwap = maxNum;
+                }
+            }
+
+            if (toSwap >= 0)
+            {
+                char c = cs[toSwap];
+                cs[toSwap] = cs[frSwap];
+                cs[frSwap] = c;
+            }
+
+            return int.Parse(new string(cs));
+        }
+
+        public int LengthOfLIS(int[] nums)
+        {
+            // IDEA: 维护一个当前递增的子串区间即可...
+            List<int> lis = new List<int>();
+            foreach (int num in nums)
+            {
+                if (lis.Count == 0 || num > lis[lis.Count - 1])
+                {
+                    lis.Add(num);
+                }
+                else
+                {
+                    int l = 0;
+                    int r = lis.Count - 1;
+                    while (l < r)
+                    {
+                        // find the first element that is greater than num.
+                        int m = l + (r - l) / 2;
+                        if (lis[m] < num)
+                        {
+                            l = m + 1;
+                        }
+                        else
+                        {
+                            r = m;
+                        }
+                    }
+
+                    if (l >= 0 && l < lis.Count && lis[l] >= num)
+                    {
+                        lis[l] = num;
+                    }
+                }
+            }
+
+            return lis.Count;
         }
 
         // https://leetcode.com/problems/maximum-sum-circular-subarray/
@@ -820,6 +897,7 @@ namespace LeetCode.Csharp.Solutions2
                 sum += num;
             }
 
+            // 特殊情况：全员负数，min意味着一个都不选
             return A.All(a => a <= 0) ? max : Math.Max(max, sum - min);
         }
 
@@ -872,6 +950,7 @@ namespace LeetCode.Csharp.Solutions2
             return max;
         }
 
+        // https://leetcode.com/problems/permutation-in-string/
         public bool CheckInclusion(string s1, string s2)
         {
             int[] cnts = new int[26];
@@ -1558,6 +1637,7 @@ namespace LeetCode.Csharp.Solutions2
             return result.ToArray();
         }
 
+        // https://leetcode.com/problems/count-unique-characters-of-all-substrings-of-a-given-string/
         public int UniqueLetterString(string s)
         {
             // REVIEW: 计算每个字符单独能出现的字串数量 (前一个同样字符 - 后一个同样字符)，因为每个不同的字母都相当于是单独计数的！
@@ -2195,7 +2275,7 @@ namespace LeetCode.Csharp.Solutions2
         // https://leetcode.com/problems/delete-columns-to-make-sorted-ii/
         public int MinDeletionSize(string[] A)
         {
-            // REVIEW ME
+            // REVIEW: 要记录是否已经 cut
             
             if (A.Length == 0) return 0;
 
@@ -2324,7 +2404,7 @@ namespace LeetCode.Csharp.Solutions2
         // 某种程度上是一个贪心算法。。。就是已知每次改一个字符可以遍历全部可能
         public string CrackSafe(int n, int k)
         {
-            // REVIEW: 硬记题
+            // REVIEW AGAIN: 硬记题
             StringBuilder initBuilder = new StringBuilder();
             for (int i = 0; i < n; i++)
             {
