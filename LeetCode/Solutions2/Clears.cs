@@ -123,5 +123,62 @@
                 less = !less;
             }
         }
+
+        // https://leetcode.com/problems/find-the-celebrity/
+        public int FindCelebrity(int n)
+        {
+            // REVIEW: 充分利用我不知道所有人但所有人知道我这一点
+            bool prevKnow = Knows(n - 1, 0);
+            bool lastKnow = prevKnow;
+            List<int> candidates = new List<int>();
+            for (int i = 0; i < n - 1; i++)
+            {
+                int a = i;
+                int b = i + 1;
+                bool weKnow = Knows(a, b);
+
+                if (prevKnow && !weKnow)
+                {
+                    candidates.Add(a);
+                }
+
+                prevKnow = weKnow;
+            }
+
+            if (prevKnow && !lastKnow)
+            {
+                candidates.Add(n - 1);
+            }
+
+            // Console.WriteLine($"C: {string.Join(", ", candidates)}");
+
+            foreach (int candidate in candidates)
+            {
+                if (IsCelebrity(candidate, n))
+                {
+                    return candidate;
+                }
+            }
+
+            return -1;
+        }
+
+        private bool Knows(int a, int b) => false;
+
+        private bool IsCelebrity(int candidate, int n)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                if (i != candidate)
+                {
+                    if (Knows(candidate, i) || !Knows(i, candidate))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
     }
 }

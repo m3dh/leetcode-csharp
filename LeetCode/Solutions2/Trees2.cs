@@ -119,6 +119,7 @@
             return curCoins - 1;
         }
 
+        // https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/
         public TreeNode SortedListToBST(ListNode head)
         {
             if (head == null) return null;
@@ -167,6 +168,60 @@
             }
 
             return ret;
+        }
+
+        // https://leetcode.com/problems/largest-bst-subtree/
+        private int maxSize = 0;
+
+        public int LargestBSTSubtree(TreeNode root)
+        {
+            if (root != null)
+            {
+                // IDEA: 在DFS过程中记录下每个子树的最大、最小值，这样就能够自底向上构建树了
+                Search(root);
+            }
+
+            return maxSize;
+        }
+
+        private int[] Search(TreeNode root)
+        {
+            // return [size, min, max]
+            int[] l = root.left == null ? null : Search(root.left);
+            int[] r = root.right == null ? null : Search(root.right);
+
+            int size = 1;
+            int min = root.val;
+            int max = root.val;
+            if (l != null)
+            {
+                if (l[0] != -1 && l[2] < root.val)
+                {
+                    size += l[0];
+                    min = l[1];
+                }
+                else
+                {
+                    return new[] { -1, -1, -1 };
+                }
+            }
+
+            if (r != null)
+            {
+                if (r[0] != -1 && r[1] > root.val)
+                {
+                    size += r[0];
+                    max = r[2];
+                }
+                else
+                {
+                    return new[] { -1, -1, -1 };
+                }
+            }
+
+            maxSize = Math.Max(size, maxSize);
+
+            return new[] { size, min, max };
         }
 
         public void Run()
