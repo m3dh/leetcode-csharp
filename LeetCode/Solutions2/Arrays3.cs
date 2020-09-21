@@ -329,10 +329,10 @@
                 {
                     if (r < nums.Length)
                     {
-                        long lo = Math.Min((long)nums[r] - t, (long)nums[r] + t);
-                        long up = Math.Max((long)nums[r] - t, (long)nums[r] + t);
+                        long lo = Math.Min((long) nums[r] - t, (long) nums[r] + t);
+                        long up = Math.Max((long) nums[r] - t, (long) nums[r] + t);
                         var subView = ss.GetViewBetween(lo, up);
-                        if (subView.Count > 0 && subView.Any(v => Math.Abs((long) nums[r] - v) <= t))
+                        if (subView.Count > 0)
                         {
                             return true;
                         }
@@ -375,6 +375,7 @@
             public int Op; // 0 - End, 1 - Begin
         }
 
+        // https://leetcode.com/problems/employee-free-time/
         public IList<Interval> EmployeeFreeTime(IList<IList<Interval>> schedule)
         {
             var opers = schedule

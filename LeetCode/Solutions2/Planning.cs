@@ -912,7 +912,8 @@ namespace LeetCode.Csharp.Solutions2
         }
         
         // https://leetcode.com/problems/longest-chunked-palindrome-decomposition/
-        public int LongestDecomposition(string text) {
+        public int LongestDecomposition(string text)
+        {
             // I cannot prove this problem could be solved by greedy algo, so still use memo-search but technically the
             // time complexity is still O(n).
             int[] memo = new int[text.Length / 2 + 1];
@@ -1251,6 +1252,7 @@ namespace LeetCode.Csharp.Solutions2
             return ret;
         }
 
+        // https://leetcode.com/problems/k-similar-strings/
         public int KSimilarity(string A, string B)
         {
             return KSim(A, B, new Dictionary<string, int>());

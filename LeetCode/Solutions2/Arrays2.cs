@@ -93,7 +93,7 @@
         // https://leetcode.com/problems/patching-array/
         public int MinPatches(int[] nums, int n)
         {
-            // REVIEW: 记录miss，miss以下的数字都可获得！
+            // REVIEW AGAIN: 记录miss，miss以下的数字都可获得！
             long miss = 1;
             int i = 0;
             int cnt = 0;
@@ -424,6 +424,7 @@
             return ret;
         }
 
+        // https://leetcode.com/problems/nth-digit/
         public int FindNthDigit(int n)
         {
             long an = n;
@@ -694,8 +695,11 @@
             return cnt;
         }
 
+        // https://leetcode.com/problems/minimum-window-substring/
         public string MinWindow(string s, string t)
         {
+            // 滑动窗口
+
             Dictionary<char, int> counts = new Dictionary<char, int>();
             Dictionary<char, int> excnts = new Dictionary<char, int>();
             foreach (char c in t)
