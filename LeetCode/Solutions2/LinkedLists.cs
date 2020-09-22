@@ -1,5 +1,6 @@
 namespace LeetCode.Csharp.Solutions2
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using LeetCode.Csharp.Common;
@@ -165,6 +166,54 @@ namespace LeetCode.Csharp.Solutions2
             }
             
             return head;
+        }
+
+        // https://leetcode.com/problems/intersection-of-two-linked-lists/
+        public ListNode GetIntersectionNode(ListNode headA, ListNode headB)
+        {
+            // REVIEW: 把两个List变成一样长就能比较啦！
+
+            Func<ListNode, int> lengthOf = n =>
+            {
+                int len = 0;
+                while (n != null)
+                {
+                    len++;
+                    n = n.next;
+                }
+
+                return len;
+            };
+
+            Func<ListNode, int, ListNode> skip = (n, s) =>
+            {
+                while (s != 0)
+                {
+                    n = n.next;
+                    s--;
+                }
+
+                return n;
+            };
+
+            int lenA = lengthOf(headA);
+            int lenB = lengthOf(headB);
+            if (lenA > lenB)
+            {
+                headA = skip(headA, lenA - lenB);
+            }
+            else if (lenB > lenA)
+            {
+                headB = skip(headB, lenB - lenA);
+            }
+
+            while (headA != headB && headA.val != headB.val)
+            {
+                headA = headA.next;
+                headB = headB.next;
+            }
+
+            return headA;
         }
 
         // https://leetcode.com/problems/all-oone-data-structure/

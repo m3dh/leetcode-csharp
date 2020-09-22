@@ -1627,7 +1627,7 @@ namespace LeetCode.Csharp.Solutions2
             List<int[]> result = new List<int[]>();
             List<int[]> pSorted = people
                 .OrderByDescending(p => p[0])
-                .ThenBy(p => p[1]) // 确保前面有多人的情况能插在更前面（后插的能够更前）
+                .ThenBy(p => p[1]) // REVIEW: 确保前面有多人的情况能插在更前面（后插的能够更前）
                 .ToList();
             foreach (int[] p in pSorted)
             {

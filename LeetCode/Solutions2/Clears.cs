@@ -98,6 +98,7 @@
         // https://leetcode.com/problems/wiggle-sort/
         public void WiggleSort(int[] nums)
         {
+            // 这题和他的 WiggleSort II 完全不一样！
             bool less = true;
             for (int i = 1; i < nums.Length; i++)
             {
@@ -179,6 +180,19 @@
             }
 
             return true;
+        }
+
+        // https://leetcode.com/problems/factorial-trailing-zeroes/
+        public int TrailingZeroes(int n)
+        {
+            // 5 * 2, 10 * 0
+            int cnt = 0;
+            while (n > 0)
+            {
+                cnt += (n / 5);
+                n /= 5;
+            }
+            return cnt;
         }
     }
 }

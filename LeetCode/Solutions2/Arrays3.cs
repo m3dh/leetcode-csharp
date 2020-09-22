@@ -410,6 +410,50 @@
             return ret;
         }
 
+        // https://leetcode.com/problems/minimum-swaps-to-make-sequences-increasing/
+        public int MinSwap(int[] A, int[] B)
+        {
+            // swap means the last has been swapped.
+            int swapCnt = 1;
+
+            // keep means the last pair hasn't been swapped.
+            int keepCnt = 0;
+            for (int i = 1; i < A.Length; i++)
+            {
+                int asp = B[i - 1];
+                int bsp = A[i - 1];
+                int akp = A[i - 1];
+                int bkp = B[i - 1];
+
+                int swapNext = 65536;
+                if (A[i] > bsp && B[i] > asp)
+                {
+                    swapNext = Math.Min(swapNext, swapCnt + 1);
+                }
+
+                if (A[i] > bkp && B[i] > akp)
+                {
+                    swapNext = Math.Min(swapNext, keepCnt + 1);
+                }
+
+                int keepNext = 65536;
+                if (A[i] > asp && B[i] > bsp)
+                {
+                    keepNext = Math.Min(keepNext, swapCnt);
+                }
+
+                if (A[i] > akp && B[i] > bkp)
+                {
+                    keepNext = Math.Min(keepNext, keepCnt);
+                }
+
+                keepCnt = keepNext;
+                swapCnt = swapNext;
+            }
+
+            return Math.Min(swapCnt, keepCnt);
+        }
+
         public void Run()
         {
             Console.WriteLine(ContainsNearbyAlmostDuplicate(new[] { 2, 1 }, 1, 1));
