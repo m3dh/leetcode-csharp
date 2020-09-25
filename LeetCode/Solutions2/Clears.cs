@@ -194,5 +194,27 @@
             }
             return cnt;
         }
+
+        // https://leetcode.com/problems/gas-station/
+        public int CanCompleteCircuit(int[] gas, int[] cost)
+        {
+            // Idea: 排除法，从0开始排除掉所有不可能的起点
+            int total = 0;
+            int curr = 0;
+            int start = 0;
+            for (int i = 0; i < gas.Length; i++)
+            {
+                total += gas[i] - cost[i];
+                curr += gas[i] - cost[i];
+                if (curr < 0)
+                {
+                    // have to start with next point.
+                    start = i + 1;
+                    curr = 0;
+                }
+            }
+
+            return total < 0 ? -1 : start;
+        }
     }
 }
