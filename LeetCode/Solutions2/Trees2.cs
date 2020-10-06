@@ -225,6 +225,213 @@
             return new[] { size, min, max };
         }
 
+        // https://leetcode.com/problems/my-calendar-i/
+        public class MyCalendar
+        {
+            class BookMapNode
+            {
+                public int Start;
+                public int End;
+
+                public BookMapNode Left;
+                public BookMapNode Right;
+            }
+
+            private BookMapNode _root = null;
+
+            public MyCalendar()
+            {
+            }
+
+            private bool Insert(int start, int end)
+            {
+                if (this._root == null)
+                {
+                    this._root = new BookMapNode
+                    {
+                        Start = start,
+                        End = end,
+                    };
+
+                    return true;
+                }
+                else
+                {
+                    BookMapNode n = this._root;
+                    while (true)
+                    {
+                        // [n.S, n.E]
+                        //     
+                        if (n.End <= start)
+                        {
+                            if (n.Right != null)
+                            {
+                                n = n.Right;
+                            }
+                            else
+                            {
+                                n.Right = new BookMapNode
+                                {
+                                    Start = start,
+                                    End = end
+                                };
+
+                                return true;
+                            }
+                        }
+                        else if (n.Start > end)
+                        {
+                            if (n.Left != null)
+                            {
+                                n = n.Left;
+                            }
+                            else
+                            {
+                                n.Left = new BookMapNode
+                                {
+                                    Start = start,
+                                    End = end
+                                };
+
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            public bool Book(int start, int end)
+            {
+                return Insert(start, end);
+            }
+        }
+
+        // https://leetcode.com/problems/my-calendar-ii/
+        public class MyCalendarTwo
+        {
+            private List<int[]>[] intervals = new List<int[]>[2];
+
+            public MyCalendarTwo()
+            {
+            }
+
+            public bool Book(int start, int end)
+            {
+                foreach (int[] ints in this.intervals[1])
+                {
+                    if (ints[0] < end && ints[1] > start) return false;
+                }
+
+                for (int i = 0; i <= 1; i++)
+                {
+                    if (i == 0)
+                    {
+                        this.intervals[1].Add(new[] { start, end });
+                    }
+                    else
+                    {
+                        foreach (int[] ints in this.intervals[i - 1])
+                        {
+                            if (ints[0] < end && ints[1] > start)
+                            {
+                                this.intervals[i].Add(new[] { Math.Max(start, ints[0]), Math.Max(end, ints[1]) });
+                            }
+                        }
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        // https://leetcode.com/problems/my-calendar-iii/
+        public class MyCalendarThree
+        {
+            private List<List<int[]>> intervals = new List<List<int[]>>();
+
+            private SortedList<int, int> deltas = new SortedList<int, int>();
+
+            public MyCalendarThree()
+            {
+            }
+
+            public int Book(int start, int end)
+            {
+                this.deltas[start] = this.deltas.TryGetValue(start, out int sd) ? sd + 1 : 1;
+                this.deltas[end] = this.deltas.TryGetValue(end, out int ed) ? ed - 1 : -1;
+                int ret = 0;
+                int cur = 0;
+                foreach (KeyValuePair<int, int> delta in this.deltas)
+                {
+                    cur += delta.Value;
+                    ret = Math.Max(ret, cur);
+                }
+
+                return ret;
+            }
+
+            public int Book1(int start, int end)
+            {
+                int curMax = intervals.Count;
+                if (curMax == 0)
+                {
+                    intervals.Add(new List<int[]> { new[] { start, end } });
+                }
+                else
+                {
+                    List<int[]> next = null;
+                    foreach (int[] ints in intervals[curMax - 1])
+                    {
+                        if (ints[0] < end && ints[1] > start)
+                        {
+                            if (next == null)
+                            {
+                                next = new List<int[]>();
+                            }
+
+                            next.Add(new[] { Math.Max(ints[0], start), Math.Min(ints[1], end) });
+                        }
+                    }
+
+                    if (next != null)
+                    {
+                        intervals.Add(next);
+                    }
+
+                    // now update the previous interval lists
+                    for (int i = curMax - 1; i >= 0; i--)
+                    {
+                        if (i == 0)
+                        {
+                            intervals[i].Add(new[] { start, end });
+                        }
+                        else
+                        {
+                            foreach (int[] ints in intervals[i - 1])
+                            {
+                                if (ints[0] < end && ints[1] > start)
+                                {
+                                    intervals[i].Add(new[] { Math.Max(ints[0], start), Math.Min(ints[1], end) });
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return intervals.Count;
+            }
+        }
+
+        /**
+         * Your MyCalendarThree object will be instantiated and called as such:
+         * MyCalendarThree obj = new MyCalendarThree();
+         * int param_1 = obj.Book(start,end);
+         */
+
         public void Run()
         {
             Console.WriteLine(JsonConvert.SerializeObject(SortedListToBST(new ListNode(1)

@@ -59,7 +59,7 @@
         // https://leetcode.com/problems/the-most-similar-path-in-a-graph/
         public IList<int> MostSimilar(int n, int[][] roads, string[] names, string[] targetPath)
         {
-
+            return null;
         }
     }
 }
