@@ -17,9 +17,7 @@
     {
         public static void Main()
         {
-            SortedList<int, string> val = new SortedList<int, string>();
-            val.Add(1, "1");
-            val.Add(3, "3");
+            (new Trees2()).Run();
         }
 
         public int FindLengthOfLCIS(int[] nums)

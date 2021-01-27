@@ -426,6 +426,77 @@
             }
         }
 
+        public string AlienOrder(string[] words)
+        {
+            Dictionary<char, int> icnt = new Dictionary<char, int>();
+            Dictionary<char, List<char>> ocnt = new Dictionary<char, List<char>>();
+            HashSet<char> found = new HashSet<char>();
+            foreach(string w in words)
+            {
+                foreach (char c in w) found.Add(c);
+            }
+
+            for (int i = 1; i < words.Length; i++)
+            {
+                string w1 = words[i - 1];
+                string w2 = words[i];
+                int minLen = Math.Min(w1.Length, w2.Length);
+                for (int j = 0; j < minLen; j++)
+                {
+                    if (w1[j] != w2[j])
+                    {
+                        if (icnt.ContainsKey(w2[j])) icnt[w2[j]]++;
+                        else icnt[w2[j]] = 1;
+
+                        if (ocnt.TryGetValue(w1[j], out List<char> l)) l.Add(w2[j]);
+                        else ocnt[w1[j]] = new List<char> { w2[j] };
+
+                        break;
+                    }
+                }
+            }
+
+            List<char> result = new List<char>();
+            char? next = null;
+            while (true)
+            {
+                if (next == null)
+                {
+                    next = found.FirstOrDefault(c => !icnt.ContainsKey(c) || icnt[c] == 0);
+                    if (next == null || next == char.MinValue)
+                    {
+                        if (found.Count() == 0)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            return "";
+                        }
+                    }
+                }
+
+                char curr = next.Value;
+                next = null;
+                found.Remove(curr);
+                result.Add(curr);
+
+                if (ocnt.ContainsKey(curr))
+                {
+                    foreach (char nxt in ocnt[curr])
+                    {
+                        icnt[nxt]--;
+                        if (icnt[nxt] == 0 && next == null)
+                        {
+                            next = nxt;
+                        }
+                    }
+                }
+            }
+
+            return new string(result.ToArray());
+        }
+
         /**
          * Your MyCalendarThree object will be instantiated and called as such:
          * MyCalendarThree obj = new MyCalendarThree();
@@ -434,19 +505,7 @@
 
         public void Run()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(SortedListToBST(new ListNode(1)
-            {
-                next = new ListNode(2)
-                {
-                    next = new ListNode(3)
-                    {
-                        next = new ListNode(4)
-                        {
-                            next = new ListNode(5)
-                        }
-                    }
-                }
-            }), Formatting.Indented));
+            Console.WriteLine(AlienOrder(new[] {"a", "b", "ca", "cc" }));
         }
     }
 }
